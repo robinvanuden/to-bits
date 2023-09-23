@@ -5,6 +5,7 @@ let ID = ""
 let DEBUG = true
 let RUNNING = false
 
+const body = document.querySelector("body")
 const canvas = document.getElementById("playground")
 canvas.width = window.innerWidth
 canvas.height = window.innerHeight
@@ -79,9 +80,11 @@ const drawDebug = (delta) => {
   ctx.textAlign = "left"
   let y = 10
   ctx.fillText("delta: " + delta, 0, y)
-  if (you == null) {
+  if (you == null || !you.alive) {
+    body.classList.add("dead")
     return
   }
+  body.classList.remove("dead")
   y += 10
   ctx.fillText("x: " + you.x, 0, y)
   y += 10
@@ -93,6 +96,10 @@ const drawDebug = (delta) => {
 }
 
 const keyEvent = (ev, pressed) => {
+  const you = PLAYERS.find(p => p.id === ID)
+  if (!you) {
+    return
+  }
   console.log(ev)
   const key = ev.key.toLowerCase()
   if (key === "d") {

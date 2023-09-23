@@ -1,9 +1,9 @@
 import {Map, Tile} from "./types/map"
 
-const TILE = 48
-const TA = 0
-const TB = 1
-const TS = 9
+const TILE = 28
+const TA = 0 // 0: Air
+const TB = 1 // 1: Ground
+const TS = 9 // 9: Spawn
 
 const MAP_RAW = [
   [TA, TA, TA, TA, TA, TA, TA, TA, TA, TA, TA, TA, TA, TA, TA, TA, TA, TA, TA, TA],

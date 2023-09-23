@@ -6,9 +6,10 @@ import {Player} from "./types/player"
 import {v4} from "uuid"
 import {MAP} from "./controllerMap"
 import {Tile} from "./types/map"
-import {createPlayer} from "./controllerPlayer"
+import {createPlayer, respawnPlayer} from "./controllerPlayer"
 
-const PORT = process.env.PORT ?? 3000
+const HOST: string = process.env.HOST ?? "0.0.0.0"
+const PORT: number = Number.parseInt(process.env.PORT ?? "3000")
 
 const app: Express = express()
 const server = createServer(app)
@@ -20,11 +21,9 @@ app.use("/", express.static("public"))
 const VERSION = process.env.npm_package_version
 console.log("ToBits: v" + VERSION)
 
-// 0: Air
-// 1: Ground
-// 9: Spawn
 
-const TICKS = 30
+const TICKS = 50
+const NETHER = 2000
 
 let PLAYERS: Player[] = []
 
@@ -60,28 +59,27 @@ io.on('connection', (socket) => {
   emitMap(socket)
   emitPlayers()
 
-
   socket.on("move.left", (bool: boolean) => {
-    const player = PLAYERS.find(p => p.id === id) ?? null
-    if (player != null) player.direction.l = bool
+    const player = PLAYERS.find(p => p.id === id)
+    if (player) player.direction.l = bool
   })
   socket.on("move.right", (bool: boolean) => {
-    const player = PLAYERS.find(p => p.id === id) ?? null
-    if (player != null) player.direction.r = bool
+    const player = PLAYERS.find(p => p.id === id)
+    if (player) player.direction.r = bool
   })
   socket.on("move.up", (bool: boolean) => {
-    const player = PLAYERS.find(p => p.id === id) ?? null
-    if (player != null) player.direction.u = bool
+    const player = PLAYERS.find(p => p.id === id)
+    if (player) player.direction.u = bool
   })
   socket.on("move.down", (bool: boolean) => {
-    const player = PLAYERS.find(p => p.id === id) ?? null
-    if (player != null) player.direction.d = bool
+    const player = PLAYERS.find(p => p.id === id)
+    if (player) player.direction.d = bool
   })
 
   socket.on("disconnect", () => {
     console.log('address user disconnected', id)
     const player = PLAYERS.find(p => p.id === id) ?? null
-    if (player == null) {
+    if (!player) {
       return
     }
     player.connected = false
@@ -91,12 +89,15 @@ io.on('connection', (socket) => {
   })
 })
 
-const emitMap = (socket: Socket) => {
-  socket.emit("map", MAP)
-}
+const emitMap = (socket: Socket) => socket.emit("map", MAP)
 
-const emitPlayers = () => {
-  io.emit("players", PLAYERS)
+const emitPlayers = () => io.emit("players", PLAYERS.filter(p => p.alive))
+
+const killPlayer = (player: Player) => {
+  const SPAWN_TILE = MAP.t.find(t => t.t === 9)
+  player.alive = false
+  player.y = 0
+  setTimeout(() => respawnPlayer(player, SPAWN_TILE), 3000)
 }
 
 const isColliding = (player: Player, tile: Tile): boolean => {
@@ -115,8 +116,7 @@ const isCollidingWithMap = (player: Player): boolean => {
   return false
 }
 
-
-const tick = (delta: number) => {
+const checkPlayerPosition = (delta: number) => {
   for (const player of PLAYERS) {
     player.vy += player.gravity * delta
     if (player.direction.l) {
@@ -131,9 +131,6 @@ const tick = (delta: number) => {
       player.vy -= player.speed_jump
       player.canJump = false
     }
-    if (player.direction.d) {
-      player.vy += player.speed_jump
-    }
     player.y += player.vy
 
     if (isCollidingWithMap(player)) {
@@ -141,17 +138,20 @@ const tick = (delta: number) => {
       player.vy = 0
       player.canJump = true
     }
-    if (player.y > 1000) {
-      const SPAWN_TILE = MAP.t.find(t => t.t === 9)
-      player.x = SPAWN_TILE.x
-      player.y = SPAWN_TILE.y
+    if (player.y > NETHER && player.alive) {
+      killPlayer(player)
     }
   }
+}
+
+const tick = (delta: number) => {
+  checkPlayerPosition(delta)
   emitPlayers()
 }
 
-server.listen(PORT, () => {
-  console.log('listening on http://localhost:3000')
+server.listen(PORT, HOST, () => {
+  console.log(`listening on http://localhost:${PORT}`)
+  console.log(`listening on http://${HOST}:${PORT}`)
 
   let updated = Date.now()
   setInterval(() => {
