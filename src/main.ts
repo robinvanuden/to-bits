@@ -1,12 +1,14 @@
 import {createServer} from "http"
-import express from "express"
 import type {Express} from "express"
+import express from "express"
 import {Server, Socket} from "socket.io"
 import {Player} from "./types/player"
 import {v4} from "uuid"
 import {MAP} from "./controllerMap"
 import {Tile} from "./types/map"
 import {createPlayer} from "./controllerPlayer"
+
+const PORT = process.env.PORT ?? 3000
 
 const app: Express = express()
 const server = createServer(app)
@@ -34,16 +36,30 @@ io.on('connection', (socket) => {
   if (address === "") {
     return
   }
-  if (PLAYERS.find(p => p.address === address)) {
+  if (PLAYERS.find(p => p.connected && p.address === address) != null) {
+    // Disconnect double users
     socket.disconnect(true)
     return
   }
   socket.emit("version", VERSION)
-  const SPAWN_TILE = MAP.t.find(t => t.t === 9)
-  const id = v4()
+  let id
+  let continue_player = PLAYERS.find(p => !p.connected && p.address === address)
+  if (continue_player == null) {
+    const SPAWN_TILE = MAP.t.find(t => t.t === 9)
+    id = v4()
+    console.log('address user connected', id)
+    PLAYERS.push(createPlayer(SPAWN_TILE, id, address))
+  } else {
+    id = continue_player.id
+    continue_player.connected = true
+    continue_player.direction = {
+      u: false,
+      d: false,
+      l: false,
+      r: false
+    }
+  }
   socket.emit("me", id)
-  console.log('address user connected', id)
-  PLAYERS.push(createPlayer(SPAWN_TILE, id, address))
   emitMap(socket)
   emitPlayers()
 
@@ -67,11 +83,18 @@ io.on('connection', (socket) => {
 
   socket.on("disconnect", () => {
     console.log('address user disconnected', id)
-    PLAYERS = PLAYERS.filter(p => p.id !== id)
+    const player = PLAYERS.find(p => p.id === id) ?? null
+    if (player == null) {
+      return
+    }
+    player.connected = false
+    setTimeout(() => {
+      if (PLAYERS.find(p => p.id === id && !p.connected) != null) PLAYERS = PLAYERS.filter(p => p.id !== id)
+    }, 5000)
   })
 })
 
-server.listen(3000, () => {
+server.listen(PORT, () => {
   console.log('listening on http://localhost:3000')
 })
 

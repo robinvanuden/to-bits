@@ -3,6 +3,7 @@ import {Player} from "./types/player"
 
 const TILE_PLAYER = 16
 
+
 export const createPlayer = (spawn: Tile, id: string, address: string): Player => {
   return {
     id: id,

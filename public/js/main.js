@@ -36,6 +36,7 @@ socket.on("version", version => {
 const drawMap = () => {
   canvas.width = 600
   canvas.height = 600
+
   ctx.fillStyle = "#606c79";
   for (const tile of DATA_MAP.t) {
     if (tile.t === 1) {
