@@ -6,21 +6,35 @@ let DEBUG = true
 let RUNNING = false
 
 const canvas = document.getElementById("playground")
+canvas.width = window.innerWidth
+canvas.height = window.innerHeight
+
+const COLOR_TILES = "#606c79"
+const COLOR_TEXT = "#000"
+
 const ctx = canvas.getContext("2d")
 
-let DATA_MAP = {
+let MAP = {
   t: [],
   w: 0,
   h: 0
 }
-let DATA_PLAYERS = []
+let PLAYERS = []
 
-socket.on("map", map => {
-  DATA_MAP = map
+socket.on("connect", () => {
+  canvas.classList.remove("loading")
   RUNNING = true
 })
 
-socket.on("players", players => DATA_PLAYERS = players)
+socket.on("disconnect", () => canvas.classList.add("loading"))
+
+socket.on("map", map => {
+  MAP = map
+  RUNNING = true
+  window.requestAnimationFrame(tick)
+})
+
+socket.on("players", players => PLAYERS = players)
 
 socket.on("me", id => ID = id)
 
@@ -34,32 +48,38 @@ socket.on("version", version => {
 })
 
 const drawMap = () => {
-  canvas.width = 600
-  canvas.height = 600
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  let cx = 0;
+  let cy = 0;
 
-  ctx.fillStyle = "#606c79";
-  for (const tile of DATA_MAP.t) {
-    if (tile.t === 1) {
-      ctx.fillRect(tile.x, tile.y, tile.w, tile.h)
-    }
+  const playerToFocus = PLAYERS.find(player => player.id === ID)
+  if (playerToFocus) {
+    cx = playerToFocus.x - canvas.width / 2
+    cy = playerToFocus.y - canvas.height / 2
   }
-  ctx.textColor = "green"
-  ctx.textAlign = "center"
-  for (let player of DATA_PLAYERS) {
+  for (const tile of MAP.t.filter(tile => tile.t === 1)) {
+    ctx.fillStyle = COLOR_TILES;
+    ctx.fillRect(tile.x - cx, tile.y - cy, tile.w, tile.h)
+  }
+  for (const player of PLAYERS) {
+    ctx.textAlign = "center"
+    ctx.fillStyle = COLOR_TEXT
+    ctx.font = "12px Arial"
+    ctx.fillText(player.name, player.x - cx + player.w * .5, player.y - cy - 5)
     ctx.fillStyle = player.color;
-    ctx.fillText(player.name, player.x + player.w * .5, player.y - 5)
-    ctx.fillRect(player.x, player.y, player.w, player.h)
+    ctx.fillRect(player.x - cx, player.y - cy, player.w, player.h)
   }
 }
 
 const drawDebug = (delta) => {
-  const you = DATA_PLAYERS.find(p => p.id === ID)
+  const you = PLAYERS.find(p => p.id === ID)
 
-  ctx.textColor = "black"
+  ctx.font = "10px Arial"
+  ctx.fillStyle = "black"
   ctx.textAlign = "left"
   let y = 10
   ctx.fillText("delta: " + delta, 0, y)
-  if (you == null){
+  if (you == null) {
     return
   }
   y += 10
@@ -100,6 +120,5 @@ const tick = (timestamp) => {
   drawMap()
   if (DEBUG) drawDebug(delta)
   lastRender = timestamp
-  window.requestAnimationFrame(tick)
+  if (RUNNING) window.requestAnimationFrame(tick)
 }
-window.requestAnimationFrame(tick)

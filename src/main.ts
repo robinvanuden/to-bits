@@ -24,10 +24,7 @@ console.log("ToBits: v" + VERSION)
 // 1: Ground
 // 9: Spawn
 
-const GRAVITY = 0.00982
 const TICKS = 30
-const SPEED = 3
-const SPEED_JUMP = 7
 
 let PLAYERS: Player[] = []
 
@@ -42,7 +39,7 @@ io.on('connection', (socket) => {
     return
   }
   socket.emit("version", VERSION)
-  let id
+  let id: string = ""
   let continue_player = PLAYERS.find(p => !p.connected && p.address === address)
   if (continue_player == null) {
     const SPAWN_TILE = MAP.t.find(t => t.t === 9)
@@ -94,10 +91,6 @@ io.on('connection', (socket) => {
   })
 })
 
-server.listen(PORT, () => {
-  console.log('listening on http://localhost:3000')
-})
-
 const emitMap = (socket: Socket) => {
   socket.emit("map", MAP)
 }
@@ -122,23 +115,24 @@ const isCollidingWithMap = (player: Player): boolean => {
   return false
 }
 
+
 const tick = (delta: number) => {
   for (const player of PLAYERS) {
-    player.vy += GRAVITY * delta
+    player.vy += player.gravity * delta
     if (player.direction.l) {
-      player.x -= SPEED
-      if (isCollidingWithMap(player)) player.x += SPEED
+      player.x -= player.speed_walk
+      if (isCollidingWithMap(player)) player.x += player.speed_walk
     }
     if (player.direction.r) {
-      player.x += SPEED
-      if (isCollidingWithMap(player)) player.x -= SPEED
+      player.x += player.speed_walk
+      if (isCollidingWithMap(player)) player.x -= player.speed_walk
     }
     if (player.direction.u && player.canJump) {
-      player.vy -= SPEED_JUMP
+      player.vy -= player.speed_jump
       player.canJump = false
     }
     if (player.direction.d) {
-      player.vy += SPEED_JUMP
+      player.vy += player.speed_jump
     }
     player.y += player.vy
 
@@ -147,13 +141,22 @@ const tick = (delta: number) => {
       player.vy = 0
       player.canJump = true
     }
+    if (player.y > 1000) {
+      const SPAWN_TILE = MAP.t.find(t => t.t === 9)
+      player.x = SPAWN_TILE.x
+      player.y = SPAWN_TILE.y
+    }
   }
   emitPlayers()
 }
 
-let updated = Date.now()
-setInterval(() => {
-  let now = Date.now()
-  tick(now - updated)
-  updated = now
-}, 1000 / TICKS)
+server.listen(PORT, () => {
+  console.log('listening on http://localhost:3000')
+
+  let updated = Date.now()
+  setInterval(() => {
+    let now = Date.now()
+    tick(now - updated)
+    updated = now
+  }, 1000 / TICKS)
+})

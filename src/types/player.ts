@@ -4,6 +4,9 @@ export interface Player {
   connected: boolean // is connected
   color: string // color
   name: string // name
+  gravity: number
+  speed_walk: number
+  speed_jump: number
   w: number // width
   h: number // height
   x: number // x-coord

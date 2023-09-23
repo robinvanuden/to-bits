@@ -1,6 +1,6 @@
-import {Tile, Map} from "./types/map"
+import {Map, Tile} from "./types/map"
 
-const TILE = 24
+const TILE = 48
 const TA = 0
 const TB = 1
 const TS = 9
