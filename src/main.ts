@@ -4,6 +4,9 @@ import type {Express} from "express"
 import {Server, Socket} from "socket.io"
 import {Player} from "./types/player"
 import {v4} from "uuid"
+import {MAP} from "./controllerMap"
+import {Tile} from "./types/map"
+import {createPlayer} from "./controllerPlayer"
 
 const app: Express = express()
 const server = createServer(app)
@@ -21,49 +24,49 @@ console.log("ToBits: v" + VERSION)
 
 const GRAVITY = 0.00982
 const TICKS = 30
-
-const MAP = [
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-]
+const SPEED = 3
+const SPEED_JUMP = 7
 
 let PLAYERS: Player[] = []
 
 io.on('connection', (socket) => {
-  const SPAWN = [3, 3]
-  const id = v4()
-  console.log('a user connected', id)
-  PLAYERS.push({
-    id: id,
-    x: SPAWN[1],
-    y: SPAWN[0],
-    vx: 0,
-    vy: 0
-  })
+  const address = socket?.handshake?.address ?? ""
+  if (address === "") {
+    return
+  }
+  if (PLAYERS.find(p => p.address === address)) {
+    socket.disconnect(true)
+    return
+  }
   socket.emit("version", VERSION)
+  const SPAWN_TILE = MAP.t.find(t => t.t === 9)
+  const id = v4()
+  socket.emit("me", id)
+  console.log('address user connected', id)
+  PLAYERS.push(createPlayer(SPAWN_TILE, id, address))
   emitMap(socket)
   emitPlayers()
 
+
+  socket.on("move.left", (bool: boolean) => {
+    const player = PLAYERS.find(p => p.id === id) ?? null
+    if (player != null) player.direction.l = bool
+  })
+  socket.on("move.right", (bool: boolean) => {
+    const player = PLAYERS.find(p => p.id === id) ?? null
+    if (player != null) player.direction.r = bool
+  })
+  socket.on("move.up", (bool: boolean) => {
+    const player = PLAYERS.find(p => p.id === id) ?? null
+    if (player != null) player.direction.u = bool
+  })
+  socket.on("move.down", (bool: boolean) => {
+    const player = PLAYERS.find(p => p.id === id) ?? null
+    if (player != null) player.direction.d = bool
+  })
+
   socket.on("disconnect", () => {
-    console.log('a user disconnected', id)
+    console.log('address user disconnected', id)
     PLAYERS = PLAYERS.filter(p => p.id !== id)
   })
 })
@@ -80,11 +83,47 @@ const emitPlayers = () => {
   io.emit("players", PLAYERS)
 }
 
+const isColliding = (player: Player, tile: Tile): boolean => {
+  return player.x < tile.x + tile.w &&
+    player.x + player.w > tile.x &&
+    player.y < tile.y + tile.h &&
+    player.y + player.h > tile.y
+}
+
+const isCollidingWithMap = (player: Player): boolean => {
+  for (const tile of MAP.t.filter(tile => tile.t === 1)) {
+    if (isColliding(player, tile)) {
+      return true
+    }
+  }
+  return false
+}
+
 const tick = (delta: number) => {
-  console.log("rate", delta)
   for (const player of PLAYERS) {
-    player.vy += GRAVITY
+    player.vy += GRAVITY * delta
+    if (player.direction.l) {
+      player.x -= SPEED
+      if (isCollidingWithMap(player)) player.x += SPEED
+    }
+    if (player.direction.r) {
+      player.x += SPEED
+      if (isCollidingWithMap(player)) player.x -= SPEED
+    }
+    if (player.direction.u && player.canJump) {
+      player.vy -= SPEED_JUMP
+      player.canJump = false
+    }
+    if (player.direction.d) {
+      player.vy += SPEED_JUMP
+    }
     player.y += player.vy
+
+    if (isCollidingWithMap(player)) {
+      player.y -= player.vy
+      player.vy = 0
+      player.canJump = true
+    }
   }
   emitPlayers()
 }
@@ -94,4 +133,4 @@ setInterval(() => {
   let now = Date.now()
   tick(now - updated)
   updated = now
-},  1000 / TICKS)
+}, 1000 / TICKS)
