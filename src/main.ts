@@ -4,7 +4,7 @@ import express from "express"
 import {Server, Socket} from "socket.io"
 import {Player} from "./types/player"
 import {v4} from "uuid"
-import {MAP} from "./controllerMap"
+import {MAP, NETHER} from "./controllerMap"
 import {Tile} from "./types/map"
 import {createPlayer, respawnPlayer} from "./controllerPlayer"
 
@@ -23,28 +23,27 @@ console.log("ToBits: v" + VERSION)
 
 
 const TICKS = 50
-const NETHER = 2000
 
-let PLAYERS: Player[] = []
+let players: Player[] = []
 
 io.on('connection', (socket) => {
   const address = socket?.handshake?.address ?? ""
   if (address === "") {
     return
   }
-  if (PLAYERS.find(p => p.connected && p.address === address) != null) {
+  if (players.find(p => p.connected && p.address === address) != null) {
     // Disconnect double users
     socket.disconnect(true)
     return
   }
   socket.emit("version", VERSION)
   let id: string = ""
-  let continue_player = PLAYERS.find(p => !p.connected && p.address === address)
+  let continue_player = players.find(p => !p.connected && p.address === address)
   if (continue_player == null) {
-    const SPAWN_TILE = MAP.t.find(t => t.t === 9)
+    const SPAWN_TILE = randomSpawn()
     id = v4()
     console.log('address user connected', id)
-    PLAYERS.push(createPlayer(SPAWN_TILE, id, address))
+    players.push(createPlayer(SPAWN_TILE, id, address))
   } else {
     id = continue_player.id
     continue_player.connected = true
@@ -60,41 +59,47 @@ io.on('connection', (socket) => {
   emitPlayers()
 
   socket.on("move.left", (bool: boolean) => {
-    const player = PLAYERS.find(p => p.id === id)
+    const player = players.find(p => p.id === id)
     if (player) player.direction.l = bool
   })
   socket.on("move.right", (bool: boolean) => {
-    const player = PLAYERS.find(p => p.id === id)
+    const player = players.find(p => p.id === id)
     if (player) player.direction.r = bool
   })
   socket.on("move.up", (bool: boolean) => {
-    const player = PLAYERS.find(p => p.id === id)
+    const player = players.find(p => p.id === id)
     if (player) player.direction.u = bool
   })
   socket.on("move.down", (bool: boolean) => {
-    const player = PLAYERS.find(p => p.id === id)
+    const player = players.find(p => p.id === id)
     if (player) player.direction.d = bool
   })
 
   socket.on("disconnect", () => {
     console.log('address user disconnected', id)
-    const player = PLAYERS.find(p => p.id === id) ?? null
+    const player = players.find(p => p.id === id) ?? null
     if (!player) {
       return
     }
     player.connected = false
     setTimeout(() => {
-      if (PLAYERS.find(p => p.id === id && !p.connected) != null) PLAYERS = PLAYERS.filter(p => p.id !== id)
+      if (players.find(p => p.id === id && !p.connected) != null) players = players.filter(p => p.id !== id)
     }, 5000)
   })
 })
 
+const randomSpawn = () => {
+  const spawns = MAP.filter(t => t.t === 9)
+  const index = Math.round((spawns.length - 1) * Math.random())
+  return spawns[index]
+}
+
 const emitMap = (socket: Socket) => socket.emit("map", MAP)
 
-const emitPlayers = () => io.emit("players", PLAYERS.filter(p => p.alive))
+const emitPlayers = () => io.emit("players", players.filter(p => p.alive))
 
 const killPlayer = (player: Player) => {
-  const SPAWN_TILE = MAP.t.find(t => t.t === 9)
+  const SPAWN_TILE = randomSpawn()
   player.alive = false
   player.y = 0
   setTimeout(() => respawnPlayer(player, SPAWN_TILE), 3000)
@@ -105,7 +110,7 @@ const isColliding = (p: Player, t: Tile): boolean => {
 }
 
 const isCollidingWithMap = (player: Player): boolean => {
-  for (const tile of MAP.t.filter(tile => tile.t === 1)) {
+  for (const tile of MAP.filter(tile => tile.t === 1)) {
     if (isColliding(player, tile)) {
       return true
     }
@@ -119,7 +124,7 @@ const isWalkingOn = (p: Player, t: Tile): boolean => {
 }
 
 const isWalkingOnMap = (player: Player): boolean => {
-  for (const tile of MAP.t.filter(tile => tile.t === 1)) {
+  for (const tile of MAP.filter(tile => tile.t === 1)) {
     if (isWalkingOn(player, tile)) {
       return true
     }
@@ -128,7 +133,7 @@ const isWalkingOnMap = (player: Player): boolean => {
 }
 
 const checkPlayerPosition = (delta: number) => {
-  for (const player of PLAYERS) {
+  for (const player of players) {
     player.vy += player.gravity * delta
     if (player.direction.l) {
       player.x -= player.speed_walk
@@ -152,6 +157,7 @@ const checkPlayerPosition = (delta: number) => {
       player.canJump = true
     }
     if (player.y > NETHER && player.alive) {
+      console.log(NETHER)
       killPlayer(player)
     }
   }

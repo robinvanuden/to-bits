@@ -1,9 +1,11 @@
-import {Map, Tile} from "./types/map"
+import {Tile} from "./types/map"
 
 const TILE = 32
 const A = 0 // 0: Air
 const B = 1 // 1: Ground
 const S = 9 // 9: Spawn
+
+let bottom = 0
 
 const MAP_RAW = [
   [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
@@ -45,12 +47,12 @@ const toMap = () => {
         t: type, x: x * TILE, y: y * TILE, w: TILE, h: TILE, c: "#2d1e1a"
       })
     }
+    bottom = y
   }
+  console.log(bottom)
   return map
 }
 
-export const MAP: Map = {
-  w: MAP_RAW.length * TILE,
-  h: MAP_RAW[0].length * TILE,
-  t: toMap()
-}
+export const NETHER = (() => (bottom * TILE) + 1000)()
+
+export const MAP = toMap()

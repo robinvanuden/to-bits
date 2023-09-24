@@ -15,11 +15,7 @@ const COLOR_TEXT = "#000"
 
 const ctx = canvas.getContext("2d")
 
-let MAP = {
-  t: [],
-  w: 0,
-  h: 0
-}
+let MAP = []
 let PLAYERS = []
 
 socket.on("connect", () => {
@@ -58,7 +54,7 @@ const drawMap = () => {
     cx = playerToFocus.x - canvas.width / 2
     cy = playerToFocus.y - canvas.height / 2
   }
-  for (const tile of MAP.t.filter(tile => tile.t === 1)) {
+  for (const tile of MAP.filter(tile => tile.t === 1)) {
     ctx.fillStyle = tile.c;
     ctx.fillRect(tile.x - cx, tile.y - cy, tile.w, tile.h)
   }
