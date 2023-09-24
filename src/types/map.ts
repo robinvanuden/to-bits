@@ -9,5 +9,6 @@ export interface Tile {
   w: number
   h: number
   x: number
-  y: number
+  y: number,
+  c: string
 }

@@ -4,7 +4,7 @@ import {Player} from "./types/player"
 const TILE_PLAYER = 24
 const GRAVITY = 0.00982
 const SPEED_WALK = 5
-const SPEED_JUMP = 7
+const SPEED_JUMP = 7.7
 
 const NAMES = [
   "Alfa", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf",
@@ -14,9 +14,7 @@ const NAMES = [
 
 const randomName = () => NAMES[Math.round((NAMES.length - 1) * Math.random())]
 
-const randomNames = () => [randomName(), randomName()].join(" ")
-
-const randomColor = () => `hsl(${360 * Math.random()}, 100%, 70%)`
+const randomColor = () => `hsl(${360 * Math.random()}, 88%, 62%)`
 
 export const createPlayer = (spawn: Tile, id: string, address: string): Player => {
   return {
@@ -25,7 +23,7 @@ export const createPlayer = (spawn: Tile, id: string, address: string): Player =
     connected: true,
     alive: true,
     color: randomColor(),
-    name: randomNames(),
+    name: randomName(),
     w: TILE_PLAYER,
     h: TILE_PLAYER,
     x: spawn.x,
@@ -35,7 +33,7 @@ export const createPlayer = (spawn: Tile, id: string, address: string): Player =
     gravity: GRAVITY,
     speed_walk: SPEED_WALK,
     speed_jump: SPEED_JUMP,
-    canJump: true,
+    canJump: false,
     direction: {
       u: false,
       d: false,
@@ -51,3 +49,4 @@ export const respawnPlayer = (player: Player, spawn: Tile) => {
   player.y = spawn.y
   return player
 }
+

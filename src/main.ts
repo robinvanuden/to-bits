@@ -100,16 +100,27 @@ const killPlayer = (player: Player) => {
   setTimeout(() => respawnPlayer(player, SPAWN_TILE), 3000)
 }
 
-const isColliding = (player: Player, tile: Tile): boolean => {
-  return player.x < tile.x + tile.w &&
-    player.x + player.w > tile.x &&
-    player.y < tile.y + tile.h &&
-    player.y + player.h > tile.y
+const isColliding = (p: Player, t: Tile): boolean => {
+  return p.x < t.x + t.w && p.x + p.w > t.x && p.y < t.y + t.h && p.y + p.h > t.y
 }
 
 const isCollidingWithMap = (player: Player): boolean => {
   for (const tile of MAP.t.filter(tile => tile.t === 1)) {
     if (isColliding(player, tile)) {
+      return true
+    }
+  }
+  return false
+}
+
+const isWalkingOn = (p: Player, t: Tile): boolean => {
+  // +1 checks 1 row of pixels below player
+  return p.x < t.x + t.w && p.x + p.w > t.x && p.y < t.y + t.h && p.y + p.h + 1 > t.y
+}
+
+const isWalkingOnMap = (player: Player): boolean => {
+  for (const tile of MAP.t.filter(tile => tile.t === 1)) {
+    if (isWalkingOn(player, tile)) {
       return true
     }
   }
@@ -136,6 +147,8 @@ const checkPlayerPosition = (delta: number) => {
     if (isCollidingWithMap(player)) {
       player.y -= player.vy
       player.vy = 0
+    }
+    if (isWalkingOnMap(player)) {
       player.canJump = true
     }
     if (player.y > NETHER && player.alive) {

@@ -24,3 +24,14 @@ export interface Direction {
   l: boolean // left
   r: boolean // right
 }
+
+export interface Boomerang {
+  id: string
+  player: string
+  w: number // width
+  h: number // height
+  x: number // x-coord
+  y: number // y-coord
+  vx: number // x velocity
+  vy: number // y velocity
+}
