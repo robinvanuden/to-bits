@@ -4,7 +4,7 @@ import express from "express"
 import {Server, Socket} from "socket.io"
 import {Player} from "./types/player"
 import {v4} from "uuid"
-import {MAP, NETHER} from "./controllerMap"
+import {MAP, VOID} from "./controllerMap"
 import {Tile} from "./types/map"
 import {createPlayer, respawnPlayer} from "./controllerPlayer"
 
@@ -156,8 +156,7 @@ const checkPlayerPosition = (delta: number) => {
     if (isWalkingOnMap(player)) {
       player.canJump = true
     }
-    if (player.y > NETHER && player.alive) {
-      console.log(NETHER)
+    if (player.y > VOID && player.alive) {
       killPlayer(player)
     }
   }

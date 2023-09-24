@@ -4,7 +4,7 @@ import {Player} from "./types/player"
 const TILE_PLAYER = 24
 const GRAVITY = 0.00982
 const SPEED_WALK = 5
-const SPEED_JUMP = 7.7
+const SPEED_JUMP = 7.5 // 7.7
 
 const NAMES = [
   "Alfa", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf",
@@ -47,6 +47,12 @@ export const respawnPlayer = (player: Player, spawn: Tile) => {
   player.alive = true
   player.x = spawn.x
   player.y = spawn.y
+  player.direction = {
+    u: false,
+    d: false,
+    l: false,
+    r: false
+  }
   return player
 }
 

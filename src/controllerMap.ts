@@ -16,22 +16,22 @@ const MAP_RAW = [
   [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
   [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
   [A, A, A, A, A, A, A, A, A, A, B, B, B, B, B, B, B, A, A, A, A, B, B, B, B, B, B, B, A, A, A],
-  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, B, B, B, B, B, A, A, A, A],
+  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
   [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
   [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
   [A, A, A, A, B, B, B, B, B, A, A, A, A, A, A, A, A, A, B, B, A, A, A, A, A, A, A, A, A, B, B],
-  [A, A, A, A, A, B, B, B, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
   [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
   [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
-  [A, A, A, A, A, A, A, A, B, B, B, A, A, A, A, A, A, A, A, A, B, B, A, A, A, A, A, A, A, A, A],
-  [A, A, A, A, A, A, A, A, A, B, A, A, A, A, A, A, A, A, A, A, B, A, A, A, A, A, A, A, A, A, A],
+  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
+  [A, A, A, A, A, A, A, A, B, B, B, A, A, A, A, A, A, A, A, B, B, B, A, A, A, A, A, A, A, A, A],
+  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
   [A, A, A, A, A, A, A, A, A, A, A, A, B, B, B, B, A, A, A, A, A, A, A, B, B, B, B, A, A, A, A],
   [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
   [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
+  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, B, B, A, A, A, A, A, A, A, A, A, A, A, A, A],
   [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
   [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
-  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
-  [A, A, A, A, B, B, A, A, A, B, B, A, A, A, A, A, B, B, A, A, B, B, A, A, A, A, A, B, B, A, A],
+  [A, A, A, A, B, B, A, A, A, B, B, A, A, A, A, A, A, A, A, A, B, B, A, A, A, A, A, B, B, A, A],
   [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
   [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
   [B, B, B, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
@@ -49,10 +49,9 @@ const toMap = () => {
     }
     bottom = y
   }
-  console.log(bottom)
   return map
 }
 
-export const NETHER = (() => (bottom * TILE) + 1000)()
-
 export const MAP = toMap()
+
+export const VOID = (() => (bottom * TILE) + 1000)()

@@ -10,6 +10,11 @@ const canvas = document.getElementById("playground")
 canvas.width = window.innerWidth
 canvas.height = window.innerHeight
 
+window.addEventListener("resize", () => {
+  canvas.width = window.innerWidth
+  canvas.height = window.innerHeight
+})
+
 const COLOR_TILES = "#606c79"
 const COLOR_TEXT = "#000"
 
@@ -23,7 +28,10 @@ socket.on("connect", () => {
   RUNNING = true
 })
 
-socket.on("disconnect", () => canvas.classList.add("loading"))
+socket.on("disconnect", () => {
+  RUNNING = false
+  canvas.classList.add("loading")
+})
 
 socket.on("map", map => {
   MAP = map
