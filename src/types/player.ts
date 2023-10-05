@@ -16,6 +16,7 @@ export interface Player {
   vy: number // y velocity
   canJump: boolean // can jump
   direction: Direction, // directions pressed
+  boomerangs: Boomerang[]
 }
 
 export interface Direction {
@@ -34,4 +35,5 @@ export interface Boomerang {
   y: number // y-coord
   vx: number // x velocity
   vy: number // y velocity
+  gravity: number
 }

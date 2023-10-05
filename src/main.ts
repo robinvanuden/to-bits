@@ -2,11 +2,12 @@ import {createServer} from "http"
 import type {Express} from "express"
 import express from "express"
 import {Server, Socket} from "socket.io"
-import {Player} from "./types/player"
+import {Boomerang, Player} from "./types/player"
 import {v4} from "uuid"
 import {MAP, VOID} from "./controllerMap"
 import {Tile} from "./types/map"
 import {createPlayer, respawnPlayer} from "./controllerPlayer"
+import {createBoomerang} from "./controllerBoomerang"
 
 const HOST: string = process.env.HOST ?? "0.0.0.0"
 const PORT: number = Number.parseInt(process.env.PORT ?? "3000")
@@ -74,6 +75,10 @@ io.on('connection', (socket) => {
     const player = players.find(p => p.id === id)
     if (player) player.direction.d = bool
   })
+  socket.on("boomerang", (degrees: number) => {
+    const player = players.find(p => p.id === id)
+    player.boomerangs.push(createBoomerang(player, degrees))
+  })
 
   socket.on("disconnect", () => {
     console.log('address user disconnected', id)
@@ -97,7 +102,6 @@ const randomSpawn = () => {
 const emitMap = (socket: Socket) => socket.emit("map", MAP)
 
 const emitPlayers = () => io.emit("players", players.filter(p => p.alive))
-
 const killPlayer = (player: Player) => {
   const SPAWN_TILE = randomSpawn()
   player.alive = false
@@ -118,6 +122,19 @@ const isCollidingWithMap = (player: Player): boolean => {
   return false
 }
 
+const isBroke = (b: Boomerang, t: Tile): boolean => {
+  return b.x < t.x + t.w && b.x + b.w > t.x && b.y < t.y + t.h && b.y + b.h > t.y
+}
+
+const isBrokeOnMap = (boomerang: Boomerang): boolean => {
+  for (const tile of MAP.filter(tile => tile.t === 1)) {
+    if (isBroke(boomerang, tile)) {
+      return true
+    }
+  }
+  return false
+}
+
 const isWalkingOn = (p: Player, t: Tile): boolean => {
   // +1 checks 1 row of pixels below player
   return p.x < t.x + t.w && p.x + p.w > t.x && p.y < t.y + t.h && p.y + p.h + 1 > t.y
@@ -130,6 +147,10 @@ const isWalkingOnMap = (player: Player): boolean => {
     }
   }
   return false
+}
+
+const isCaughtBoomerang = (p: Player, b: Boomerang): boolean => {
+  return p.x < b.x + b.w && p.x + p.w > b.x && p.y < b.y + b.h && p.y + p.h > b.y
 }
 
 const checkPlayerPosition = (delta: number) => {
@@ -159,12 +180,26 @@ const checkPlayerPosition = (delta: number) => {
     if (player.y > VOID && player.alive) {
       killPlayer(player)
     }
+    for (const boomerang of player.boomerangs) {
+      boomerang.vx += boomerang.x < player.x ? -1 : 1
+      boomerang.vy += boomerang.y < player.y ? -1 : 1
+      boomerang.x -= boomerang.vx
+      boomerang.y -= boomerang.vy
+
+      if (isCaughtBoomerang(player, boomerang)) {
+        player.boomerangs = player.boomerangs.filter(b => b.id !== boomerang.id)
+      }
+
+      if (isBrokeOnMap(boomerang)) {
+        player.boomerangs = player.boomerangs.filter(b => b.id !== boomerang.id)
+      }
+    }
   }
+  emitPlayers()
 }
 
 const tick = (delta: number) => {
   checkPlayerPosition(delta)
-  emitPlayers()
 }
 
 server.listen(PORT, HOST, () => {

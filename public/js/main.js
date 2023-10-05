@@ -25,7 +25,6 @@ let PLAYERS = []
 
 socket.on("connect", () => {
   canvas.classList.remove("loading")
-  RUNNING = true
 })
 
 socket.on("disconnect", () => {
@@ -73,35 +72,25 @@ const drawMap = () => {
     ctx.fillText(player.name, player.x - cx + player.w * .5, player.y - cy - 5)
     ctx.fillStyle = player.color;
     ctx.fillRect(player.x - cx, player.y - cy, player.w, player.h)
+
+    for (const boomerang of player.boomerangs) {
+      ctx.fillRect(boomerang.x - cx, boomerang.y - cy, boomerang.w, boomerang.h)
+    }
   }
 }
 
-const drawDebug = (delta) => {
+const drawMessage = () => {
   const you = PLAYERS.find(p => p.id === ID)
-
-  ctx.font = "10px Arial"
-  ctx.fillStyle = "black"
-  ctx.textAlign = "left"
-  let x = 2
-  let y = 10
-  ctx.fillText("delta: " + delta, x, y)
-  if (you == null || !you.alive) {
-    body.classList.add("dead")
+  if (!you) {
     return
   }
-  body.classList.remove("dead")
-  y += 10
-  ctx.fillText("name: " + you.name, x, y)
-  y += 10
-  ctx.fillText("x: " + you.x, x, y)
-  y += 10
-  ctx.fillText("y: " + you.y, x, y)
-  y += 10
-  ctx.fillText("vx: " + you.vx, x, y)
-  y += 10
-  ctx.fillText("vy: " + you.vy, x, y)
-  y += 10
-  ctx.fillText("canJump: " + you.canJump, x, y)
+  if (you.alive) {
+    body.classList.remove("dead")
+    return
+  }
+  body.classList.add("dead")
+  ctx.textAlign = "center"
+  ctx.fillText("You died", canvas.width / 2, canvas.height / 2)
 }
 
 const keyEvent = (ev, pressed) => {
@@ -128,26 +117,76 @@ const keyEvent = (ev, pressed) => {
   }
 }
 
-window.addEventListener("keydown", events => keyEvent(events, true))
-window.addEventListener("keyup", events => keyEvent(events, false))
-
 const onMouseClick = (ev) => {
   const you = PLAYERS.find(p => p.id === ID)
   if (!you) {
     return
   }
-  console.log(ev)
-  const angleDeg = Math.atan2(ev.clientY - canvas.height / 2, ev.clientX - canvas.width / 2) * 180 / Math.PI
-  console.log(angleDeg)
+  const w = window.innerWidth / 2
+  const h = window.innerHeight / 2
+  const x = ev.clientX
+  const y = ev.clientY
+  const deltaX = w - x;
+  const deltaY = h - y;
+  const radius = Math.atan2(deltaY, deltaX)
+  let degrees = Math.round(radius * (180 / Math.PI))
+  if (degrees < 0) degrees = (degrees + 360) % 360
+  socket.emit("boomerang", degrees)
 }
 
-canvas.addEventListener("mousedown", onMouseClick)
+
+const drawDebug = (delta) => {
+  const you = PLAYERS.find(p => p.id === ID)
+
+  ctx.font = "10px Arial"
+  ctx.fillStyle = "black"
+  ctx.textAlign = "left"
+  let x = 2
+  let y = 10
+  ctx.fillText("delta: " + delta, x, y)
+  if (you == null || !you.alive) {
+    return
+  }
+  y += 10
+  ctx.fillText("name: " + you.name, x, y)
+  y += 10
+  ctx.fillText("x: " + you.x, x, y)
+  y += 10
+  ctx.fillText("y: " + you.y, x, y)
+  y += 10
+  ctx.fillText("vx: " + you.vx, x, y)
+  y += 10
+  ctx.fillText("vy: " + you.vy, x, y)
+  y += 10
+  ctx.fillText("canJump: " + you.canJump, x, y)
+  y += 10
+  ctx.fillText("alive: " + you.alive, x, y)
+
+  const boomerang = you.boomerangs[0]
+  if (!boomerang) {
+    return;
+  }
+  y += 10
+  ctx.fillText("x: " + boomerang.x, x, y)
+  y += 10
+  ctx.fillText("y: " + boomerang.y, x, y)
+  y += 10
+  ctx.fillText("vx: " + boomerang.vx, x, y)
+  y += 10
+  ctx.fillText("vy: " + boomerang.vy, x, y)
+}
 
 let lastRender = Date.now()
 const tick = (timestamp) => {
   const delta = timestamp - lastRender
   drawMap()
   if (DEBUG) drawDebug(delta)
+  drawMessage()
   lastRender = timestamp
   if (RUNNING) window.requestAnimationFrame(tick)
 }
+
+
+window.addEventListener("keydown", events => keyEvent(events, true))
+window.addEventListener("keyup", events => keyEvent(events, false))
+canvas.addEventListener("mousedown", onMouseClick)

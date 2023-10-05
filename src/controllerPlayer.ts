@@ -1,8 +1,8 @@
 import {Tile} from "./types/map"
 import {Player} from "./types/player"
+import {GRAVITY} from "./constants"
 
 const TILE_PLAYER = 24
-const GRAVITY = 0.00982
 const SPEED_WALK = 5
 const SPEED_JUMP = 7.5 // 7.7
 
@@ -39,7 +39,8 @@ export const createPlayer = (spawn: Tile, id: string, address: string): Player =
       d: false,
       l: false,
       r: false
-    }
+    },
+    boomerangs: []
   }
 }
 
