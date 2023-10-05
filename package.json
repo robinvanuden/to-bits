@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "scripts": {
     "dev": "nodemon src/main.ts",
-    "serve": "ts-node src/main.ts"
+    "start": "ts-node src/main.ts"
   },
   "dependencies": {
     "express": "^4.18.2",
