@@ -228,8 +228,8 @@ const start = () => {
 }
 
 
-const HOST: string = process.env.HOST ?? "0.0.0.0"
-const PORT: number = Number.parseInt(process.env.PORT ?? "3000")
+const HOST: string = process.env.HOST ?? "localhost"
+const PORT: number = Number.parseInt(process.env.PORT ?? "80")
 
 server.listen(PORT, HOST, () => {
   console.log(`listening on http://${HOST}:${PORT}`)
