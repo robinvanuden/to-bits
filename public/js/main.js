@@ -1,11 +1,12 @@
-const socket = io();
+const socket = io({
+  "transports": ['websocket']
+});
 
 let VERSION = ""
 let ID = ""
 let DEBUG = false
 let RUNNING = false
 
-const body = document.querySelector("body")
 const canvas = document.getElementById("playground")
 canvas.width = window.innerWidth
 canvas.height = window.innerHeight
