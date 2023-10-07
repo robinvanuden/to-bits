@@ -1,7 +1,7 @@
 import {Tile} from "./types/map"
 import {Player} from "./types/player"
 import {GRAVITY} from "./constants"
-import {animals, colors, uniqueNamesGenerator} from 'unique-names-generator'
+import {colors, names, uniqueNamesGenerator} from 'unique-names-generator'
 
 
 const TILE_PLAYER = 24
@@ -10,7 +10,7 @@ const SPEED_JUMP = 7.5 // 7.7
 
 const randomName = (): string => uniqueNamesGenerator({
   length: 1,
-  dictionaries: [animals]
+  dictionaries: [names]
 })
 
 const randomColor = () => uniqueNamesGenerator({
@@ -22,6 +22,7 @@ export const createPlayer = (spawn: Tile, id: string, address: string): Player =
   id: id,
   address: address,
   connected: true,
+  disconnected: undefined,
   alive: true,
   color: randomColor(),
   name: randomName(),

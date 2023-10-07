@@ -48,49 +48,6 @@ socket.on("version", version => {
   }
 })
 
-const drawMap = () => {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  let cx = 0;
-  let cy = 0;
-
-  const playerToFocus = PLAYERS.find(player => player.id === ID)
-  if (playerToFocus) {
-    cx = playerToFocus.x - canvas.width / 2
-    cy = playerToFocus.y - canvas.height / 2
-  }
-  for (const tile of MAP.filter(tile => tile.t === 1)) {
-    ctx.fillStyle = tile.c;
-    ctx.fillRect(tile.x - cx, tile.y - cy, tile.w, tile.h)
-  }
-  for (const player of PLAYERS) {
-    ctx.textAlign = "center"
-    ctx.fillStyle = player.color
-    ctx.font = "12px DotGothic16"
-    ctx.fillText(player.name, player.x - cx + player.w * .5, player.y - cy - 5)
-    ctx.fillRect(player.x - cx, player.y - cy, player.w, player.h)
-
-    for (const boomerang of player.boomerangs) {
-      ctx.fillRect(boomerang.x - cx, boomerang.y - cy, boomerang.w, boomerang.h)
-    }
-  }
-}
-
-const drawMessage = () => {
-  const you = PLAYERS.find(p => p.id === ID)
-  if (!you) {
-    return
-  }
-  if (you.alive) {
-    body.classList.remove("dead")
-    return
-  }
-  console.log("dead")
-  body.classList.add("dead")
-  ctx.textAlign = "center"
-  ctx.font = "80px DotGothic16"
-  ctx.fillText("You died", canvas.width / 2, canvas.height / 2)
-}
-
 const keyEvent = (ev, pressed) => {
   const you = PLAYERS.find(p => p.id === ID)
   if (!you) {
@@ -129,6 +86,64 @@ const onMouseClick = (ev) => {
   let degrees = Math.round(radius * (180 / Math.PI))
   if (degrees < 0) degrees = (degrees + 360) % 360
   socket.emit("boomerang", degrees)
+}
+
+const drawMap = () => {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  let cx = 0;
+  let cy = 0;
+
+  const playerToFocus = PLAYERS.find(player => player.id === ID)
+  if (playerToFocus) {
+    cx = playerToFocus.x - canvas.width / 2
+    cy = playerToFocus.y - canvas.height / 2
+  }
+  for (const tile of MAP.filter(tile => tile.t === 1)) {
+    ctx.fillStyle = tile.c;
+    ctx.fillRect(tile.x - cx, tile.y - cy, tile.w, tile.h)
+  }
+  for (const player of PLAYERS) {
+    ctx.textAlign = "center"
+    ctx.fillStyle = "#000"
+    ctx.font = "12px Arial"
+    ctx.fillText(player.name, player.x - cx + player.w * .5, player.y - cy - 5)
+    ctx.fillRect(player.x - cx, player.y - cy, player.w, player.h)
+
+    for (const boomerang of player.boomerangs) {
+      ctx.fillRect(boomerang.x - cx, boomerang.y - cy, boomerang.w, boomerang.h)
+    }
+  }
+}
+
+const drawMessage = () => {
+  const you = PLAYERS.find(p => p.id === ID)
+  if (!you) {
+    return
+  }
+  if (you.alive) {
+    return
+  }
+  ctx.fillStyle = "rgba(0,0,0,0.8)"
+  ctx.fillRect(0, 0, canvas.width, canvas.height)
+  console.log("dead")
+  ctx.textAlign = "center"
+  ctx.fillStyle = "#FFF"
+  ctx.font = "100px Arial"
+  ctx.fillText("You died", canvas.width / 2, canvas.height / 2)
+
+  ctx.font = "30px Arial"
+  ctx.fillText("Respawn in: " + 5, canvas.width / 2, (canvas.height / 2) + 50)
+}
+
+const drawPlayerList = () => {
+  let y = 20
+  for (const player of PLAYERS) {
+    ctx.font = "10px Arial"
+    ctx.textAlign = "right"
+    ctx.fillStyle = player.color
+    ctx.fillText(player.name, canvas.width - 5, y)
+    y += 20
+  }
 }
 
 
@@ -177,8 +192,9 @@ let lastRender = Date.now()
 const tick = (timestamp) => {
   const delta = timestamp - lastRender
   drawMap()
-  if (DEBUG) drawDebug(delta)
+  drawPlayerList()
   drawMessage()
+  if (DEBUG) drawDebug(delta)
   lastRender = timestamp
   if (RUNNING) window.requestAnimationFrame(tick)
 }

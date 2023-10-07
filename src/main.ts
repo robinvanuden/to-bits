@@ -39,13 +39,16 @@ io.on('connection', (socket) => {
   let id: string = ""
   let continue_player = players.find(p => !p.connected && p.address === address)
   if (continue_player == null) {
+    // New player
     const SPAWN_TILE = randomSpawn()
     id = v4()
     console.log('address user connected', id)
     players.push(createPlayer(SPAWN_TILE, id, address))
   } else {
+    // Reconnect
     id = continue_player.id
     continue_player.connected = true
+    continue_player.disconnected = undefined
     continue_player.direction = {
       u: false,
       d: false,
@@ -85,9 +88,7 @@ io.on('connection', (socket) => {
       return
     }
     player.connected = false
-    setTimeout(() => {
-      if (players.find(p => p.id === id && !p.connected) != null) players = players.filter(p => p.id !== id)
-    }, 5000)
+    player.disconnected = Date.now()
   })
 })
 
@@ -196,8 +197,17 @@ const checkPlayerPosition = (delta: number) => {
   emitPlayers()
 }
 
+const checkDisconnectedPlayers = () => {
+  let now = Date.now()
+  for (const player of players.filter(p => p.disconnected != undefined && (p.disconnected + 10_000) < now)) {
+    console.log("Remove player: " + player.id)
+    players = players.filter(p => p.id !== player.id)
+  }
+}
+
 const tick = (delta: number) => {
   checkPlayerPosition(delta)
+  checkDisconnectedPlayers()
 }
 
 const start = () => {

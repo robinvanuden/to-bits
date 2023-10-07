@@ -2,6 +2,7 @@ export interface Player {
   id: string // ID
   address: string // address
   connected: boolean // is connected
+  disconnected: number | undefined
   alive: boolean // is alive
   color: string // color
   name: string // name
