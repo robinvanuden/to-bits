@@ -15,9 +15,6 @@ window.addEventListener("resize", () => {
   canvas.height = window.innerHeight
 })
 
-const COLOR_TILES = "#606c79"
-const COLOR_TEXT = "#000"
-
 const ctx = canvas.getContext("2d")
 
 let MAP = []
@@ -67,10 +64,9 @@ const drawMap = () => {
   }
   for (const player of PLAYERS) {
     ctx.textAlign = "center"
-    ctx.fillStyle = COLOR_TEXT
+    ctx.fillStyle = player.color
     ctx.font = "12px DotGothic16"
     ctx.fillText(player.name, player.x - cx + player.w * .5, player.y - cy - 5)
-    ctx.fillStyle = player.color;
     ctx.fillRect(player.x - cx, player.y - cy, player.w, player.h)
 
     for (const boomerang of player.boomerangs) {
@@ -88,8 +84,10 @@ const drawMessage = () => {
     body.classList.remove("dead")
     return
   }
+  console.log("dead")
   body.classList.add("dead")
   ctx.textAlign = "center"
+  ctx.font = "80px DotGothic16"
   ctx.fillText("You died", canvas.width / 2, canvas.height / 2)
 }
 
@@ -98,7 +96,6 @@ const keyEvent = (ev, pressed) => {
   if (!you) {
     return
   }
-  console.log(ev)
   const key = ev.key.toLowerCase()
   if (key === "d") {
     socket.emit("move.right", pressed)

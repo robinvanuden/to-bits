@@ -6,11 +6,8 @@ import {Boomerang, Player} from "./types/player"
 import {v4} from "uuid"
 import {MAP, VOID} from "./controllerMap"
 import {Tile} from "./types/map"
-import {createPlayer, respawnPlayer} from "./controllerPlayer"
+import {createPlayer, killPlayer} from "./controllerPlayer"
 import {createBoomerang} from "./controllerBoomerang"
-
-const HOST: string = process.env.HOST ?? "0.0.0.0"
-const PORT: number = Number.parseInt(process.env.PORT ?? "3000")
 
 const app: Express = express()
 const server = createServer(app)
@@ -37,6 +34,7 @@ io.on('connection', (socket) => {
     socket.disconnect(true)
     return
   }
+  start()
   socket.emit("version", VERSION)
   let id: string = ""
   let continue_player = players.find(p => !p.connected && p.address === address)
@@ -101,13 +99,7 @@ const randomSpawn = () => {
 
 const emitMap = (socket: Socket) => socket.emit("map", MAP)
 
-const emitPlayers = () => io.emit("players", players.filter(p => p.alive))
-const killPlayer = (player: Player) => {
-  const SPAWN_TILE = randomSpawn()
-  player.alive = false
-  player.y = 0
-  setTimeout(() => respawnPlayer(player, SPAWN_TILE), 3000)
-}
+const emitPlayers = () => io.emit("players", players)
 
 const isColliding = (p: Player, t: Tile): boolean => {
   return p.x < t.x + t.w && p.x + p.w > t.x && p.y < t.y + t.h && p.y + p.h > t.y
@@ -153,8 +145,15 @@ const isCaughtBoomerang = (p: Player, b: Boomerang): boolean => {
   return p.x < b.x + b.w && p.x + p.w > b.x && p.y < b.y + b.h && p.y + p.h > b.y
 }
 
+const isKilled = (p: Player): boolean => {
+  return p.alive && hasDiedConditions(p)
+}
+const hasDiedConditions = (p: Player): boolean => {
+  return p.y > VOID
+}
+
 const checkPlayerPosition = (delta: number) => {
-  for (const player of players) {
+  for (const player of players.filter(p => p.alive)) {
     player.vy += player.gravity * delta
     if (player.direction.l) {
       player.x -= player.speed_walk
@@ -177,8 +176,8 @@ const checkPlayerPosition = (delta: number) => {
     if (isWalkingOnMap(player)) {
       player.canJump = true
     }
-    if (player.y > VOID && player.alive) {
-      killPlayer(player)
+    if (isKilled(player)) {
+      killPlayer(player, randomSpawn())
     }
     for (const boomerang of player.boomerangs) {
       boomerang.vx += boomerang.x < player.x ? -1 : 1
@@ -189,7 +188,6 @@ const checkPlayerPosition = (delta: number) => {
       if (isCaughtBoomerang(player, boomerang)) {
         player.boomerangs = player.boomerangs.filter(b => b.id !== boomerang.id)
       }
-
       if (isBrokeOnMap(boomerang)) {
         player.boomerangs = player.boomerangs.filter(b => b.id !== boomerang.id)
       }
@@ -202,14 +200,27 @@ const tick = (delta: number) => {
   checkPlayerPosition(delta)
 }
 
-server.listen(PORT, HOST, () => {
-  console.log(`listening on http://localhost:${PORT}`)
-  console.log(`listening on http://${HOST}:${PORT}`)
-
+const start = () => {
+  if (players.length > 0) {
+    return
+  }
+  console.log("Started game loop")
   let updated = Date.now()
-  setInterval(() => {
+  const interval = setInterval(() => {
     let now = Date.now()
     tick(now - updated)
     updated = now
+    if (players.length <= 0) {
+      console.log("Stopped game loop")
+      clearInterval(interval)
+    }
   }, 1000 / TICKS)
+}
+
+
+const HOST: string = process.env.HOST ?? "0.0.0.0"
+const PORT: number = Number.parseInt(process.env.PORT ?? "3000")
+
+server.listen(PORT, HOST, () => {
+  console.log(`listening on http://${HOST}:${PORT}`)
 })

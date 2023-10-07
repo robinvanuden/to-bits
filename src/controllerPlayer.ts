@@ -44,10 +44,19 @@ export const createPlayer = (spawn: Tile, id: string, address: string): Player =
   }
 }
 
+export const killPlayer = (player: Player, spawn: Tile) => {
+  player.alive = false
+  player.vy = 0
+  player.gravity = 0
+  player.boomerangs = []
+  setTimeout(() => respawnPlayer(player, spawn), 3000)
+}
+
 export const respawnPlayer = (player: Player, spawn: Tile) => {
   player.alive = true
   player.x = spawn.x
   player.y = spawn.y
+  player.gravity = GRAVITY
   player.direction = {
     u: false,
     d: false,
