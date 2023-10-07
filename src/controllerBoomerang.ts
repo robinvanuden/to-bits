@@ -6,22 +6,22 @@ const BOOMERANG_SIZE = 10
 const BOOMERANG_THROW = 12
 
 export const createBoomerang = (player: Player, degrees: number): Boomerang => {
-  let vx = BOOMERANG_THROW // Math.cos(degrees) * BOOMERANG_THROW
-  let vy = BOOMERANG_THROW // Math.sin(degrees) * BOOMERANG_THROW
+  let vx = 0 // BOOMERANG_THROW // Math.cos(degrees) * BOOMERANG_THROW
+  let vy = 0 // BOOMERANG_THROW // Math.sin(degrees) * BOOMERANG_THROW
 
-  // if (degrees < 90) {
-  //   vx -= 10
-  //   vy -= 10
-  // } else if (degrees < 180) {
-  //   vx += 10
-  //   vy -= 10
-  // } else if (degrees < 270) {
-  //   vx += 10
-  //   vy += 10
-  // } else {
-  //   vx -= 10
-  //   vy += 10
-  // }
+  if (degrees < 90) {
+    vx -= BOOMERANG_THROW
+    vy -= BOOMERANG_THROW
+  } else if (degrees < 180) {
+    vx += BOOMERANG_THROW
+    vy -= BOOMERANG_THROW
+  } else if (degrees < 270) {
+    vx += BOOMERANG_THROW
+    vy += BOOMERANG_THROW
+  } else {
+    vx -= BOOMERANG_THROW
+    vy += BOOMERANG_THROW
+  }
   console.log("vx", vx, "vy", vy, "degrees", degrees)
 
   return {
