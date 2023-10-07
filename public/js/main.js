@@ -2,7 +2,7 @@ const socket = io();
 
 let VERSION = ""
 let ID = ""
-let DEBUG = true
+let DEBUG = false
 let RUNNING = false
 
 const body = document.querySelector("body")
@@ -66,7 +66,7 @@ const keyEvent = (ev, pressed) => {
     socket.emit("move.down", pressed)
   }
 
-  if (pressed && key === "3") {
+  if (pressed && key === ";") {
     DEBUG = !DEBUG
   }
 }
@@ -125,7 +125,6 @@ const drawMessage = () => {
   }
   ctx.fillStyle = "rgba(0,0,0,0.8)"
   ctx.fillRect(0, 0, canvas.width, canvas.height)
-  console.log("dead")
   ctx.textAlign = "center"
   ctx.fillStyle = "#FFF"
   ctx.font = "100px Arial"
