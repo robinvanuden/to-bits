@@ -1,7 +1,7 @@
 import {Tile} from "./types/map"
 import {Player} from "./types/player"
 import {GRAVITY} from "./constants"
-import {colors, names, uniqueNamesGenerator} from 'unique-names-generator'
+import {names, uniqueNamesGenerator} from 'unique-names-generator'
 
 
 const TILE_PLAYER = 24
@@ -13,10 +13,7 @@ const randomName = (): string => uniqueNamesGenerator({
   dictionaries: [names]
 })
 
-const randomColor = () => uniqueNamesGenerator({
-  length: 1,
-  dictionaries: [colors]
-})
+const randomColor = () => `hsl(${360 * Math.random()}, 88%, 62%)`
 
 export const createPlayer = (spawn: Tile, id: string, address: string): Player => ({
   id: id,

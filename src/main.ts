@@ -181,8 +181,8 @@ const checkPlayerPosition = (delta: number) => {
       killPlayer(player, randomSpawn())
     }
     for (const boomerang of player.boomerangs) {
-      boomerang.vx += boomerang.x < player.x ? -1 : 1
-      boomerang.vy += boomerang.y < player.y ? -1 : 1
+      boomerang.vx += boomerang.x < (player.x + (player.w * .5)) ? -1 : 1
+      boomerang.vy += boomerang.y < (player.y + (player.h * .5)) ? -1 : 1
       boomerang.x -= boomerang.vx
       boomerang.y -= boomerang.vy
 
@@ -227,10 +227,8 @@ const start = () => {
   }, 1000 / TICKS)
 }
 
-
-const HOST: string = process.env.HOST ?? "localhost"
 const PORT: number = Number.parseInt(process.env.PORT ?? "80")
 
-server.listen(PORT, HOST, () => {
-  console.log(`listening on http://${HOST}:${PORT}`)
+server.listen(PORT, () => {
+  console.log(`listening on ${PORT}`)
 })

@@ -44,7 +44,7 @@ const toMap = () => {
     for (let x = 0; x < MAP_RAW[y].length; x++) {
       const type = MAP_RAW[y][x]
       map.push({
-        t: type, x: x * TILE, y: y * TILE, w: TILE, h: TILE, c: "#2d1e1a"
+        t: type, x: x * TILE, y: y * TILE, w: TILE, h: TILE, c: "#000000"
       })
     }
     bottom = y
