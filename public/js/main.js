@@ -123,6 +123,7 @@
     if (you.died === undefined) {
       return
     }
+    const now = Date.now()
     ctx.fillStyle = "rgba(0,0,0,0.8)"
     ctx.fillRect(0, 0, canvas.width, canvas.height)
     ctx.textAlign = "center"
@@ -131,7 +132,7 @@
     ctx.fillText("YOU DIED", canvas.width / 2, canvas.height / 2)
 
     ctx.font = "20px Arial"
-    ctx.fillText("Respawn in: " + 5, canvas.width / 2, (canvas.height / 2) + 30)
+    ctx.fillText("Respawn in: " + Math.round(((you.died + 5000) - now) / 1000), canvas.width / 2, (canvas.height / 2) + 30)
   }
   const drawLoading = () => {
     if (RUNNING) {

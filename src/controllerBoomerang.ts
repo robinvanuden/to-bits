@@ -1,7 +1,7 @@
 import {Boomerang, Player} from "./types/player"
 import {v4} from "uuid"
 
-const BOOMERANG_SIZE = 10
+const BOOMERANG_SIZE = 14
 const BOOMERANG_THROW = 12
 
 export const createBoomerang = (player: Player, degrees: number): Boomerang => {
