@@ -1,88 +1,91 @@
 import {createServer} from "http"
-import type {Express} from "express"
 import express from "express"
 import {Server, Socket} from "socket.io"
 import {Boomerang, Player} from "./types/player"
-import {v4} from "uuid"
+import {v4, v5} from "uuid"
 import {MAP, VOID} from "./controllerMap"
 import {Tile} from "./types/map"
-import {createPlayer, killPlayer} from "./controllerPlayer"
+import {createPlayer, killPlayer, respawnPlayer} from "./controllerPlayer"
 import {createBoomerang} from "./controllerBoomerang"
 
-const app: Express = express()
+const app = express()
 const server = createServer(app)
-
 const io = new Server(server)
 
 app.use("/", express.static("public"))
 
+const UUID = v4()
+
 const VERSION = process.env.npm_package_version
 console.log("ToBits: v" + VERSION)
 
-
 const TICKS = 50
+let DELTA = 0
 
 let players: Player[] = []
+
+app.get("/delta", (_, res) => res.json(DELTA))
 
 io.on('connection', (socket) => {
   const address = socket?.handshake?.address ?? ""
   if (address === "") {
     return
   }
-  if (players.find(p => p.disconnected == undefined && p.address === address) != null) {
+  const uuid = v5(address, UUID)
+  if (players.find(p => p.disconnected == undefined && p.id === uuid) != null) {
     // Disconnect double users
     socket.disconnect(true)
     return
   }
   start()
   socket.emit("version", VERSION)
-  let id: string = ""
-  let continue_player = players.find(p => p.disconnected != undefined && p.address === address)
+  let continue_player = players.find(p => p.disconnected != undefined && p.id === uuid)
   if (continue_player == null) {
     // New player
     const SPAWN_TILE = randomSpawn()
-    id = v4()
-    console.log('address user connected', id)
-    players.push(createPlayer(SPAWN_TILE, id, address))
+    console.log('address user connected', uuid)
+    players.push(createPlayer(SPAWN_TILE, uuid))
   } else {
     // Reconnect
-    id = continue_player.id
     continue_player.disconnected = undefined
-    continue_player.direction = {
+    continue_player.move = {
       u: false,
       d: false,
       l: false,
       r: false
     }
   }
-  socket.emit("me", id)
+  socket.emit("me", uuid)
   emitMap(socket)
   emitPlayers()
 
   socket.on("move.left", (bool: boolean) => {
-    const player = players.find(p => p.id === id)
-    if (player) player.direction.l = bool
+    const player = players.find(p => p.id === uuid)
+    if (player) player.move.l = bool
   })
   socket.on("move.right", (bool: boolean) => {
-    const player = players.find(p => p.id === id)
-    if (player) player.direction.r = bool
+    const player = players.find(p => p.id === uuid)
+    if (player) player.move.r = bool
   })
   socket.on("move.up", (bool: boolean) => {
-    const player = players.find(p => p.id === id)
-    if (player) player.direction.u = bool
+    const player = players.find(p => p.id === uuid)
+    if (player) player.move.u = bool
   })
   socket.on("move.down", (bool: boolean) => {
-    const player = players.find(p => p.id === id)
-    if (player) player.direction.d = bool
+    const player = players.find(p => p.id === uuid)
+    if (player) player.move.d = bool
   })
   socket.on("boomerang", (degrees: number) => {
-    const player = players.find(p => p.id === id)
+    const player = players.find(p => p.id === uuid)
+    if (!player || player.boomerangs.length > 0) {
+      return
+    }
     player.boomerangs.push(createBoomerang(player, degrees))
   })
 
   socket.on("disconnect", () => {
-    console.log('address user disconnected', id)
-    const player = players.find(p => p.id === id) ?? null
+    console.log('address user disconnected', uuid)
+    const player = players.find(p => p.id === uuid) ?? null
     if (!player) {
       return
     }
@@ -140,29 +143,48 @@ const isWalkingOnMap = (player: Player): boolean => {
   return false
 }
 
-const isCaughtBoomerang = (p: Player, b: Boomerang): boolean => {
-  return (b.thrown + 500) > Date.now() && p.x < b.x + b.w && p.x + p.w > b.x && p.y < b.y + b.h && p.y + p.h > b.y
+const isHitBoomerang = (p: Player, b: Boomerang): boolean => {
+  const b2: Boomerang | null = p.boomerangs[0] ?? null
+  if (b2 != null && b2.id === b.id) {
+    return false
+  }
+  return (b.thrown + 250) < Date.now() && p.x < b.x + b.w && p.x + p.w > b.x && p.y < b.y + b.h && p.y + p.h > b.y
+}
+
+const isCaughtBoomerang = (p: Player): boolean => {
+  const b: Boomerang | null = p.boomerangs[0] ?? null
+  if (b == null || b.thrown + 250 > Date.now()) {
+    return false
+  }
+  return p.x < b.x + b.w && p.x + p.w > b.x && p.y < b.y + b.h && p.y + p.h > b.y
 }
 
 const isKilled = (p: Player): boolean => {
-  return p.alive && hasDiedConditions(p)
+  return p.died === undefined && hasDiedConditions(p)
 }
 const hasDiedConditions = (p: Player): boolean => {
+  for (const player of players.filter(p => p.died === undefined)) {
+    for (const boomerang of player.boomerangs) {
+      if (isHitBoomerang(p, boomerang)) {
+        return true
+      }
+    }
+  }
   return p.y > VOID
 }
 
 const checkPlayerPosition = (delta: number) => {
-  for (const player of players.filter(p => p.alive)) {
+  for (const player of players.filter(p => p.died === undefined)) {
     player.vy += player.gravity * delta
-    if (player.direction.l) {
+    if (player.move.l) {
       player.x -= player.sw
       if (isCollidingWithMap(player)) player.x += player.sw
     }
-    if (player.direction.r) {
+    if (player.move.r) {
       player.x += player.sw
       if (isCollidingWithMap(player)) player.x -= player.sw
     }
-    if (player.direction.u && !player.arial) {
+    if (player.move.u && !player.arial) {
       player.vy -= player.sj
       player.arial = true
     }
@@ -177,8 +199,14 @@ const checkPlayerPosition = (delta: number) => {
       player.arial = false
     }
     if (isKilled(player)) {
-      killPlayer(player, randomSpawn())
+      killPlayer(player)
     }
+  }
+  emitPlayers()
+}
+
+const checkBoomerangPosition = () => {
+  for (const player of players.filter(p => p.died === undefined)) {
     for (const boomerang of player.boomerangs) {
       boomerang.vx += boomerang.x < (player.x + (player.w * .5)) ? boomerang.gravity : -boomerang.gravity
       boomerang.vy += boomerang.y < (player.y + (player.h * .5)) ? boomerang.gravity : -boomerang.gravity
@@ -186,7 +214,7 @@ const checkPlayerPosition = (delta: number) => {
       boomerang.x += boomerang.vx
       boomerang.y += boomerang.vy
 
-      if (isCaughtBoomerang(player, boomerang)) {
+      if (isCaughtBoomerang(player)) {
         player.boomerangs = player.boomerangs.filter(b => b.id !== boomerang.id)
       }
       if (isBrokeOnMap(boomerang)) {
@@ -194,8 +222,8 @@ const checkPlayerPosition = (delta: number) => {
       }
     }
   }
-  emitPlayers()
 }
+
 
 const checkDisconnectedPlayers = () => {
   let now = Date.now()
@@ -205,8 +233,20 @@ const checkDisconnectedPlayers = () => {
   }
 }
 
+
+const checkRespawnPlayers = () => {
+  let now = Date.now()
+  for (const player of players.filter(p => p.died != undefined && (p.died + 5000) < now)) {
+    console.log("Respawn player: " + player.id)
+    respawnPlayer(player, randomSpawn())
+  }
+}
+
 const tick = (delta: number) => {
+  DELTA = delta
   checkPlayerPosition(delta)
+  checkBoomerangPosition()
+  checkRespawnPlayers()
   checkDisconnectedPlayers()
 }
 

@@ -1,13 +1,12 @@
-export interface Player {
+export class Player {
   id: string // ID
-  address: string // address
   disconnected: number | undefined // is disconnected
-  alive: boolean // is alive
-  color: string // c
+  died: number | undefined
+  color: string // color
   name: string // name
   gravity: number // gravity
-  sw: number // sw
-  sj: number // sj
+  sw: number // speed walking
+  sj: number // speed jumping
   w: number // width
   h: number // height
   x: number // x-coord
@@ -15,7 +14,7 @@ export interface Player {
   vx: number // x velocity
   vy: number // y velocity
   arial: boolean
-  direction: Direction // directions pressed
+  move: Direction // directions pressed
   boomerangs: Boomerang[]
 }
 

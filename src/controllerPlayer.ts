@@ -13,11 +13,10 @@ const randomName = () => uniqueNamesGenerator({length: 1, dictionaries: [names]}
 
 const randomColor = () => `hsl(${360 * Math.random()}, 88%, 62%)`
 
-export const createPlayer = (spawn: Tile, id: string, address: string): Player => ({
+export const createPlayer = (spawn: Tile, id: string): Player => ({
   id: id,
-  address: address,
   disconnected: undefined,
-  alive: true,
+  died: undefined,
   color: randomColor(),
   name: randomName(),
   w: PLAYER_WIDTH,
@@ -30,7 +29,7 @@ export const createPlayer = (spawn: Tile, id: string, address: string): Player =
   sw: SPEED_WALK,
   sj: SPEED_JUMP,
   arial: false,
-  direction: {
+  move: {
     u: false,
     d: false,
     l: false,
@@ -39,21 +38,20 @@ export const createPlayer = (spawn: Tile, id: string, address: string): Player =
   boomerangs: []
 })
 
-export const killPlayer = (player: Player, spawn: Tile) => {
-  player.alive = false
+export const killPlayer = (player: Player) => {
+  player.died = Date.now()
   player.vx = 0
   player.vy = 0
   player.gravity = 0
   player.boomerangs = []
-  setTimeout(() => respawnPlayer(player, spawn), 3000)
 }
 
 export const respawnPlayer = (player: Player, spawn: Tile) => {
-  player.alive = true
+  player.died = undefined
   player.x = spawn.x
   player.y = spawn.y
   player.gravity = GRAVITY
-  player.direction = {
+  player.move = {
     u: false,
     d: false,
     l: false,

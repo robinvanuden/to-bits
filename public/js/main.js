@@ -86,13 +86,16 @@
 
   const drawMap = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    let cx = 0;
-    let cy = 0;
+    let cx;
+    let cy;
 
     const playerToFocus = PLAYERS.find(player => player.id === ID)
     if (playerToFocus) {
       cx = playerToFocus.x - canvas.width / 2
       cy = playerToFocus.y - canvas.height / 2
+    } else {
+      cx = canvas.width / 2
+      cy = canvas.height / 2
     }
     for (const tile of MAP.filter(tile => tile.t === 1)) {
       ctx.fillStyle = tile.c;
@@ -117,7 +120,7 @@
     if (!you) {
       return
     }
-    if (you.alive) {
+    if (you.died === undefined) {
       return
     }
     ctx.fillStyle = "rgba(0,0,0,0.8)"
@@ -163,7 +166,7 @@
     let x = 2
     let y = 10
     ctx.fillText("delta: " + delta, x, y)
-    if (you == null || !you.alive) {
+    if (you == null || you.died !== undefined) {
       return
     }
     y += 10
@@ -179,7 +182,7 @@
     y += 10
     ctx.fillText("arial: " + you.arial, x, y)
     y += 10
-    ctx.fillText("alive: " + you.alive, x, y)
+    ctx.fillText("alive: " + you.died !== undefined, x, y)
 
     const boomerang = you.boomerangs[0]
     if (!boomerang) {
