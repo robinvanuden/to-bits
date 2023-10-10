@@ -101,7 +101,7 @@
       ctx.fillStyle = tile.c;
       ctx.fillRect(tile.x - cx, tile.y - cy, tile.w, tile.h)
     }
-    for (const player of PLAYERS) {
+    for (const player of PLAYERS.filter(p => p.died === undefined)) {
       ctx.textAlign = "center"
       ctx.fillStyle = "#000"
       ctx.font = "12px Arial"

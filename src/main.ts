@@ -145,10 +145,10 @@ const isWalkingOnMap = (player: Player): boolean => {
 
 const isHitBoomerang = (p: Player, b: Boomerang): boolean => {
   const b2: Boomerang | null = p.boomerangs[0] ?? null
-  if (b2 != null && b2.id === b.id) {
+  if (b2 && b2.id === b.id) {
     return false
   }
-  return (b.thrown + 250) < Date.now() && p.x < b.x + b.w && p.x + p.w > b.x && p.y < b.y + b.h && p.y + p.h > b.y
+  return p.x < b.x + b.w && p.x + p.w > b.x && p.y < b.y + b.h && p.y + p.h > b.y
 }
 
 const isCaughtBoomerang = (p: Player): boolean => {
