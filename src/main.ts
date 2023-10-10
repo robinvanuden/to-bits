@@ -29,7 +29,7 @@ io.on('connection', (socket) => {
   if (address === "") {
     return
   }
-  if (players.find(p => p.connected && p.address === address) != null) {
+  if (players.find(p => p.disconnected == undefined && p.address === address) != null) {
     // Disconnect double users
     socket.disconnect(true)
     return
@@ -37,7 +37,7 @@ io.on('connection', (socket) => {
   start()
   socket.emit("version", VERSION)
   let id: string = ""
-  let continue_player = players.find(p => !p.connected && p.address === address)
+  let continue_player = players.find(p => p.disconnected != undefined && p.address === address)
   if (continue_player == null) {
     // New player
     const SPAWN_TILE = randomSpawn()
@@ -47,7 +47,6 @@ io.on('connection', (socket) => {
   } else {
     // Reconnect
     id = continue_player.id
-    continue_player.connected = true
     continue_player.disconnected = undefined
     continue_player.direction = {
       u: false,
@@ -87,7 +86,6 @@ io.on('connection', (socket) => {
     if (!player) {
       return
     }
-    player.connected = false
     player.disconnected = Date.now()
   })
 })
@@ -143,7 +141,7 @@ const isWalkingOnMap = (player: Player): boolean => {
 }
 
 const isCaughtBoomerang = (p: Player, b: Boomerang): boolean => {
-  return p.x < b.x + b.w && p.x + p.w > b.x && p.y < b.y + b.h && p.y + p.h > b.y
+  return (b.thrown + 500) > Date.now() && p.x < b.x + b.w && p.x + p.w > b.x && p.y < b.y + b.h && p.y + p.h > b.y
 }
 
 const isKilled = (p: Player): boolean => {
@@ -157,17 +155,18 @@ const checkPlayerPosition = (delta: number) => {
   for (const player of players.filter(p => p.alive)) {
     player.vy += player.gravity * delta
     if (player.direction.l) {
-      player.x -= player.speed_walk
-      if (isCollidingWithMap(player)) player.x += player.speed_walk
+      player.x -= player.sw
+      if (isCollidingWithMap(player)) player.x += player.sw
     }
     if (player.direction.r) {
-      player.x += player.speed_walk
-      if (isCollidingWithMap(player)) player.x -= player.speed_walk
+      player.x += player.sw
+      if (isCollidingWithMap(player)) player.x -= player.sw
     }
-    if (player.direction.u && player.canJump) {
-      player.vy -= player.speed_jump
-      player.canJump = false
+    if (player.direction.u && !player.arial) {
+      player.vy -= player.sj
+      player.arial = true
     }
+    player.x += player.vx
     player.y += player.vy
 
     if (isCollidingWithMap(player)) {
@@ -175,16 +174,17 @@ const checkPlayerPosition = (delta: number) => {
       player.vy = 0
     }
     if (isWalkingOnMap(player)) {
-      player.canJump = true
+      player.arial = false
     }
     if (isKilled(player)) {
       killPlayer(player, randomSpawn())
     }
     for (const boomerang of player.boomerangs) {
-      boomerang.vx += boomerang.x < (player.x + (player.w * .5)) ? -1 : 1
-      boomerang.vy += boomerang.y < (player.y + (player.h * .5)) ? -1 : 1
-      boomerang.x -= boomerang.vx
-      boomerang.y -= boomerang.vy
+      boomerang.vx += boomerang.x < (player.x + (player.w * .5)) ? boomerang.gravity : -boomerang.gravity
+      boomerang.vy += boomerang.y < (player.y + (player.h * .5)) ? boomerang.gravity : -boomerang.gravity
+
+      boomerang.x += boomerang.vx
+      boomerang.y += boomerang.vy
 
       if (isCaughtBoomerang(player, boomerang)) {
         player.boomerangs = player.boomerangs.filter(b => b.id !== boomerang.id)

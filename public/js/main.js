@@ -77,16 +77,11 @@
     if (!you) {
       return
     }
-    const w = window.innerWidth / 2
-    const h = window.innerHeight / 2
-    const x = ev.clientX
-    const y = ev.clientY
-    const deltaX = w - x;
-    const deltaY = h - y;
-    const radius = Math.atan2(deltaY, deltaX)
-    let degrees = Math.round(radius * (180 / Math.PI))
-    if (degrees < 0) degrees = (degrees + 360) % 360
-    socket.emit("boomerang", degrees)
+    const radius = Math.atan2(
+      ev.clientY * (window.innerHeight / 2),
+      ev.clientX * (window.innerWidth / 2)
+    )
+    socket.emit("boomerang", radius * Math.PI + 90)
   }
 
   const drawMap = () => {
@@ -182,7 +177,7 @@
     y += 10
     ctx.fillText("vy: " + you.vy, x, y)
     y += 10
-    ctx.fillText("canJump: " + you.canJump, x, y)
+    ctx.fillText("arial: " + you.arial, x, y)
     y += 10
     ctx.fillText("alive: " + you.alive, x, y)
 
