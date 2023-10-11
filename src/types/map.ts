@@ -3,6 +3,7 @@ export interface MetaTile {
   w: number // width
   h: number // height
   c: string // color
+  i: string | undefined
   s: boolean // spawn
   d: number // damage
 }
@@ -16,6 +17,7 @@ export const metaToTile = (meta: MetaTile, x: number, y: number): Tile => ({
   t: meta.t,
   w: meta.w,
   h: meta.h,
+  i: meta.i,
   c: meta.c,
   d: meta.d,
   s: meta.s,

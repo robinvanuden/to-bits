@@ -1,12 +1,12 @@
 import {createServer} from "http"
 import express from "express"
-import {Server, Socket} from "socket.io"
+import {Server} from "socket.io"
 import {Boomerang, Player} from "./types/player"
 import {v4, v5} from "uuid"
-import {MAP, VOID} from "./controllerMap"
+import {MAP, VOID} from "./controller/controllerMap"
 import {Tile} from "./types/map"
-import {createPlayer, killPlayer, respawnPlayer} from "./controllerPlayer"
-import {createBoomerang} from "./controllerBoomerang"
+import {createPlayer, killPlayer, respawnPlayer} from "./controller/controllerPlayer"
+import {createBoomerang} from "./controller/controllerBoomerang"
 
 const app = express()
 const server = createServer(app)
@@ -56,7 +56,7 @@ io.on('connection', (socket) => {
     }
   }
   socket.emit("me", uuid)
-  emitMap(socket)
+  socket.emit("map", MAP)
   emitPlayers()
 
   socket.on("move.left", (bool: boolean) => {
@@ -98,8 +98,6 @@ const randomSpawn = () => {
   const index = Math.round((spawns.length - 1) * Math.random())
   return spawns[index]
 }
-
-const emitMap = (socket: Socket) => socket.emit("map", MAP)
 
 const emitPlayers = () => io.emit("players", players)
 

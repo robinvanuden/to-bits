@@ -3,6 +3,8 @@
     "transports": ['websocket']
   });
 
+  let BLOCKS = {}
+
   let VERSION = ""
   let ID = ""
   let DEBUG = false
@@ -18,6 +20,7 @@
   })
 
   const ctx = canvas.getContext("2d")
+  ctx.imageSmoothingEnabled = false
 
   let MAP = []
   let PLAYERS = []
@@ -77,10 +80,10 @@
     const deltaY = y2 - y1;
     const radians = Math.atan2(deltaY, deltaX);
     const degrees = (radians * 180) / Math.PI;
-    return Math.round((degrees + 360) % 360);
+    return (degrees + 360) % 360;
   };
 
-  const onMouseClick = (ev) => {
+  const onMouseRelease = (ev) => {
     const you = PLAYERS.find(p => p.id === ID)
     if (!you) {
       return
@@ -88,8 +91,21 @@
     socket.emit("boomerang", getRotationDegrees(window.innerWidth / 2, window.innerHeight / 2, ev.clientX, ev.clientY))
   }
 
+  const loadAsset = (name) => {
+    if (BLOCKS.hasOwnProperty(name)) {
+      return BLOCKS[name]
+    }
+    switch (name) {
+      case "grass":
+        const image = new Image()
+        image.style.imageRendering = "pixelated"
+        image.src = "/img/grass.png"
+        BLOCKS[name] = image
+        return image;
+    }
+  }
+
   const drawMap = () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
     let cx;
     let cy;
 
@@ -103,7 +119,11 @@
     }
     for (const tile of MAP.filter(tile => tile.t === 1)) {
       ctx.fillStyle = tile.c;
-      ctx.fillRect(tile.x - cx, tile.y - cy, tile.w, tile.h)
+      if (tile.i !== undefined) {
+        ctx.drawImage(loadAsset(tile.i), tile.x - cx, tile.y - cy, tile.w, tile.h)
+      } else {
+        ctx.fillRect(tile.x - cx, tile.y - cy, tile.w, tile.h)
+      }
     }
     for (const player of PLAYERS.filter(p => p.died === undefined)) {
       ctx.textAlign = "center"
@@ -206,6 +226,7 @@
   let lastRender = Date.now()
   const tick = (timestamp) => {
     const delta = timestamp - lastRender
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawMap()
     drawPlayerList()
     drawMessage()
@@ -214,8 +235,8 @@
     lastRender = timestamp
     if (RUNNING) window.requestAnimationFrame(tick)
   }
-
+  document.addEventListener('contextmenu', e => e.preventDefault());
   window.addEventListener("keydown", events => keyEvent(events, true))
   window.addEventListener("keyup", events => keyEvent(events, false))
-  canvas.addEventListener("mousedown", onMouseClick)
+  canvas.addEventListener("mouseup", onMouseRelease)
 })()

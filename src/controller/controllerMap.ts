@@ -1,12 +1,15 @@
-import {MetaTile, metaToTile, Tile} from "./types/map"
+import {MetaTile, metaToTile, Tile} from "../types/map"
 
-const TILE = 32
+const GRASS = 'grass'
+
+const TILE = 64
 const A: MetaTile = {
   w: TILE,
   h: TILE,
   s: false,
   d: 0,
   c: "#000",
+  i: undefined,
   t: 0
 } // 0: Air
 const B: MetaTile = {
@@ -15,6 +18,7 @@ const B: MetaTile = {
   s: false,
   d: 0,
   c: "#000",
+  i: GRASS,
   t: 1
 } // 1: Ground
 const S: MetaTile = {
@@ -23,6 +27,7 @@ const S: MetaTile = {
   s: false,
   d: 0,
   c: "#000",
+  i: undefined,
   t: 9
 } // 9: Spawn
 

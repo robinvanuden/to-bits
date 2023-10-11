@@ -1,13 +1,13 @@
-import {Tile} from "./types/map"
-import {Player} from "./types/player"
-import {GRAVITY} from "./constants"
+import {Tile} from "../types/map"
+import {Player} from "../types/player"
+import {GRAVITY} from "../constants"
 import {names, uniqueNamesGenerator} from 'unique-names-generator'
 
 
-const PLAYER_WIDTH = 24
-const PLAYER_HEIGHT = 24
+const PLAYER_WIDTH = 48
+const PLAYER_HEIGHT = 64
 const SPEED_WALK = 5
-const SPEED_JUMP = 7.5 // 7.7
+const SPEED_JUMP = 10.4 // 7.5 // 7.7
 
 const randomName = () => uniqueNamesGenerator({length: 1, dictionaries: [names]})
 
