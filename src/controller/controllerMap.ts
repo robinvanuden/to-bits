@@ -1,80 +1,58 @@
-import {MetaTile, metaToTile, Tile} from "../types/map"
+import {MetaTile, metaToTile, Tile} from "../types/tile"
+import {TILE} from "./tiles"
+import {Player} from "../types/player"
+import {Boomerang} from "../types/boomerang"
 
-const GRASS = 'grass'
+export default class GameMap {
 
-const TILE = 64
-const A: MetaTile = {
-  w: TILE,
-  h: TILE,
-  s: false,
-  d: 0,
-  c: "#000",
-  i: undefined,
-  t: 0
-} // 0: Air
-const B: MetaTile = {
-  w: TILE,
-  h: TILE,
-  s: false,
-  d: 0,
-  c: "#000",
-  i: GRASS,
-  t: 1
-} // 1: Ground
-const S: MetaTile = {
-  w: TILE,
-  h: TILE,
-  s: false,
-  d: 0,
-  c: "#000",
-  i: undefined,
-  t: 9
-} // 9: Spawn
+  map: Tile[] = []
+  bottom: number = 0
 
-let bottom = 0
-
-const MAP_RAW = [
-  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
-  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
-  [A, A, S, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, S, A, A, A],
-  [A, B, B, B, B, B, A, A, A, A, A, A, B, B, B, B, B, B, A, A, A, A, A, A, B, B, B, B, B, A],
-  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
-  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
-  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
-  [A, A, A, A, A, A, A, A, A, B, B, B, A, A, A, A, A, A, A, A, B, B, B, B, B, B, B, A, A, A],
-  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
-  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
-  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
-  [A, A, A, A, B, B, B, B, A, A, A, A, A, A, A, A, A, B, B, A, A, A, A, A, A, A, A, A, B, B],
-  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
-  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
-  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
-  [A, A, A, A, A, A, A, A, B, B, A, A, A, A, A, A, A, A, B, B, B, A, A, A, A, A, A, A, A, A],
-  [A, A, A, A, A, A, A, A, A, A, A, A, S, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
-  [A, A, A, A, A, A, A, A, A, A, A, B, B, B, B, A, A, A, A, A, A, A, B, B, B, B, A, A, A, A],
-  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
-  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
-  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, B, B, A, A, A, A, A, A, A, A, A, A, A, A, A],
-  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
-  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
-  [A, A, A, A, B, B, A, A, B, B, A, A, A, A, A, A, A, A, A, B, B, A, A, A, A, A, B, B, A, A],
-  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
-  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
-  [B, B, B, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
-  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
-]
-
-const toMap = () => {
-  const map: Tile[] = []
-  for (let y = 0; y < MAP_RAW.length; y++) {
-    for (let x = 0; x < MAP_RAW[y].length; x++) {
-      map.push(metaToTile(MAP_RAW[y][x], x, y))
+  constructor(tiles: MetaTile[][]) {
+    for (let y = 0; y < tiles.length; y++) {
+      for (let x = 0; x < tiles[y].length; x++) {
+        this.map.push(metaToTile(tiles[y][x], x, y))
+      }
+      this.bottom = y
     }
-    bottom = y
   }
-  return map
+
+  getMap = () => this.map
+
+  getVoid = (() => (this.bottom * TILE) + 1000)
+
+  getBlocks = () => this.map.filter(tile => tile.t === 1)
+
+
+  randomSpawn = () => {
+    const spawns = this.map.filter(t => t.t === 9)
+    const index = Math.round((spawns.length - 1) * Math.random())
+    return spawns[index]
+  }
+  isCollidingWithMap = (player: Player): boolean => {
+    for (const tile of this.getBlocks()) {
+      if (player.isColliding(tile)) {
+        return true
+      }
+    }
+    return false
+  }
+
+  isBrokeOnMap = (boomerang: Boomerang): boolean => {
+    for (const tile of this.getBlocks()) {
+      if (boomerang.isBroke(tile)) {
+        return true
+      }
+    }
+    return false
+  }
+
+  isWalkingOnMap = (player: Player): boolean => {
+    for (const tile of this.getBlocks()) {
+      if (player.isWalkingOn(tile)) {
+        return true
+      }
+    }
+    return false
+  }
 }
-
-export const MAP = toMap()
-
-export const VOID = (() => (bottom * TILE) + 1000)()

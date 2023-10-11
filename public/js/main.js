@@ -1,6 +1,8 @@
 (() => {
   const socket = io({
-    "transports": ['websocket']
+    "transports": ['websocket'],
+    upgrade: true,
+    ackTimeout: 2000
   });
 
   let BLOCKS = {}
