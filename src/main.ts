@@ -117,6 +117,9 @@ const isCollidingWithMap = (player: Player): boolean => {
 }
 
 const isBroke = (b: Boomerang, t: Tile): boolean => {
+  if (b.thrown + 2000 < Date.now()) {
+    return true
+  }
   return b.x < t.x + t.w && b.x + b.w > t.x && b.y < t.y + t.h && b.y + b.h > t.y
 }
 
@@ -208,9 +211,6 @@ const checkPlayerPosition = (delta: number) => {
 const checkBoomerangPosition = () => {
   for (const player of players.filter(p => p.died === undefined)) {
     for (const boomerang of player.boomerangs) {
-      boomerang.vx += boomerang.x < (player.x + (player.w * .5)) ? boomerang.gravity : -boomerang.gravity
-      boomerang.vy += boomerang.y < (player.y + (player.h * .5)) ? boomerang.gravity : -boomerang.gravity
-
       boomerang.x += boomerang.vx
       boomerang.y += boomerang.vy
 

@@ -72,16 +72,20 @@
     }
   }
 
+  const getRotationDegrees = (x1, y1, x2, y2) => {
+    const deltaX = x2 - x1;
+    const deltaY = y2 - y1;
+    const radians = Math.atan2(deltaY, deltaX);
+    const degrees = (radians * 180) / Math.PI;
+    return Math.round((degrees + 360) % 360);
+  };
+
   const onMouseClick = (ev) => {
     const you = PLAYERS.find(p => p.id === ID)
     if (!you) {
       return
     }
-    const radius = Math.atan2(
-      ev.clientY * (window.innerHeight / 2),
-      ev.clientX * (window.innerWidth / 2)
-    )
-    socket.emit("boomerang", radius * Math.PI + 90)
+    socket.emit("boomerang", getRotationDegrees(window.innerWidth / 2, window.innerHeight / 2, ev.clientX, ev.clientY))
   }
 
   const drawMap = () => {
@@ -91,8 +95,8 @@
 
     const playerToFocus = PLAYERS.find(player => player.id === ID)
     if (playerToFocus) {
-      cx = playerToFocus.x - canvas.width / 2
-      cy = playerToFocus.y - canvas.height / 2
+      cx = (playerToFocus.x + playerToFocus.w * .5) - canvas.width / 2
+      cy = (playerToFocus.y + playerToFocus.h * .5) - canvas.height / 2
     } else {
       cx = canvas.width / 2
       cy = canvas.height / 2
