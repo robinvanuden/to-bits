@@ -2,18 +2,18 @@ import Players from "./controller/players"
 import {Player} from "./types/player"
 import {Boomerang} from "./types/boomerang"
 import {LOBBY_RAW} from "./map/lobby"
-import GameMap from "./controller/controllerMap"
+import World from "./controller/world"
 
 export default class Game {
 
   DELTA = 0
   TICKS = 50
-  lobby = new GameMap(LOBBY_RAW)
+  lobby = new World(LOBBY_RAW)
   players = new Players()
 
   getPlayers = () => this.players
 
-  map = (): GameMap => this.lobby
+  map = (): World => this.lobby
 
   getDelta = () => this.DELTA
 

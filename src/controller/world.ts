@@ -3,7 +3,7 @@ import {TILE} from "./tiles"
 import {Player} from "../types/player"
 import {Boomerang} from "../types/boomerang"
 
-export default class GameMap {
+export default class World {
 
   map: Tile[] = []
   bottom: number = 0
