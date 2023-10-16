@@ -1,0 +1,31 @@
+@font-face {
+    font-family: "FiveFontsatFreddy";
+    src: local("FiveFontsatFreddy"), url("./font/FiveFontsatFreddy's-Regular.ttf") format("truetype")
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    font-family: "Rainy Hearts", "Monospaced", "sans-serif";
+    font-size: 16px;
+}
+
+body {
+    background-color: #111111;
+    min-height: 100vmin;
+    margin: 0;
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+canvas {
+    background: #FFFFFF linear-gradient(180deg, #52ade8 0%, #307bc7 90%);
+    background-size: cover;
+    image-rendering: pixelated;
+    width: 100%;
+    height: 100%;
+}

@@ -2,8 +2,9 @@ import {MetaTile} from "../types/tile"
 
 
 const GRASS = 'grass'
+const DIRT = 'dirt'
 
-export const TILE = 64
+export const TILE = 48
 export const A: MetaTile = {
   w: TILE,
   h: TILE,
@@ -13,13 +14,22 @@ export const A: MetaTile = {
   i: undefined,
   t: 0
 } // 0: Air
-export const B: MetaTile = {
+export const G: MetaTile = {
   w: TILE,
   h: TILE,
   s: false,
   d: 0,
   c: "#000",
   i: GRASS,
+  t: 1
+} // 1: Ground
+export const D: MetaTile = {
+  w: TILE,
+  h: TILE,
+  s: false,
+  d: 0,
+  c: "#000",
+  i: DIRT,
   t: 1
 } // 1: Ground
 export const S: MetaTile = {

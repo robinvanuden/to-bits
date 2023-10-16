@@ -4,8 +4,8 @@ import {GRAVITY} from "../constants"
 import {names, uniqueNamesGenerator} from 'unique-names-generator'
 
 
-const PLAYER_WIDTH = 48
-const PLAYER_HEIGHT = 64
+const PLAYER_WIDTH = 36
+const PLAYER_HEIGHT = 48
 const SPEED_WALK = 5
 const SPEED_JUMP = 10.4 // 7.5 // 7.7
 
