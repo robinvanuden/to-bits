@@ -5,9 +5,13 @@
     ackTimeout: 2000
   });
 
-  const BLOCKS = new Image()
-  BLOCKS.src = "/img/blocks.png"
-  BLOCKS.style.imageRendering = "pixelated"
+  const IMAGE_BLOCKS = new Image()
+  IMAGE_BLOCKS.src = "/img/blocks.jpg"
+  IMAGE_BLOCKS.style.imageRendering = "pixelated"
+
+  const IMAGE_CHARACTER = new Image()
+  IMAGE_CHARACTER.src = "/img/character.png"
+  IMAGE_CHARACTER.style.imageRendering = "pixelated"
 
   let VERSION = ""
   let ID = ""
@@ -100,7 +104,12 @@
     if (!you) {
       return
     }
-    socket.emit("boomerang", getRotationDegrees(window.innerWidth / 2, window.innerHeight / 2, ev.clientX, ev.clientY))
+    socket.emit("boomerang", getRotationDegrees(
+      window.innerWidth / 2 * ratio,
+      window.innerHeight / 2 * ratio,
+      ev.clientX * ratio,
+      ev.clientY * ratio
+    ))
   }
 
   const drawMap = () => {
@@ -120,18 +129,18 @@
       let bx = 0, by = 0;
       switch (tile.i) {
         case "grass":
-          bx = 16
+          bx = 16 * .5
           break;
         case "dirt":
-          bx = 32
+          bx = 32 * .5
           break;
       }
       c.ctx.drawImage(
-        BLOCKS,
+        IMAGE_BLOCKS,
         bx,
         by,
-        16,
-        16,
+        8,
+        8,
         tile.x * ratio - cx,
         tile.y * ratio - cy,
         tile.w * ratio,
@@ -145,10 +154,22 @@
       const player_y = player.y * ratio
       c.ctx.textAlign = "center"
       c.ctx.fillStyle = "#FFF"
-      c.ctx.font = `${16 * ratio}px FiveFontsatFreddy`
+      c.ctx.font = `${14 * ratio}px FiveFontsatFreddy`
       c.ctx.fillText(player.name, player_x - cx + player_w * .5, player_y - cy + 2)
       c.ctx.fillStyle = player.color
-      c.ctx.fillRect(player_x - cx, player_y - cy, player_w, player_h)
+      // c.ctx.fillRect(player_x - cx, player_y - cy, player_w, player_h)
+
+      c.ctx.drawImage(
+        IMAGE_CHARACTER,
+        2,
+        0,
+        12,
+        16,
+        player_x - cx,
+        player_y - cy,
+        player_w,
+        player_h
+      )
 
       for (const boomerang of player.boomerangs) {
         c.ctx.fillRect(
@@ -179,6 +200,7 @@
 
     c.ctx.font = `${30 * ratio}px FiveFontsatFreddy`
     c.ctx.fillText("Respawn in: " + Math.round(((you.died + 5000) - now) / 1000), c.width / 2, (c.height / 2) + (30 * ratio))
+
   }
   const drawLoading = () => {
     if (RUNNING) {
@@ -210,41 +232,49 @@
   const drawDebug = (delta) => {
     const you = PLAYERS.find(p => p.id === ID)
 
-    c.ctx.font = "10px FiveFontsatFreddy"
+    c.ctx.font = `${10 * ratio}px FiveFontsatFreddy`
     c.ctx.fillStyle = "black"
     c.ctx.textAlign = "left"
-    let x = 2
-    let y = 10
+    let x = 2 * ratio
+    let y = 20 * ratio
     c.ctx.fillText("delta: " + delta, x, y)
     if (you == null || you.died !== undefined) {
       return
     }
-    y += 10
+    y += 10 * ratio
     c.ctx.fillText("name: " + you.name, x, y)
-    y += 10
+    y += 10 * ratio
     c.ctx.fillText("x: " + you.x, x, y)
-    y += 10
+    y += 10 * ratio
     c.ctx.fillText("y: " + you.y, x, y)
-    y += 10
+    y += 10 * ratio
     c.ctx.fillText("vx: " + you.vx, x, y)
-    y += 10
+    y += 10 * ratio
     c.ctx.fillText("vy: " + you.vy, x, y)
-    y += 10
-    c.ctx.fillText("arial: " + you.arial, x, y)
-    y += 10
+    y += 10 * ratio
+    c.ctx.fillText("jumping: " + you.jumping, x, y)
+    y += 10 * ratio
     c.ctx.fillText("alive: " + you.died !== undefined, x, y)
+    y += 10 * ratio
+    c.ctx.fillText("l.u: " + you.look.u, x, y)
+    y += 10 * ratio
+    c.ctx.fillText("l.d: " + you.look.d, x, y)
+    y += 10 * ratio
+    c.ctx.fillText("l.l: " + you.look.l, x, y)
+    y += 10 * ratio
+    c.ctx.fillText("l.r: " + you.look.r, x, y)
 
     const boomerang = you.boomerangs[0]
     if (!boomerang) {
       return;
     }
-    y += 10
+    y += 10 * ratio
     c.ctx.fillText("x: " + boomerang.x, x, y)
-    y += 10
+    y += 10 * ratio
     c.ctx.fillText("y: " + boomerang.y, x, y)
-    y += 10
+    y += 10 * ratio
     c.ctx.fillText("vx: " + boomerang.vx, x, y)
-    y += 10
+    y += 10 * ratio
     c.ctx.fillText("vy: " + boomerang.vy, x, y)
   }
 

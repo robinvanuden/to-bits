@@ -59,9 +59,9 @@ export default class Game {
         player.x += player.sw
         if (this.map().isCollidingWithMap(player)) player.x -= player.sw
       }
-      if (player.move.u && !player.arial) {
+      if (player.move.u && !player.jumping) {
         player.vy -= player.sj
-        player.arial = true
+        player.jumping = true
       }
       player.x += player.vx
       player.y += player.vy
@@ -71,7 +71,7 @@ export default class Game {
         player.vy = 0
       }
       if (this.map().isWalkingOnMap(player)) {
-        player.arial = false
+        player.jumping = false
       }
       if (this.isKilled(player)) {
         this.getPlayers().kill(player)

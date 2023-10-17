@@ -51,18 +51,42 @@ io.on('connection', (socket) => {
   socket.on("move.left", (bool: boolean) => {
     const player = game.getPlayers().get(uuid)
     if (player) player.move.l = bool
+    if (player && bool && !player.look.l) player.look = {
+      u: false,
+      d: false,
+      l: true,
+      r: false
+    }
   })
   socket.on("move.right", (bool: boolean) => {
     const player = game.getPlayers().get(uuid)
     if (player) player.move.r = bool
+    if (player && bool && !player.look.r) player.look = {
+      u: false,
+      d: false,
+      l: false,
+      r: true
+    }
   })
   socket.on("move.up", (bool: boolean) => {
     const player = game.getPlayers().get(uuid)
     if (player) player.move.u = bool
+    if (player && bool && !player.look.u) player.look = {
+      u: true,
+      d: false,
+      l: false,
+      r: false
+    }
   })
   socket.on("move.down", (bool: boolean) => {
     const player = game.getPlayers().get(uuid)
     if (player) player.move.d = bool
+    if (player && bool && !player.look.d) player.look = {
+      u: false,
+      d: true,
+      l: false,
+      r: false
+    }
   })
   socket.on("boomerang", (degrees: number) => {
     const player = game.getPlayers().get(uuid)

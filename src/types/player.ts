@@ -16,7 +16,8 @@ export class Player {
   y: number // y-coord
   vx: number // x velocity
   vy: number // y velocity
-  arial: boolean
+  jumping: boolean
+  look: Direction // directions looking
   move: Direction // directions pressed
   boomerangs: Boomerang[]
 

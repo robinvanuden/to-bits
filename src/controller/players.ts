@@ -43,7 +43,13 @@ export default class Players {
     player.gravity = GRAVITY
     player.sw = SPEED_WALK
     player.sj = SPEED_JUMP
-    player.arial = false
+    player.jumping = false
+    player.look = {
+      u: false,
+      d: false,
+      l: false,
+      r: false
+    }
     player.move = {
       u: false,
       d: false,
@@ -60,11 +66,11 @@ export default class Players {
     player.x = spawn.x
     player.y = spawn.y
     player.gravity = GRAVITY
-    player.move = {
+    player.look = {
       u: false,
       d: false,
       l: false,
-      r: false
+      r: true
     }
     return player
   }
@@ -75,6 +81,12 @@ export default class Players {
     player.vy = 0
     player.gravity = 0
     player.boomerangs = []
+    player.move = {
+      u: false,
+      d: false,
+      l: false,
+      r: false
+    }
   }
 
   remove = (player: Player) => this.players = this.players.filter(p => p.id !== player.id)
