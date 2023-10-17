@@ -38,10 +38,11 @@ io.on('connection', (socket) => {
     // Reconnect
     continue_player.disconnected = undefined
     continue_player.move = {u: false, d: false, l: false, r: false}
+    console.log('User reconnected', uuid)
   } else {
     // New player
     const SPAWN_TILE = game.map().randomSpawn()
-    console.log('address user connected', uuid)
+    console.log('User connected', uuid)
     game.getPlayers().create(SPAWN_TILE, uuid)
   }
   socket.emit("me", uuid)
@@ -97,7 +98,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on("disconnect", () => {
-    console.log('address user disconnected', uuid)
+    console.log('User disconnected', uuid)
     const player = game.getPlayers().get(uuid)
     if (player) player.disconnected = Date.now()
   })
