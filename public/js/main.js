@@ -129,18 +129,18 @@
       let bx = 0, by = 0;
       switch (tile.i) {
         case "grass":
-          bx = 16 * .5
+          bx = 12
           break;
         case "dirt":
-          bx = 32 * .5
+          bx = 24
           break;
       }
       c.ctx.drawImage(
         IMAGE_BLOCKS,
         bx,
         by,
-        8,
-        8,
+        12,
+        12,
         tile.x * ratio - cx,
         tile.y * ratio - cy,
         tile.w * ratio,
