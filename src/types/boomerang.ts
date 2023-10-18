@@ -29,7 +29,7 @@ export class Boomerang {
   }
 
   isBroke = (t: Tile): boolean => {
-    if (this.thrown + 2000 < Date.now()) {
+    if (this.thrown + 1200 < Date.now()) {
       return true
     }
     return this.x < t.x + t.w && this.x + this.w > t.x && this.y < t.y + t.h && this.y + this.h > t.y

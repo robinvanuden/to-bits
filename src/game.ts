@@ -29,6 +29,7 @@ export default class Game {
     for (const player of this.getPlayers().alive()) {
       for (const boomerang of player.boomerangs) {
         if (this.isHitBoomerang(p, boomerang)) {
+          player.boomerangs = []
           return true
         }
       }

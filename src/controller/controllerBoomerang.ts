@@ -8,8 +8,8 @@ export const createBoomerang = (player: Player, degrees: number): Boomerang => {
   return new Boomerang(
     v4(),
     player.id,
-    player.x,
-    player.y,
+    player.x + player.w * .5,
+    player.y + player.h * .5,
     radians
   )
 }

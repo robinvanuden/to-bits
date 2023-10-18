@@ -3,16 +3,10 @@ import PlayerModel from "./model/PlayerModel"
 import TileModel from "./model/TileModel"
 
 (() => {
-  const server: string = process.env.WS_SERVER ?? "ws://localhost:3000"
-  console.log(server)
   const host = new URL(location.toString())
   host.protocol = "http"
   host.pathname = ""
-  const socket = io({
-    "transports": ['websocket'],
-    upgrade: true,
-    ackTimeout: 2000
-  })
+  const socket = io({"transports": ['websocket'], upgrade: true, ackTimeout: 2000})
 
   const IMAGE_BLOCKS = new Image()
   IMAGE_BLOCKS.src = host.toString() + "img/blocks.jpg"
@@ -26,7 +20,7 @@ import TileModel from "./model/TileModel"
   let ID = ""
   let SHOW_DEBUG = false
   let SHOW_PLAYERS = false
-  let RUNNING = false
+  let LOADING = true
 
   const ratio = window.devicePixelRatio || 1
 
@@ -47,17 +41,16 @@ import TileModel from "./model/TileModel"
   let PLAYERS = [] as PlayerModel[]
 
   socket.on("connect", () => {
-    c.classList.remove("loading")
+    LOADING = true
   })
 
   socket.on("disconnect", () => {
-    RUNNING = false
+    LOADING = true
   })
 
   socket.on("map", map => {
     MAP = map
-    RUNNING = true
-    window.requestAnimationFrame(tick)
+    LOADING = false
   })
 
   socket.on("players", players => PLAYERS = players)
@@ -68,6 +61,7 @@ import TileModel from "./model/TileModel"
     if (VERSION === "") {
       VERSION = version
       document.title = "To Bits v" + VERSION
+      LOADING = true
     } else if (VERSION !== version) {
       window.location.reload()
     }
@@ -90,11 +84,9 @@ import TileModel from "./model/TileModel"
     if (key === "s") {
       socket.emit("move.down", pressed)
     }
-
     if (pressed && key === ";") {
       SHOW_DEBUG = !SHOW_DEBUG
     }
-
     if (pressed && key === "tab") {
       SHOW_PLAYERS = !SHOW_PLAYERS
     }
@@ -212,9 +204,6 @@ import TileModel from "./model/TileModel"
 
   }
   const drawLoading = () => {
-    if (RUNNING) {
-      return
-    }
     ctx.fillStyle = "#1d1d1d"
     ctx.fillRect(0, 0, c.width, c.height)
     ctx.textAlign = "center"
@@ -294,11 +283,13 @@ import TileModel from "./model/TileModel"
     drawMap()
     if (SHOW_PLAYERS) drawPlayerList()
     drawMessage()
-    drawLoading()
+    if (LOADING) drawLoading()
     if (SHOW_DEBUG) drawDebug(delta)
     lastRender = timestamp
-    if (RUNNING) window.requestAnimationFrame(tick)
+    window.requestAnimationFrame(tick)
   }
+
+  window.requestAnimationFrame(tick)
   document.addEventListener('contextmenu', e => e.preventDefault())
   window.addEventListener("keydown", events => keyEvent(events, true))
   window.addEventListener("keyup", events => keyEvent(events, false))

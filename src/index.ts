@@ -21,19 +21,19 @@ console.log("ToBits: v" + VERSION)
 
 app.get("/delta", (_, res) => res.json(game.getDelta()))
 
-io.on('connection', (socket) => {
-  const address: string = (socket?.handshake?.headers['x-forwarded-for'] || socket?.client?.conn?.remoteAddress || socket?.handshake?.address || socket.id).toString()
+io.on('connection', client => {
+  const address: string = (client?.handshake?.headers['x-forwarded-for'] || client?.handshake?.address || client.id).toString()
   if (address === "") {
     return
   }
   const uuid = v5(address, UUID)
   if (game.getPlayers().isConnected(UUID)) {
     // Disconnect double users
-    socket.disconnect(true)
+    client.disconnect(true)
     return
   }
   game.start(emitPlayers)
-  socket.emit("version", VERSION)
+  client.emit("version", VERSION)
   let continue_player = game.getPlayers().getConnected(uuid)
   if (continue_player) {
     // Reconnect
@@ -46,11 +46,11 @@ io.on('connection', (socket) => {
     console.log('User connected', address, uuid)
     game.getPlayers().create(SPAWN_TILE, uuid)
   }
-  socket.emit("me", uuid)
-  socket.emit("map", game.map().getMap())
+  client.emit("me", uuid)
+  client.emit("map", game.map().getMap())
   emitPlayers()
 
-  socket.on("move.left", (bool: boolean) => {
+  client.on("move.left", (bool: boolean) => {
     const player = game.getPlayers().get(uuid)
     if (player) player.move.l = bool
     if (player && bool && !player.look.l) player.look = {
@@ -60,7 +60,7 @@ io.on('connection', (socket) => {
       r: false
     }
   })
-  socket.on("move.right", (bool: boolean) => {
+  client.on("move.right", (bool: boolean) => {
     const player = game.getPlayers().get(uuid)
     if (player) player.move.r = bool
     if (player && bool && !player.look.r) player.look = {
@@ -70,7 +70,7 @@ io.on('connection', (socket) => {
       r: true
     }
   })
-  socket.on("move.up", (bool: boolean) => {
+  client.on("move.up", (bool: boolean) => {
     const player = game.getPlayers().get(uuid)
     if (player) player.move.u = bool
     if (player && bool && !player.look.u) player.look = {
@@ -80,7 +80,7 @@ io.on('connection', (socket) => {
       r: false
     }
   })
-  socket.on("move.down", (bool: boolean) => {
+  client.on("move.down", (bool: boolean) => {
     const player = game.getPlayers().get(uuid)
     if (player) player.move.d = bool
     if (player && bool && !player.look.d) player.look = {
@@ -90,7 +90,7 @@ io.on('connection', (socket) => {
       r: false
     }
   })
-  socket.on("boomerang", (degrees: number) => {
+  client.on("boomerang", (degrees: number) => {
     const player = game.getPlayers().get(uuid)
     if (!player || player.boomerangs.length > 0) {
       return
@@ -98,7 +98,7 @@ io.on('connection', (socket) => {
     player.boomerangs.push(createBoomerang(player, degrees))
   })
 
-  socket.on("disconnect", () => {
+  client.on("disconnect", () => {
     console.log('User disconnected', address, uuid)
     const player = game.getPlayers().get(uuid)
     if (player) player.disconnected = Date.now()
