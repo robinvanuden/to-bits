@@ -9,7 +9,8 @@ const app = express()
 const server = createServer(app)
 const io = new Server(server)
 
-app.use("/", express.static("public"))
+app.use("/img", express.static("public/img"))
+app.use("/", express.static("dist"))
 
 const UUID = v4()
 
@@ -21,7 +22,7 @@ console.log("ToBits: v" + VERSION)
 app.get("/delta", (_, res) => res.json(game.getDelta()))
 
 io.on('connection', (socket) => {
-  const address = socket?.handshake?.address ?? ""
+  const address = socket?.client?.conn?.remoteAddress ?? socket?.handshake?.address ?? socket.id
   if (address === "") {
     return
   }
@@ -38,11 +39,11 @@ io.on('connection', (socket) => {
     // Reconnect
     continue_player.disconnected = undefined
     continue_player.move = {u: false, d: false, l: false, r: false}
-    console.log('User reconnected', uuid)
+    console.log('User reconnected', address, uuid)
   } else {
     // New player
     const SPAWN_TILE = game.map().randomSpawn()
-    console.log('User connected', uuid)
+    console.log('User connected', address, uuid)
     game.getPlayers().create(SPAWN_TILE, uuid)
   }
   socket.emit("me", uuid)
@@ -98,7 +99,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on("disconnect", () => {
-    console.log('User disconnected', uuid)
+    console.log('User disconnected', address, uuid)
     const player = game.getPlayers().get(uuid)
     if (player) player.disconnected = Date.now()
   })

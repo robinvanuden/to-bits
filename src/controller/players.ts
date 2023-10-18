@@ -1,17 +1,6 @@
 import {Tile} from "../types/tile"
 import {Player} from "../types/player"
 import {GRAVITY} from "../constants"
-import {names, uniqueNamesGenerator} from 'unique-names-generator'
-
-
-const PLAYER_WIDTH = 36
-const PLAYER_HEIGHT = 48
-const SPEED_WALK = 5
-const SPEED_JUMP = 10.4 // 7.5 // 7.7
-
-const randomName = () => uniqueNamesGenerator({length: 1, dictionaries: [names]})
-
-const randomColor = () => `hsl(${360 * Math.random()}, 88%, 62%)`
 
 export default class Players {
 
@@ -28,35 +17,7 @@ export default class Players {
   respawns = () => this.players.filter(p => p.died != undefined && (p.died + 5000) < Date.now())
 
   create = (spawn: Tile, id: string) => {
-    const player = new Player()
-    player.id = id
-    player.disconnected = undefined
-    player.died = undefined
-    player.color = randomColor()
-    player.name = randomName()
-    player.w = PLAYER_WIDTH
-    player.h = PLAYER_HEIGHT
-    player.x = spawn.x
-    player.y = spawn.y
-    player.vx = 0
-    player.vy = 0
-    player.gravity = GRAVITY
-    player.sw = SPEED_WALK
-    player.sj = SPEED_JUMP
-    player.jumping = false
-    player.look = {
-      u: false,
-      d: false,
-      l: false,
-      r: false
-    }
-    player.move = {
-      u: false,
-      d: false,
-      l: false,
-      r: false
-    }
-    player.boomerangs = []
+    const player = new Player(id, spawn)
     this.players.push(player)
     return player
   }

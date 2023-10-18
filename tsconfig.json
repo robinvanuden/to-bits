@@ -1,11 +1,25 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "target": "es5",
-    "sourceMap": true,
-    "esModuleInterop": true
+  "ts-node": {
+    "files": true
   },
+  "files": [
+    "src/index.ts",
+    "types/globals.d.ts"
+  ],
+  "include": [
+    "**/*.ts"
+  ],
   "exclude": [
+    ".git",
     "node_modules"
-  ]
+  ],
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": false,
+    "skipLibCheck": true
+  }
 }

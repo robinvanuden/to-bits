@@ -1,5 +1,16 @@
 import {Tile} from "./tile"
 import {Boomerang} from "./boomerang"
+import {GRAVITY} from "../constants"
+import {names, uniqueNamesGenerator} from "unique-names-generator"
+
+const randomName = () => uniqueNamesGenerator({length: 1, dictionaries: [names]})
+
+const randomColor = () => `hsl(${360 * Math.random()}, 88%, 62%)`
+
+const PLAYER_WIDTH = 36
+const PLAYER_HEIGHT = 48
+const SPEED_WALK = 5
+const SPEED_JUMP = 10.4 // 7.5 // 7.7
 
 export class Player {
   id: string // ID
@@ -20,6 +31,37 @@ export class Player {
   look: Direction // directions looking
   move: Direction // directions pressed
   boomerangs: Boomerang[]
+
+  constructor(id: string, spawn: Tile) {
+    this.id = id
+    this.disconnected = undefined
+    this.died = undefined
+    this.color = randomColor()
+    this.name = randomName()
+    this.w = PLAYER_WIDTH
+    this.h = PLAYER_HEIGHT
+    this.x = spawn.x
+    this.y = spawn.y
+    this.vx = 0
+    this.vy = 0
+    this.gravity = GRAVITY
+    this.sw = SPEED_WALK
+    this.sj = SPEED_JUMP
+    this.jumping = false
+    this.look = {
+      u: false,
+      d: false,
+      l: false,
+      r: false
+    }
+    this.move = {
+      u: false,
+      d: false,
+      l: false,
+      r: false
+    }
+    this.boomerangs = []
+  }
 
 
   isColliding = (t: Tile): boolean => {
