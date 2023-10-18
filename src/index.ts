@@ -22,7 +22,7 @@ console.log("ToBits: v" + VERSION)
 app.get("/delta", (_, res) => res.json(game.getDelta()))
 
 io.on('connection', (socket) => {
-  const address = socket?.client?.conn?.remoteAddress ?? socket?.handshake?.address ?? socket.id
+  const address: string = (socket?.handshake?.headers['x-forwarded-for'] || socket?.client?.conn?.remoteAddress || socket?.handshake?.address || socket.id).toString()
   if (address === "") {
     return
   }
