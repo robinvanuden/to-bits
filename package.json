@@ -5,7 +5,7 @@
     "clean": "rm -r dist",
     "dev": "npm run clean & parcel public/index.html --port=3001 & nodemon src/index.ts",
     "dev:client": "parcel public/index.html --port=3001",
-    "start": "npm run clean && parcel build public/index.html && ts-node src/index.ts"
+    "start": "parcel build public/index.html && ts-node src/index.ts"
   },
   "dependencies": {
     "express": "^4.18.2",
