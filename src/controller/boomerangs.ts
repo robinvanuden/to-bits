@@ -6,11 +6,7 @@ export default class Boomerangs {
 
   private __boomerangs: Boomerang[] = []
 
-  listAll = () => this.__boomerangs
-
-  listOthers = (player: Player) => this.listAll().filter(b => b.player !== player.id)
-
-  list = (player: Player) => this.listAll().filter(b => b.player === player.id)
+  list = () => this.__boomerangs
 
   create = (player: Player, degrees: number) => {
     const radians = (degrees * Math.PI) / 180
@@ -24,12 +20,10 @@ export default class Boomerangs {
   }
 
   deleteFrom = (player: Player) => {
-    console.log("Delete boomerang from: ", player.id)
     this.__boomerangs = this.__boomerangs.filter(b => b.player !== player.id)
   }
 
   delete = (boomerang: Boomerang) => {
-    console.log("Delete boomerang: ", boomerang.id)
     this.__boomerangs = this.__boomerangs.filter(b => b.id !== boomerang.id)
   }
 }

@@ -4,6 +4,8 @@ import TileModel from "./model/TileModel"
 import BoomerangModel from "./model/BoomerangModel"
 
 (() => {
+  const FONT = "FiveFontsatFreddy"
+
   const host = new URL(location.toString())
   host.protocol = "http"
   host.pathname = ""
@@ -82,8 +84,11 @@ import BoomerangModel from "./model/BoomerangModel"
     } else if (key === "a") {
       socket.emit("move.left", pressed)
     }
-    if (key === "w" || key === " ") {
+    if (key === "w") {
       socket.emit("move.up", pressed)
+    }
+    if (key === " ") {
+      socket.emit("move.jump", pressed)
     }
     if (key === "s") {
       socket.emit("move.down", pressed)
@@ -109,7 +114,7 @@ import BoomerangModel from "./model/BoomerangModel"
     if (!you) {
       return
     }
-    socket.emit("boomerang", getRotationDegrees(
+    socket.emit("radius", getRotationDegrees(
       window.innerWidth / 2 * ratio,
       window.innerHeight / 2 * ratio,
       ev.clientX * ratio,
@@ -159,7 +164,7 @@ import BoomerangModel from "./model/BoomerangModel"
       const player_y = player.y * ratio
       ctx.textAlign = "center"
       ctx.fillStyle = "#FFF"
-      ctx.font = `${14 * ratio}px FiveFontsatFreddy`
+      ctx.font = `${12 * ratio}px ${FONT}`
       ctx.fillText(player.name, player_x - cx + player_w * .5, player_y - cy + 2)
       ctx.fillStyle = player.color
       // ctx.fillRect(player_x - cx, player_y - cy, player_w, player_h)
@@ -200,10 +205,10 @@ import BoomerangModel from "./model/BoomerangModel"
     ctx.fillRect(0, 0, c.width, c.height)
     ctx.textAlign = "center"
     ctx.fillStyle = "#FFF"
-    ctx.font = `${50 * ratio}px FiveFontsatFreddy`
+    ctx.font = `${50 * ratio}px ${FONT}`
     ctx.fillText("YOU DIED", c.width / 2, c.height / 2)
 
-    ctx.font = `${30 * ratio}px FiveFontsatFreddy`
+    ctx.font = `${30 * ratio}px ${FONT}`
     ctx.fillText("Respawn in: " + Math.round(((you.died + 5000) - now) / 1000), c.width / 2, (c.height / 2) + (30 * ratio))
 
   }
@@ -212,7 +217,7 @@ import BoomerangModel from "./model/BoomerangModel"
     ctx.fillRect(0, 0, c.width, c.height)
     ctx.textAlign = "center"
     ctx.fillStyle = "#f3f3f3"
-    ctx.font = `${50 * ratio}px FiveFontsatFreddy`
+    ctx.font = `${50 * ratio}px ${FONT}`
     ctx.fillText("LOADING", c.width / 2, c.height / 2)
   }
 
@@ -222,7 +227,7 @@ import BoomerangModel from "./model/BoomerangModel"
     ctx.fillRect(c.width - 200, 0, 200, c.height)
     let y = 20 * ratio
     for (const player of PLAYERS) {
-      ctx.font = `${16 * ratio}px FiveFontsatFreddy`
+      ctx.font = `${16 * ratio}px ${FONT}`
       ctx.textAlign = "left"
       ctx.fillStyle = player.color
       ctx.fillText(player.name, c.width - side_bar, y)
@@ -234,7 +239,7 @@ import BoomerangModel from "./model/BoomerangModel"
   const drawDebug = (delta: number) => {
     const you = PLAYERS.find(p => p.id === ID)
 
-    ctx.font = `${10 * ratio}px FiveFontsatFreddy`
+    ctx.font = `${10 * ratio}px ${FONT}`
     ctx.fillStyle = "black"
     ctx.textAlign = "left"
     let x = 2 * ratio

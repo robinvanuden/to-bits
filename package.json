@@ -1,6 +1,6 @@
 {
   "name": "to-bits",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "scripts": {
     "dev:server": "nodemon src/index.ts",
     "dev:client": "parcel public/index.html --port=3001",

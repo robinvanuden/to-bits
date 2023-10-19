@@ -7,7 +7,7 @@ import Boomerangs from "./controller/boomerangs"
 export default class Game {
 
   DELTA = 0
-  TICKS = 50
+  TICKS = 60
   lobby = new World(LOBBY_RAW)
   __players = new Players()
   __boomerangs = new Boomerangs()
@@ -18,10 +18,8 @@ export default class Game {
 
   map = (): World => this.lobby
 
-  getDelta = () => this.DELTA
-
   private isKilled = (p: Player): boolean => {
-    return p.died === undefined && p.y > this.map().getVoid()
+    return p.died === undefined && p.y > this.map().void()
   }
 
   private checkPlayerPosition = (delta: number) => {
@@ -51,7 +49,7 @@ export default class Game {
       if (walkables.find(tile => player.isWalkingOn(tile))) {
         player.jumping = false
       }
-      for (const boomerang of this.boomerangs().listAll()) {
+      for (const boomerang of this.boomerangs().list()) {
         if (boomerang.isCaught(player)) {
           this.boomerangs().delete(boomerang)
         }
@@ -66,7 +64,7 @@ export default class Game {
         this.boomerangs().deleteFrom(player)
       }
     }
-    for (const boomerang of this.boomerangs().listAll()) {
+    for (const boomerang of this.boomerangs().list()) {
       boomerang.x += boomerang.vx
       boomerang.y += boomerang.vy
       if (solids.find(tile => boomerang.isBroke(tile))) {

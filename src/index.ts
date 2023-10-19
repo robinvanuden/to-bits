@@ -1,117 +1,17 @@
 import {createServer} from "http"
 import express from "express"
-import {Server} from "socket.io"
-import {v4, v5} from "uuid"
-import Game from "./game"
+import {startSocket} from "./socket"
 
 const app = express()
 const server = createServer(app)
-const io = new Server(server)
 
 app.use("/img", express.static("public/img"))
 app.use("/", express.static("dist"))
 
-const UUID = v4()
-
-const game = new Game()
-
-const VERSION = process.env.npm_package_version
+const VERSION: string = process.env.npm_package_version || "?.?.?"
 console.log("ToBits: v" + VERSION)
 
-app.get("/delta", (_, res) => res.json(game.getDelta()))
-
-io.on('connection', client => {
-  const address: string = (client?.handshake?.headers['x-forwarded-for'] || client?.handshake?.address || client.id).toString()
-  if (address === "") {
-    return
-  }
-  const uuid = v5(address, UUID)
-  if (game.players().isConnected(UUID)) {
-    // Disconnect double users
-    client.disconnect(true)
-    return
-  }
-  game.start(emitProjectiles)
-  client.emit("version", VERSION)
-  let continue_player = game.players().getConnected(uuid)
-  if (continue_player) {
-    // Reconnect
-    continue_player.disconnected = undefined
-    continue_player.move = {u: false, d: false, l: false, r: false}
-    console.log('User reconnected', address, uuid)
-  } else {
-    // New player
-    const SPAWN_TILE = game.map().randomSpawn()
-    console.log('User connected', address, uuid)
-    game.players().create(SPAWN_TILE, uuid)
-  }
-  client.emit("me", uuid)
-  client.emit("map", game.map().getMap())
-
-  client.on("move.left", (bool: boolean) => {
-    const player = game.players().get(uuid)
-    if (player) player.move.l = bool
-    if (player && bool && !player.look.l) player.look = {
-      u: false,
-      d: false,
-      l: true,
-      r: false
-    }
-  })
-  client.on("move.right", (bool: boolean) => {
-    const player = game.players().get(uuid)
-    if (player) player.move.r = bool
-    if (player && bool && !player.look.r) player.look = {
-      u: false,
-      d: false,
-      l: false,
-      r: true
-    }
-  })
-  client.on("move.up", (bool: boolean) => {
-    const player = game.players().get(uuid)
-    if (player) player.move.u = bool
-    if (player && bool && !player.look.u) player.look = {
-      u: true,
-      d: false,
-      l: false,
-      r: false
-    }
-  })
-  client.on("move.down", (bool: boolean) => {
-    const player = game.players().get(uuid)
-    if (player) player.move.d = bool
-    if (player && bool && !player.look.d) player.look = {
-      u: false,
-      d: true,
-      l: false,
-      r: false
-    }
-  })
-  client.on("boomerang", (degrees: number) => {
-    const player = game.players().get(uuid)
-    if (!player) {
-      return
-    }
-    game.boomerangs().create(player, degrees)
-  })
-
-  client.on("disconnect", () => {
-    console.log('User disconnected', address, uuid)
-    const player = game.players().get(uuid)
-    if (player) player.disconnected = Date.now()
-  })
-})
-
-const emitPlayers = () => io.emit("players", game.players().list())
-
-const emitBoomerangs = () => io.emit("boomerangs", game.boomerangs().listAll())
-
-const emitProjectiles = () => {
-  emitPlayers()
-  emitBoomerangs()
-}
-
+startSocket(server, VERSION)
 
 const PORT: number = Number.parseInt(process.env.PORT ?? "80")
 server.listen(PORT, () => {
