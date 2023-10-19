@@ -1,5 +1,3 @@
-import BoomerangModel from "./BoomerangModel"
-
 export default class PlayerModel {
   id: string = ""
   w: number = 0
@@ -12,7 +10,6 @@ export default class PlayerModel {
   name: string = "-"
   color: string = "red"
   died: number | undefined = undefined
-  boomerangs: BoomerangModel[] = []
   move: Direction = {u: false, d: false, l: false, r: false}
   look: Direction = {u: false, d: false, l: false, r: false}
 }

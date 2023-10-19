@@ -1,64 +1,41 @@
 import Players from "./controller/players"
 import {Player} from "./types/player"
-import {Boomerang} from "./types/boomerang"
 import {LOBBY_RAW} from "./map/lobby"
 import World from "./controller/world"
+import Boomerangs from "./controller/boomerangs"
 
 export default class Game {
 
   DELTA = 0
   TICKS = 50
   lobby = new World(LOBBY_RAW)
-  players = new Players()
+  __players = new Players()
+  __boomerangs = new Boomerangs()
 
-  getPlayers = () => this.players
+  boomerangs = () => this.__boomerangs
+
+  players = () => this.__players
 
   map = (): World => this.lobby
 
   getDelta = () => this.DELTA
 
-  private isHitBoomerang = (p: Player, b: Boomerang): boolean => {
-    const b2: Boomerang | null = p.boomerangs[0] ?? null
-    if (b2 && b2.id === b.id) {
-      return false
-    }
-    return p.x < b.x + b.w && p.x + p.w > b.x && p.y < b.y + b.h && p.y + p.h > b.y
-  }
-
-  private hasDiedConditions = (p: Player): boolean => {
-    for (const player of this.getPlayers().alive()) {
-      for (const boomerang of player.boomerangs) {
-        if (this.isHitBoomerang(p, boomerang)) {
-          player.boomerangs = []
-          return true
-        }
-      }
-    }
-    return p.y > this.map().getVoid()
-  }
-
-  private isCaughtBoomerang = (p: Player): boolean => {
-    const b: Boomerang | null = p.boomerangs[0] ?? null
-    if (b == null || b.thrown + 250 > Date.now()) {
-      return false
-    }
-    return p.x < b.x + b.w && p.x + p.w > b.x && p.y < b.y + b.h && p.y + p.h > b.y
-  }
-
   private isKilled = (p: Player): boolean => {
-    return p.died === undefined && this.hasDiedConditions(p)
+    return p.died === undefined && p.y > this.map().getVoid()
   }
 
   private checkPlayerPosition = (delta: number) => {
-    for (const player of this.getPlayers().alive()) {
+    const solids = this.map().getSolidBlocks()
+    const walkables = this.map().getWalkableBlocks()
+    for (const player of this.players().alive()) {
       player.vy += player.gravity * delta
       if (player.move.l) {
         player.x -= player.sw
-        if (this.map().isCollidingWithMap(player)) player.x += player.sw
+        if (solids.find(tile => player.isColliding(tile))) player.x += player.sw
       }
       if (player.move.r) {
         player.x += player.sw
-        if (this.map().isCollidingWithMap(player)) player.x -= player.sw
+        if (solids.find(tile => player.isColliding(tile))) player.x -= player.sw
       }
       if (player.move.u && !player.jumping) {
         player.vy -= player.sj
@@ -67,62 +44,61 @@ export default class Game {
       player.x += player.vx
       player.y += player.vy
 
-      if (this.map().isCollidingWithMap(player)) {
+      if (solids.find(tile => player.isColliding(tile))) {
         player.y -= player.vy
         player.vy = 0
       }
-      if (this.map().isWalkingOnMap(player)) {
+      if (walkables.find(tile => player.isWalkingOn(tile))) {
         player.jumping = false
       }
+      for (const boomerang of this.boomerangs().listAll()) {
+        if (boomerang.isCaught(player)) {
+          this.boomerangs().delete(boomerang)
+        }
+        if (boomerang.isHit(player)) {
+          this.players().kill(player)
+          this.boomerangs().deleteFrom(player)
+          this.boomerangs().delete(boomerang)
+        }
+      }
       if (this.isKilled(player)) {
-        this.getPlayers().kill(player)
+        this.players().kill(player)
+        this.boomerangs().deleteFrom(player)
+      }
+    }
+    for (const boomerang of this.boomerangs().listAll()) {
+      boomerang.x += boomerang.vx
+      boomerang.y += boomerang.vy
+      if (solids.find(tile => boomerang.isBroke(tile))) {
+        this.boomerangs().delete(boomerang)
       }
     }
   }
-
-  private checkBoomerangPosition = () => {
-    for (const player of this.getPlayers().alive()) {
-      for (const boomerang of player.boomerangs) {
-        boomerang.x += boomerang.vx
-        boomerang.y += boomerang.vy
-
-        if (this.isCaughtBoomerang(player)) {
-          player.boomerangs = player.boomerangs.filter(b => b.id !== boomerang.id)
-        }
-        if (this.map().isBrokeOnMap(boomerang)) {
-          player.boomerangs = player.boomerangs.filter(b => b.id !== boomerang.id)
-        }
-      }
-    }
-  }
-
 
   private checkDisconnectedPlayers = () => {
-    for (const player of this.getPlayers().disconnected()) {
+    for (const player of this.players().disconnected()) {
       console.log("Remove player: " + player.id)
-      this.getPlayers().remove(player)
+      this.players().remove(player)
     }
   }
-
 
   private checkRespawnPlayers = () => {
-    for (const player of this.getPlayers().respawns()) {
+    for (const player of this.players().respawns()) {
       console.log("Respawn player: " + player.id)
-      this.getPlayers().respawn(player, this.map().randomSpawn())
+      this.players().respawn(player, this.map().randomSpawn())
     }
   }
 
-  private tick = (delta: number, run: () => {}) => {
+  private tick = (delta: number, run: () => void) => {
     this.DELTA = delta
     this.checkPlayerPosition(delta)
-    this.checkBoomerangPosition()
     this.checkRespawnPlayers()
     this.checkDisconnectedPlayers()
     run()
   }
 
-  start = (run: () => {}) => {
-    if (this.getPlayers().filled()) {
+  start = (run: () => void) => {
+    if (this.players().filled()) {
       return
     }
     console.log("Started game loop")
@@ -131,7 +107,7 @@ export default class Game {
       let now = Date.now()
       this.tick(now - updated, run)
       updated = now
-      if (!this.getPlayers().filled()) {
+      if (!this.players().filled()) {
         console.log("Stopped game loop")
         clearInterval(interval)
       }

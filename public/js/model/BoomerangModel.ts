@@ -1,4 +1,7 @@
 export default class BoomerangModel {
+  id: string = ""
+  player: string = ""
+  color: string = ""
   x: number = 0
   y: number = 0
   vx: number = 0

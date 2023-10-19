@@ -37,11 +37,11 @@ export default class Players {
   }
 
   kill = (player: Player) => {
+    console.log("Kill player", player.id)
     player.died = Date.now()
     player.vx = 0
     player.vy = 0
     player.gravity = 0
-    player.boomerangs = []
     player.move = {
       u: false,
       d: false,

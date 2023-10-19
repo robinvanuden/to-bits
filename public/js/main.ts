@@ -1,6 +1,7 @@
 import {io} from "socket.io-client"
 import PlayerModel from "./model/PlayerModel"
 import TileModel from "./model/TileModel"
+import BoomerangModel from "./model/BoomerangModel"
 
 (() => {
   const host = new URL(location.toString())
@@ -39,6 +40,7 @@ import TileModel from "./model/TileModel"
 
   let MAP = [] as TileModel[]
   let PLAYERS = [] as PlayerModel[]
+  let BOOMERANGS = [] as BoomerangModel[]
 
   socket.on("connect", () => {
     LOADING = true
@@ -54,6 +56,8 @@ import TileModel from "./model/TileModel"
   })
 
   socket.on("players", players => PLAYERS = players)
+
+  socket.on("boomerangs", boomerangs => BOOMERANGS = boomerangs)
 
   socket.on("me", id => ID = id)
 
@@ -171,15 +175,15 @@ import TileModel from "./model/TileModel"
         player_w,
         player_h
       )
-
-      for (const boomerang of player.boomerangs) {
-        ctx.fillRect(
-          boomerang.x * ratio - cx,
-          boomerang.y * ratio - cy,
-          boomerang.w * ratio,
-          boomerang.h * ratio
-        )
-      }
+    }
+    for (const boomerang of BOOMERANGS) {
+      ctx.fillStyle = boomerang.color
+      ctx.fillRect(
+        boomerang.x * ratio - cx,
+        boomerang.y * ratio - cy,
+        boomerang.w * ratio,
+        boomerang.h * ratio
+      )
     }
   }
 
@@ -262,7 +266,7 @@ import TileModel from "./model/TileModel"
     y += 10 * ratio
     ctx.fillText("l.r: " + you.look.r, x, y)
 
-    const boomerang = you.boomerangs[0]
+    const boomerang = BOOMERANGS.find(b => b.player === you.id)
     if (!boomerang) {
       return
     }

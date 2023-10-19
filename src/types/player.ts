@@ -1,5 +1,4 @@
 import {Tile} from "./tile"
-import {Boomerang} from "./boomerang"
 import {GRAVITY} from "../constants"
 import {names, uniqueNamesGenerator} from "unique-names-generator"
 
@@ -10,7 +9,7 @@ const randomColor = () => `hsl(${360 * Math.random()}, 88%, 62%)`
 const PLAYER_WIDTH = 36
 const PLAYER_HEIGHT = 48
 const SPEED_WALK = 5
-const SPEED_JUMP = 10.4 // 7.5 // 7.7
+const SPEED_JUMP = 8.3 // 7.5 // 7.7
 
 export class Player {
   id: string // ID
@@ -30,7 +29,6 @@ export class Player {
   jumping: boolean
   look: Direction // directions looking
   move: Direction // directions pressed
-  boomerangs: Boomerang[]
 
   constructor(id: string, spawn: Tile) {
     this.id = id
@@ -60,13 +58,12 @@ export class Player {
       l: false,
       r: false
     }
-    this.boomerangs = []
   }
-
 
   isColliding = (t: Tile): boolean => {
     return this.x < t.x + t.w && this.x + this.w > t.x && this.y < t.y + t.h && this.y + this.h > t.y
   }
+
   isWalkingOn = (t: Tile): boolean => {
     // +1 checks 1 row of pixels below player
     return this.x < t.x + t.w && this.x + this.w > t.x && this.y < t.y + t.h && this.y + this.h + 1 > t.y
