@@ -2,9 +2,10 @@
   "name": "to-bits",
   "version": "0.1.5",
   "scripts": {
+    "clean": "rm -r dist && rm -r .parcel-cache",
     "dev:server": "nodemon src/index.ts",
-    "dev:client": "parcel public/index.html --port=3001",
-    "build:client": "parcel build public/index.html",
+    "dev:client": "npm run clean && parcel public/index.html --port=3001",
+    "build:client": "npm run clean && parcel build public/index.html",
     "start:server": "ts-node src/index.ts",
     "start": "parcel build public/index.html && ts-node src/index.ts"
   },

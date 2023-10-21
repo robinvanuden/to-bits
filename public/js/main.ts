@@ -20,7 +20,7 @@ import BoomerangModel from "./model/BoomerangModel"
   IMAGE_CHARACTER.style.imageRendering = "pixelated"
 
   let VERSION = ""
-  let ID = ""
+  let ID = socket.id
   let SHOW_DEBUG = false
   let SHOW_PLAYERS = false
   let LOADING = true
@@ -46,6 +46,8 @@ import BoomerangModel from "./model/BoomerangModel"
 
   socket.on("connect", () => {
     LOADING = true
+    ID = socket.id
+    console.log("connected", ID)
   })
 
   socket.on("disconnect", () => {
@@ -61,8 +63,6 @@ import BoomerangModel from "./model/BoomerangModel"
 
   socket.on("boomerangs", boomerangs => BOOMERANGS = boomerangs)
 
-  socket.on("me", id => ID = id)
-
   socket.on("version", version => {
     if (VERSION === "") {
       VERSION = version
@@ -74,7 +74,7 @@ import BoomerangModel from "./model/BoomerangModel"
   })
 
   const keyEvent = (ev: KeyboardEvent, pressed: boolean) => {
-    const you = PLAYERS.find(p => p.id === ID)
+    const you = PLAYERS.find(p => p.i === ID)
     if (!you) {
       return
     }
@@ -110,7 +110,7 @@ import BoomerangModel from "./model/BoomerangModel"
   }
 
   const onMouseRelease = (ev: MouseEvent) => {
-    const you = PLAYERS.find(p => p.id === ID)
+    const you = PLAYERS.find(p => p.i === ID)
     if (!you) {
       return
     }
@@ -126,15 +126,15 @@ import BoomerangModel from "./model/BoomerangModel"
     let cx: number
     let cy: number
 
-    const playerToFocus = PLAYERS.find(player => player.id === ID)
+    const playerToFocus = PLAYERS.find(player => player.i === ID)
     if (playerToFocus) {
-      cx = (playerToFocus.x * ratio + playerToFocus.w * ratio * .5) - c.width / 2
-      cy = (playerToFocus.y * ratio + playerToFocus.h * ratio * .5) - c.height / 2
+      cx = Math.round((playerToFocus.x * ratio + playerToFocus.w * ratio * .5) - c.width / 2)
+      cy = Math.round((playerToFocus.y * ratio + playerToFocus.h * ratio * .5) - c.height / 2)
     } else {
-      cx = c.width / 2
-      cy = c.height / 2
+      cx = Math.round(c.width / 2)
+      cy = Math.round(c.height / 2)
     }
-    for (const tile of MAP.filter(tile => tile.t === 1)) {
+    for (const tile of MAP.filter(tile => tile.t === 1 || tile.t === 2)) {
       ctx.fillStyle = tile.c
       let bx = 0, by = 0
       switch (tile.i) {
@@ -157,7 +157,7 @@ import BoomerangModel from "./model/BoomerangModel"
         tile.h * ratio
       )
     }
-    for (const player of PLAYERS.filter(p => p.died === undefined)) {
+    for (const player of PLAYERS.filter(p => p.d === undefined)) {
       const player_w = player.w * ratio
       const player_h = player.h * ratio
       const player_x = player.x * ratio
@@ -165,9 +165,9 @@ import BoomerangModel from "./model/BoomerangModel"
       ctx.textAlign = "center"
       ctx.fillStyle = "#FFF"
       ctx.font = `${12 * ratio}px ${FONT}`
-      ctx.fillText(player.name, player_x - cx + player_w * .5, player_y - cy + 2)
-      ctx.fillStyle = player.color
-      // ctx.fillRect(player_x - cx, player_y - cy, player_w, player_h)
+      ctx.fillText(player.n, player_x - cx + player_w * .5, player_y - cy + 2)
+      ctx.fillStyle = player.c
+      ctx.fillRect(player_x - cx, player_y - cy, player_w, player_h)
 
       ctx.drawImage(
         IMAGE_CHARACTER,
@@ -193,11 +193,11 @@ import BoomerangModel from "./model/BoomerangModel"
   }
 
   const drawMessage = () => {
-    const you = PLAYERS.find(p => p.id === ID)
+    const you = PLAYERS.find(p => p.i === ID)
     if (!you) {
       return
     }
-    if (you.died === undefined) {
+    if (you.d === undefined) {
       return
     }
     const now = Date.now()
@@ -209,7 +209,7 @@ import BoomerangModel from "./model/BoomerangModel"
     ctx.fillText("YOU DIED", c.width / 2, c.height / 2)
 
     ctx.font = `${30 * ratio}px ${FONT}`
-    ctx.fillText("Respawn in: " + Math.round(((you.died + 5000) - now) / 1000), c.width / 2, (c.height / 2) + (30 * ratio))
+    ctx.fillText("Respawn in: " + Math.round(((you.d + 5000) - now) / 1000), c.width / 2, (c.height / 2) + (30 * ratio))
 
   }
   const drawLoading = () => {
@@ -229,15 +229,15 @@ import BoomerangModel from "./model/BoomerangModel"
     for (const player of PLAYERS) {
       ctx.font = `${16 * ratio}px ${FONT}`
       ctx.textAlign = "left"
-      ctx.fillStyle = player.color
-      ctx.fillText(player.name, c.width - side_bar, y)
+      ctx.fillStyle = player.c
+      ctx.fillText(player.n, c.width - side_bar, y)
       y += side_bar * ratio
     }
   }
 
 
   const drawDebug = (delta: number) => {
-    const you = PLAYERS.find(p => p.id === ID)
+    const you = PLAYERS.find(p => p.i === ID)
 
     ctx.font = `${10 * ratio}px ${FONT}`
     ctx.fillStyle = "black"
@@ -245,11 +245,11 @@ import BoomerangModel from "./model/BoomerangModel"
     let x = 2 * ratio
     let y = 20 * ratio
     ctx.fillText("delta: " + delta, x, y)
-    if (you == null || you.died !== undefined) {
+    if (you == null || you.d !== undefined) {
       return
     }
     y += 10 * ratio
-    ctx.fillText("name: " + you.name, x, y)
+    ctx.fillText("name: " + you.n, x, y)
     y += 10 * ratio
     ctx.fillText("x: " + you.x, x, y)
     y += 10 * ratio
@@ -259,19 +259,19 @@ import BoomerangModel from "./model/BoomerangModel"
     y += 10 * ratio
     ctx.fillText("vy: " + you.vy, x, y)
     y += 10 * ratio
-    ctx.fillText("jumping: " + you.jumping, x, y)
+    ctx.fillText("falling: " + (you.vy !== 0) ? "true" : "false", x, y)
     y += 10 * ratio
-    ctx.fillText("alive: " + you.died !== undefined ? "true" : "false", x, y)
+    ctx.fillText("alive: " + you.d !== undefined ? "true" : "false", x, y)
     y += 10 * ratio
-    ctx.fillText("l.u: " + you.look.u, x, y)
+    ctx.fillText("l.u: " + you.l.u, x, y)
     y += 10 * ratio
-    ctx.fillText("l.d: " + you.look.d, x, y)
+    ctx.fillText("l.d: " + you.l.d, x, y)
     y += 10 * ratio
-    ctx.fillText("l.l: " + you.look.l, x, y)
+    ctx.fillText("l.l: " + you.l.l, x, y)
     y += 10 * ratio
-    ctx.fillText("l.r: " + you.look.r, x, y)
+    ctx.fillText("l.r: " + you.l.r, x, y)
 
-    const boomerang = BOOMERANGS.find(b => b.player === you.id)
+    const boomerang = BOOMERANGS.find(b => b.player === you.i)
     if (!boomerang) {
       return
     }

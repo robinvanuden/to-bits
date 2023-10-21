@@ -1,6 +1,7 @@
 import {Server} from "socket.io"
 import {v4, v5} from "uuid"
 import Game from "./game"
+import {Player, PowerUp} from "./types/player"
 
 export const startSocket = (server: any, VERSION: string) => {
   const UUID_SEED = v4()
@@ -23,13 +24,16 @@ export const startSocket = (server: any, VERSION: string) => {
     let continue_player = game.players().getConnected(uuid)
     if (continue_player) {
       // Reconnect
+      continue_player.socket = client.id
       continue_player.disconnected = undefined
       continue_player.move = {u: false, d: false, l: false, r: false}
-      console.log('User reconnected', uuid)
+      console.log('User reconnected', client.id, uuid)
     } else {
-      createNewPlayer(uuid)
+      // New player
+      const SPAWN_TILE = game.map().randomSpawn()
+      console.log('User connected', uuid)
+      game.players().create(SPAWN_TILE, uuid, client.id)
     }
-    client.emit("me", uuid)
     client.emit("map", game.map().map())
 
     client.on("move.left", (bool: boolean) => {
@@ -70,34 +74,24 @@ export const startSocket = (server: any, VERSION: string) => {
       const player = game.players().get(uuid)
       if (player) player.move.u = bool
     })
+
     client.on("radius", (degrees: number) => onRadius(uuid, degrees))
 
-    client.on("disconnect", () => disconnectUser(uuid))
+    client.on("disconnect", () => {
+      console.log('User disconnected', uuid)
+      const player = game.players().get(uuid)
+      if (player) player.disconnected = Date.now()
+    })
   })
 
-  const getAddress = (client: any): string => {
-    return (client?.handshake?.headers['x-forwarded-for'] || client?.handshake?.address || "").toString()
-  }
-
-  const createNewPlayer = (uuid: string) => {
-    // New player
-    const SPAWN_TILE = game.map().randomSpawn()
-    console.log('User connected', uuid)
-    game.players().create(SPAWN_TILE, uuid)
-  }
+  const getAddress = (client: any): string => (client?.handshake?.headers['x-forwarded-for'] || client?.handshake?.address || "").toString()
 
   const onRadius = (uuid: string, degrees: number) => {
     const player = game.players().get(uuid)
-    if (player) game.boomerangs().create(player, degrees)
+    if (player && player.hasPowerUp(PowerUp.BOOMERANG)) game.boomerangs().create(player, degrees)
   }
 
-  const disconnectUser = (uuid: string) => {
-    console.log('User disconnected', uuid)
-    const player = game.players().get(uuid)
-    if (player) player.disconnected = Date.now()
-  }
-
-  const emitPlayers = () => io.emit("players", game.players().list())
+  const emitPlayers = () => io.emit("players", game.players().list().map(Player.toModel))
 
   const emitBoomerangs = () => io.emit("boomerangs", game.boomerangs().list())
 

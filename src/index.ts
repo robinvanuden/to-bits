@@ -9,11 +9,9 @@ app.use("/img", express.static("public/img"))
 app.use("/", express.static("dist"))
 
 const VERSION: string = process.env.npm_package_version || "?.?.?"
-console.log("ToBits: v" + VERSION)
+console.log("Starting ToBits: v" + VERSION)
 
 startSocket(server, VERSION)
 
 const PORT: number = Number.parseInt(process.env.PORT ?? "80")
-server.listen(PORT, () => {
-  console.log(`listening on ${PORT}`)
-})
+server.listen(PORT, () => console.log(`listening on http://localhost:${PORT}`))

@@ -1,4 +1,4 @@
-import {Tile} from "../types/tile"
+import Tile from "../types/tile"
 import {Player} from "../types/player"
 import {GRAVITY} from "../constants"
 
@@ -16,11 +16,7 @@ export default class Players {
 
   respawns = () => this.players.filter(p => p.died != undefined && (p.died + 5000) < Date.now())
 
-  create = (spawn: Tile, id: string) => {
-    const player = new Player(id, spawn)
-    this.players.push(player)
-    return player
-  }
+  create = (spawn: Tile, id: string, socket: string) => this.players.push(new Player(id, socket, spawn))
 
   respawn = (player: Player, spawn: Tile) => {
     player.died = undefined

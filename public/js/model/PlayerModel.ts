@@ -1,17 +1,17 @@
-export default class PlayerModel {
-  id: string = ""
-  w: number = 0
-  h: number = 0
-  x: number = 0
-  y: number = 0
-  vx: number = 0
-  vy: number = 0
-  jumping: boolean = false
-  name: string = "-"
-  color: string = "red"
-  died: number | undefined = undefined
-  move: Direction = {u: false, d: false, l: false, r: false}
-  look: Direction = {u: false, d: false, l: false, r: false}
+export default interface PlayerModel {
+  i: string
+  n: string // color
+  c: string // color
+  w: number // width
+  h: number // height
+  x: number // x-coord
+  y: number // y-coord
+  vx: number // x velocity
+  vy: number // y velocity
+  d: number | undefined // died
+  dc: number | undefined // disconnected
+  l: Direction
+  m: Direction
 }
 
 interface Direction {

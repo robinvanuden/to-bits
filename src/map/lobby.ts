@@ -1,8 +1,15 @@
-import {A, D, G, S} from "../controller/tiles"
+import {A, D, G, S, W} from "../controller/tiles"
 
 export const LOBBY_RAW = [
   [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
-  [A, A, A, A, A, A, A, A, A, A, S, A, A, A, A, A, A, A, A, A, A],
+  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
+  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
+  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
+  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
+  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
+  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
+  [A, A, A, A, A, A, W, W, A, A, S, A, A, A, A, A, A, A, A, A, A],
+  [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
   [G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G, G],
   [D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D],
   [D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D, D],

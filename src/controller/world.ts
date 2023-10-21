@@ -1,4 +1,4 @@
-import {MetaTile, metaToTile, Tile} from "../types/tile"
+import Tile, {MetaTile} from "../types/tile"
 import {TILE} from "./tiles"
 
 export default class World {
@@ -9,7 +9,7 @@ export default class World {
   constructor(tiles: MetaTile[][]) {
     for (let y = 0; y < tiles.length; y++) {
       for (let x = 0; x < tiles[y].length; x++) {
-        this.tiles.push(metaToTile(tiles[y][x], x, y))
+        this.tiles.push(new Tile(tiles[y][x], x, y))
       }
       this.bottom = y
     }
@@ -19,9 +19,9 @@ export default class World {
 
   void = () => this.bottom * TILE + 1000
 
-  getSolidBlocks = () => this.tiles.filter(tile => tile.t === 1)
+  blocksSolid = () => this.tiles.filter(tile => tile.t === 1)
 
-  getWalkableBlocks = () => this.tiles.filter(tile => tile.t === 1 || tile.t === 2)
+  blocksWalkable = () => this.tiles.filter(tile => tile.t === 1 || tile.t === 2)
 
   randomSpawn = () => {
     const spawns = this.tiles.filter(t => t.t === 9)

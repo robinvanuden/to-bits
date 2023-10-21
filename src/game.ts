@@ -18,36 +18,37 @@ export default class Game {
 
   map = (): World => this.lobby
 
-  private isKilled = (p: Player): boolean => {
-    return p.died === undefined && p.y > this.map().void()
-  }
+  private isKilled = (p: Player): boolean => p.died === undefined && p.y > this.map().void()
 
   private checkPlayerPosition = (delta: number) => {
-    const solids = this.map().getSolidBlocks()
-    const walkables = this.map().getWalkableBlocks()
+    const solids = this.map().blocksSolid()
+    const walkables = this.map().blocksWalkable()
     for (const player of this.players().alive()) {
       player.vy += player.gravity * delta
+
       if (player.move.l) {
         player.x -= player.sw
-        if (solids.find(tile => player.isColliding(tile))) player.x += player.sw
+        if (solids.find(t => t.isColliding(player))) player.x += player.sw
       }
       if (player.move.r) {
         player.x += player.sw
-        if (solids.find(tile => player.isColliding(tile))) player.x -= player.sw
+        if (solids.find(t => t.isColliding(player))) player.x -= player.sw
       }
-      if (player.move.u && !player.jumping) {
+      if (player.move.u) console.log("jump?", player.vy)
+      if (player.move.u && player.canJump() && !solids.find(t => t.isColliding(player))) {
         player.vy -= player.sj
-        player.jumping = true
       }
       player.x += player.vx
       player.y += player.vy
 
-      if (solids.find(tile => player.isColliding(tile))) {
-        player.y -= player.vy
+      const solid = solids.find(t => t.isColliding(player) && !t.isAboutWalking(player))
+      const walkable = walkables.find(t => t.isAboutWalking(player))
+      if (solid && player.vy > 0) {
+        player.y = solid.y - player.h
         player.vy = 0
-      }
-      if (walkables.find(tile => player.isWalkingOn(tile))) {
-        player.jumping = false
+      } else if (walkable && player.vy > 0) {
+        player.y = walkable.y - player.h
+        player.vy = 0
       }
       for (const boomerang of this.boomerangs().list()) {
         if (boomerang.isCaught(player)) {
