@@ -61,6 +61,7 @@ export class Player {
       l: false,
       r: false
     }
+    this.power_ups = [PowerUp.BOOMERANG]
   }
 
   canJump = (): boolean => this.vy >= 0 && this.vy < 1
