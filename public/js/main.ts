@@ -7,7 +7,7 @@ import BoomerangModel from "./model/BoomerangModel"
   const FONT = "FiveFontsatFreddy"
 
   const host = new URL(location.toString())
-  host.protocol = location.protocol === "wss" ? "https" : "http"
+  host.protocol = location.protocol === "wss:" ? "https:" : "http:"
   host.pathname = ""
   const socket = io({"transports": ['websocket'], upgrade: true, ackTimeout: 2000})
 
