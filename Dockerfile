@@ -4,6 +4,6 @@ WORKDIR /app/
 
 COPY . .
 
-RUN npm install && npm audit fix
+RUN npm install
 
 CMD ["npm", "run", "start"]
