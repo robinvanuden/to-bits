@@ -14,7 +14,7 @@ export default class PlayerController {
 
   disconnected = () => this.players.filter(p => p.disconnected != undefined && (p.disconnected + 10_000) < Date.now())
 
-  respawns = () => this.players.filter(p => p.died != undefined && (p.died + 5000) < Date.now())
+  respawns = () => this.players.filter(p => p.died != undefined && p.disconnected == undefined && (p.died + 5000) < Date.now())
 
   create = (spawn: Tile, id: string, socket: string) => this.players.push(new Player(id, socket, spawn))
 
