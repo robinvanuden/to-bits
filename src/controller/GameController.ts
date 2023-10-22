@@ -7,7 +7,7 @@ import BoomerangController from "./BoomerangController"
 export default class GameController {
 
   DELTA = 0
-  TICKS = 60
+  TICKS = 50
   lobby = new World(LOBBY_RAW)
   private __players = new PlayerController()
   private __boomerangs = new BoomerangController()
@@ -38,9 +38,9 @@ export default class GameController {
         player.x += player.sw
         if (solids.find(t => t.isColliding(player))) player.x -= player.sw
       }
-      if (player.move.u) console.log("jump?", player.vy)
       if (player.move.u && player.canJump() && !solids.find(t => t.isColliding(player))) {
         player.vy -= player.sj
+        player.falling = true
       }
       player.x += player.vx
       player.y += player.vy
@@ -50,9 +50,11 @@ export default class GameController {
       if (solid && player.vy > 0) {
         player.y = solid.y - player.h
         player.vy = 0
+        player.falling = false
       } else if (walkable && player.vy > 0) {
         player.y = walkable.y - player.h
         player.vy = 0
+        player.falling = false
       }
       for (const boomerang of this.boomerangs().list()) {
         if (boomerang.isCaught(player)) {
@@ -72,7 +74,7 @@ export default class GameController {
     for (const boomerang of this.boomerangs().list()) {
       boomerang.x += boomerang.vx
       boomerang.y += boomerang.vy
-      if (solids.find(tile => boomerang.isBroke(tile))) {
+      if (solids.find(boomerang.isBroke)) {
         this.boomerangs().delete(boomerang)
       }
     }

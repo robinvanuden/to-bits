@@ -31,9 +31,10 @@ export class Boomerang {
     this.thrown = Date.now()
   }
 
-  isBroke = (t: Tile): boolean => {
-    return this.x < t.x + t.w && this.x + this.w > t.x && this.y < t.y + t.h && this.y + this.h > t.y
-  }
+  isBroke = (t: Tile): boolean => this.x < t.x + t.w
+    && this.x + this.w > t.x
+    && this.y < t.y + t.h
+    && this.y + this.h > t.y
 
   isThrown = (p: Player): boolean => this.id === p.id && this.thrown + 250 > Date.now()
 

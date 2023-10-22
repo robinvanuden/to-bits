@@ -29,6 +29,7 @@ export class Player {
   y: number // y-coord
   vx: number // x velocity
   vy: number // y velocity
+  falling: boolean
   look: Direction // directions looking
   move: Direction // directions pressed
   power_ups: PowerUp[] = []
@@ -46,6 +47,7 @@ export class Player {
     this.y = spawn.y
     this.vx = 0
     this.vy = 0
+    this.falling = false
     this.gravity = GRAVITY
     this.sw = SPEED_WALK
     this.sj = SPEED_JUMP
@@ -64,7 +66,7 @@ export class Player {
     this.power_ups = [PowerUp.BOOMERANG]
   }
 
-  canJump = (): boolean => this.vy >= 0 && this.vy < 1
+  canJump = (): boolean => !this.falling && this.vy >= 0 && this.vy < 1
 
   // +1 checks 1 row of pixels below player
   hasPowerUp = (power_up: PowerUp): boolean => this.power_ups.indexOf(power_up) !== -1
