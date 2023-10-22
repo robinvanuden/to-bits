@@ -1,4 +1,4 @@
-import {A, G, S} from "../controller/tiles"
+import {A, G, S} from "../types/tile"
 
 // TODO: Use Arena
 export const MAP_RAW = [

@@ -2,7 +2,7 @@ import Tile from "../types/tile"
 import {Player} from "../types/player"
 import {GRAVITY} from "../constants"
 
-export default class Players {
+export default class PlayerController {
 
   players: Player[] = []
 

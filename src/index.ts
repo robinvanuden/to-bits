@@ -1,6 +1,6 @@
 import {createServer} from "http"
 import express from "express"
-import SocketController from "./socket"
+import SocketController from "./controller/SocketController"
 
 const app = express()
 const server = createServer(app)

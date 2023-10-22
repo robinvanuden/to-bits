@@ -2,7 +2,7 @@ import {Player} from "../types/player"
 import {v4} from "uuid"
 import {Boomerang} from "../types/boomerang"
 
-export default class Boomerangs {
+export default class BoomerangController {
 
   private __boomerangs: Boomerang[] = []
 

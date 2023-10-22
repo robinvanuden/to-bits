@@ -1,5 +1,4 @@
-import Tile, {MetaTile} from "../types/tile"
-import {TILE} from "./tiles"
+import Tile, {MetaTile, TILE} from "./tile"
 
 export default class World {
 

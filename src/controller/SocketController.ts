@@ -1,7 +1,7 @@
 import {Server, Socket} from "socket.io"
 import {v4, v5} from "uuid"
-import Game from "./game"
-import {Player, PowerUp} from "./types/player"
+import GameController from "./GameController"
+import {Player, PowerUp} from "../types/player"
 
 export default class SocketController {
 
@@ -9,7 +9,7 @@ export default class SocketController {
   private readonly version: string
   private uuid_seed: string
   private connected_ids: string[] = []
-  private game: Game | undefined
+  private game: GameController | undefined
 
   constructor(server: any, version: string) {
     this.io = new Server(server)
@@ -20,7 +20,7 @@ export default class SocketController {
     this.io.on("connection", client => {
       if (!this.game) {
         console.log("Start game instance")
-        this.game = new Game()
+        this.game = new GameController()
       }
       const address: string = this.getAddress(client)
       if (address === "") {

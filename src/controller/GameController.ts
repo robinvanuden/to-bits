@@ -1,16 +1,16 @@
-import Players from "./controller/players"
-import {Player} from "./types/player"
-import {LOBBY_RAW} from "./map/lobby"
-import World from "./controller/world"
-import Boomerangs from "./controller/boomerangs"
+import PlayerController from "./PlayerController"
+import {Player} from "../types/player"
+import {LOBBY_RAW} from "../map/lobby"
+import World from "../types/world"
+import BoomerangController from "./BoomerangController"
 
-export default class Game {
+export default class GameController {
 
   DELTA = 0
   TICKS = 60
   lobby = new World(LOBBY_RAW)
-  private __players = new Players()
-  private __boomerangs = new Boomerangs()
+  private __players = new PlayerController()
+  private __boomerangs = new BoomerangController()
   private started = false
   private __interval: NodeJS.Timeout | undefined = undefined
 

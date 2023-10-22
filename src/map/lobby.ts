@@ -1,4 +1,4 @@
-import {A, D, G, S, W} from "../controller/tiles"
+import {A, D, G, S, W} from "../types/tile"
 
 export const LOBBY_RAW = [
   [A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A],
