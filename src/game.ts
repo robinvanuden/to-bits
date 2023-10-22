@@ -9,14 +9,18 @@ export default class Game {
   DELTA = 0
   TICKS = 60
   lobby = new World(LOBBY_RAW)
-  __players = new Players()
-  __boomerangs = new Boomerangs()
+  private __players = new Players()
+  private __boomerangs = new Boomerangs()
+  private started = false
+  private __interval: NodeJS.Timeout | undefined = undefined
 
   boomerangs = () => this.__boomerangs
 
   players = () => this.__players
 
   map = (): World => this.lobby
+
+  isStarted = () => this.started
 
   private isKilled = (p: Player): boolean => p.died === undefined && p.y > this.map().void()
 
@@ -88,29 +92,38 @@ export default class Game {
     }
   }
 
-  private tick = (delta: number, run: () => void) => {
+  private tick = (delta: number) => {
     this.DELTA = delta
     this.checkPlayerPosition(delta)
     this.checkRespawnPlayers()
     this.checkDisconnectedPlayers()
-    run()
   }
 
   start = (run: () => void) => {
-    if (this.players().filled()) {
+    if (this.__interval) {
+      console.log("Started game loop already started")
       return
     }
     console.log("Started game loop")
+    this.started = true
     let updated = Date.now()
-    const interval = setInterval(() => {
+    this.__interval = setInterval(() => {
       let now = Date.now()
-      this.tick(now - updated, run)
+      this.tick(now - updated)
+      run()
       updated = now
-      if (!this.players().filled()) {
-        console.log("Stopped game loop")
-        clearInterval(interval)
-      }
+      if (!this.players().filled()) this.stop()
     }, 1000 / this.TICKS)
+  }
+
+  stop = () => {
+    if (!this.__interval) {
+      return
+    }
+    console.log("Stopped game loop")
+    clearInterval(this.__interval)
+    this.started = false
+    this.__interval = undefined
   }
 
 }

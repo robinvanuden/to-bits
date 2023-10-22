@@ -1,6 +1,6 @@
 import {createServer} from "http"
 import express from "express"
-import {startSocket} from "./socket"
+import SocketController from "./socket"
 
 const app = express()
 const server = createServer(app)
@@ -11,7 +11,7 @@ app.use("/", express.static("dist"))
 const VERSION: string = process.env.npm_package_version || "?.?.?"
 console.log("Starting ToBits: v" + VERSION)
 
-startSocket(server, VERSION)
+new SocketController(server, VERSION)
 
 const PORT: number = Number.parseInt(process.env.PORT ?? "80")
 server.listen(PORT, () => console.log(`listening on http://localhost:${PORT}`))

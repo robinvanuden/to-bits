@@ -7,9 +7,18 @@ import BoomerangModel from "./model/BoomerangModel"
   const FONT = "FiveFontsatFreddy"
 
   const host = new URL(location.toString())
-  host.protocol = (location.protocol === "wss:" || location.protocol === "https:") ? "https:" : "http:"
+  const secure = (location.protocol === "wss:" || location.protocol === "https:")
+  host.protocol = secure ? "https:" : "http:"
   host.pathname = ""
-  const socket = io({"transports": ['websocket'], upgrade: true, ackTimeout: 2000})
+  const socket = io({
+    "transports": ['websocket'],
+    upgrade: true,
+    ackTimeout: 2000,
+    autoConnect: true,
+    secure: secure,
+    reconnection: true,
+    timeout: 10000
+  })
 
   const IMAGE_BLOCKS = new Image()
   IMAGE_BLOCKS.src = host.toString() + "img/blocks.jpg"
