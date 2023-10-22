@@ -18,6 +18,12 @@ export default class Players {
 
   create = (spawn: Tile, id: string, socket: string) => this.players.push(new Player(id, socket, spawn))
 
+  recreate = (player: Player, socket: string) => {
+    player.socket = socket
+    player.disconnected = undefined
+    player.move = {u: false, d: false, l: false, r: false}
+  }
+
   respawn = (player: Player, spawn: Tile) => {
     player.died = undefined
     player.x = spawn.x
