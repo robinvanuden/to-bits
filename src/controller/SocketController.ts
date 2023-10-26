@@ -2,6 +2,7 @@ import {Server, Socket} from "socket.io"
 import {v4, v5} from "uuid"
 import GameController from "./GameController"
 import {Player, PowerUp} from "../types/player"
+import Tile from "../types/tile"
 
 export default class SocketController {
 
@@ -47,7 +48,7 @@ export default class SocketController {
         console.log('User connected', uuid)
         this.game.players().create(SPAWN_TILE, uuid, client.id)
       }
-      client.emit("map", this.game.map().map())
+      client.emit("map", this.game.map().map().map(Tile.toModel))
 
       client.on("move.left", (bool: boolean) => this.onMovement(uuid, "move.left", bool))
       client.on("move.right", (bool: boolean) => this.onMovement(uuid, "move.right", bool))

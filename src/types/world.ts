@@ -1,16 +1,34 @@
-import Tile, {MetaTile, TILE} from "./tile"
+import Tile, {A, D, G, TILE, W} from "./tile"
 
 export default class World {
 
   private tiles: Tile[] = []
   private readonly bottom: number = 0
 
-  constructor(tiles: MetaTile[][]) {
+  constructor(tiles: string[][]) {
     for (let y = 0; y < tiles.length; y++) {
       for (let x = 0; x < tiles[y].length; x++) {
-        this.tiles.push(new Tile(tiles[y][x], x, y))
+        this.tiles.push(new Tile(this.toMeta(tiles[y][x]), x, y))
       }
       this.bottom = y
+    }
+  }
+
+  toMeta = (type: string) => {
+    switch (type) {
+      default:
+      case "A":
+        return A
+      case "D":
+        return D
+      case "G":
+        return G
+      case "AS":
+        const tile = A
+        tile.spawn = true
+        return tile
+      case "W":
+        return W
     }
   }
 
@@ -18,12 +36,12 @@ export default class World {
 
   void = () => this.bottom * TILE + 1000
 
-  blocksSolid = () => this.tiles.filter(tile => tile.t === 1)
+  blocksSolid = () => this.tiles.filter(tile => tile.solid)
 
-  blocksWalkable = () => this.tiles.filter(tile => tile.t === 1 || tile.t === 2)
+  blocksWalkable = () => this.tiles.filter(tile => tile.walkable)
 
   randomSpawn = () => {
-    const spawns = this.tiles.filter(t => t.t === 9)
+    const spawns = this.tiles.filter(t => t.spawn)
     const index = Math.round((spawns.length - 1) * Math.random())
     return spawns[index]
   }

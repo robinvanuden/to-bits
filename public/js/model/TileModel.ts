@@ -1,9 +1,13 @@
-export default class TileModel {
-  x = 0
-  y = 0
-  w = 0
-  h = 0
-  c = ""
-  i = ""
-  t = -1
+export default interface TileModel {
+  x: number
+  y: number
+  w: number // width
+  h: number // height
+  t: number // type
+  c: string // color
+  i: string | undefined
+  d: number // damage
+  sp: boolean // spawn
+  wa: boolean // walkable
+  so: boolean // solid
 }

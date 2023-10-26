@@ -66,6 +66,7 @@ import BoomerangModel from "./model/BoomerangModel"
   socket.on("map", map => {
     MAP = map
     LOADING = false
+    console.log(map)
   })
 
   socket.on("players", players => PLAYERS = players)
@@ -143,7 +144,7 @@ import BoomerangModel from "./model/BoomerangModel"
       cx = Math.round(c.width / 2)
       cy = Math.round(c.height / 2)
     }
-    for (const tile of MAP.filter(tile => tile.t === 1 || tile.t === 2)) {
+    for (const tile of MAP.filter(tile => tile.wa)) {
       ctx.fillStyle = tile.c
       let bx = 0, by = 0
       switch (tile.i) {

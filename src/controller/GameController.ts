@@ -1,14 +1,14 @@
 import PlayerController from "./PlayerController"
 import {Player} from "../types/player"
-import {LOBBY_RAW} from "../map/lobby"
 import World from "../types/world"
 import BoomerangController from "./BoomerangController"
+import lobby from "../map/lobby.json"
 
 export default class GameController {
 
   DELTA = 0
   TICKS = 50
-  lobby = new World(LOBBY_RAW)
+  lobby = new World(lobby.tiles)
   private __players = new PlayerController()
   private __boomerangs = new BoomerangController()
   private started = false
