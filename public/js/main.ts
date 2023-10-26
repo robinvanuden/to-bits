@@ -250,10 +250,12 @@ import BoomerangModel from "./model/BoomerangModel"
     const you = PLAYERS.find(p => p.i === ID)
 
     ctx.font = `${10 * ratio}px ${FONT}`
-    ctx.fillStyle = "black"
+    ctx.fillStyle = "white"
     ctx.textAlign = "left"
     let x = 2 * ratio
     let y = 20 * ratio
+    ctx.fillText("version: " + VERSION, x, y)
+    y += 10 * ratio
     ctx.fillText("delta: " + delta, x, y)
     if (you == null || you.d !== undefined) {
       return
