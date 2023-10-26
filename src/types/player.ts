@@ -4,7 +4,7 @@ import {names, uniqueNamesGenerator} from "unique-names-generator"
 
 const randomName = () => uniqueNamesGenerator({length: 1, dictionaries: [names]})
 
-const randomColor = () => `hsl(${360 * Math.random()}, 88%, 62%)`
+const randomColor = () => `hsl(${360 * Math.random()}, 68%, 62%)`
 
 const PLAYER_WIDTH = 36
 const PLAYER_HEIGHT = 48

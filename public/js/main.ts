@@ -20,9 +20,9 @@ import BoomerangModel from "./model/BoomerangModel"
     timeout: 10000
   })
 
-  const IMAGE_BLOCKS = new Image()
-  IMAGE_BLOCKS.src = host.toString() + "img/blocks.jpg"
-  IMAGE_BLOCKS.style.imageRendering = "pixelated"
+  const IMAGE_TILES = new Image()
+  IMAGE_TILES.src = host.toString() + "img/tiles.png"
+  IMAGE_TILES.style.imageRendering = "pixelated"
 
   const IMAGE_CHARACTER = new Image()
   IMAGE_CHARACTER.src = host.toString() + "img/character.png"
@@ -56,7 +56,6 @@ import BoomerangModel from "./model/BoomerangModel"
   socket.on("connect", () => {
     LOADING = true
     ID = socket.id
-    console.log("connected", ID)
   })
 
   socket.on("disconnect", () => {
@@ -66,7 +65,6 @@ import BoomerangModel from "./model/BoomerangModel"
   socket.on("map", map => {
     MAP = map
     LOADING = false
-    console.log(map)
   })
 
   socket.on("players", players => PLAYERS = players)
@@ -76,7 +74,6 @@ import BoomerangModel from "./model/BoomerangModel"
   socket.on("version", version => {
     if (VERSION === "") {
       VERSION = version
-      document.title = "To Bits v" + VERSION
       LOADING = true
     } else if (VERSION !== version) {
       window.location.reload()
@@ -148,19 +145,22 @@ import BoomerangModel from "./model/BoomerangModel"
       ctx.fillStyle = tile.c
       let bx = 0, by = 0
       switch (tile.i) {
+        case "wood":
+          bx = 48
+          break
         case "grass":
-          bx = 12
+          bx = 32
           break
         case "dirt":
-          bx = 24
+          bx = 16
           break
       }
       ctx.drawImage(
-        IMAGE_BLOCKS,
+        IMAGE_TILES,
         bx,
         by,
-        12,
-        12,
+        16,
+        16,
         tile.x * ratio - cx,
         tile.y * ratio - cy,
         tile.w * ratio,
