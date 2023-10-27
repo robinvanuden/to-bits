@@ -1,10 +1,8 @@
 import {io} from "socket.io-client"
-import PlayerModel from "./model/PlayerModel"
-import TileModel from "./model/TileModel"
-import BoomerangModel from "./model/BoomerangModel"
+import MapController from "./controller/map"
+import ImageController from "./controller/image"
 
 (() => {
-  const FONT = "FiveFontsatFreddy"
 
   const host = new URL(location.toString())
   const secure = (location.protocol === "wss:" || location.protocol === "https:")
@@ -20,23 +18,15 @@ import BoomerangModel from "./model/BoomerangModel"
     timeout: 10000
   })
 
-  const IMAGE_TILES = new Image()
-  IMAGE_TILES.src = host.toString() + "img/tiles.png"
-  IMAGE_TILES.style.imageRendering = "pixelated"
-
-  const IMAGE_CHARACTER = new Image()
-  IMAGE_CHARACTER.src = host.toString() + "img/character.png"
-  IMAGE_CHARACTER.style.imageRendering = "pixelated"
-
   let VERSION = ""
-  let ID = socket.id
-  let SHOW_DEBUG = false
-  let SHOW_PLAYERS = false
-  let LOADING = true
 
   const ratio = window.devicePixelRatio || 1
 
   const c = document.getElementById("playground") as HTMLCanvasElement
+
+  const imageController = new ImageController(host)
+
+  const mapController = new MapController(c, ratio, socket.id, imageController)
 
   c.width = window.innerWidth * ratio
   c.height = window.innerHeight * ratio
@@ -46,42 +36,30 @@ import BoomerangModel from "./model/BoomerangModel"
     c.height = window.innerHeight * ratio
   })
 
-  const ctx = c.getContext("2d") as CanvasRenderingContext2D
-  ctx.imageSmoothingEnabled = false
+  socket.on("connect", () => mapController.setID(socket.id))
 
-  let MAP = [] as TileModel[]
-  let PLAYERS = [] as PlayerModel[]
-  let BOOMERANGS = [] as BoomerangModel[]
-
-  socket.on("connect", () => {
-    LOADING = true
-    ID = socket.id
-  })
-
-  socket.on("disconnect", () => {
-    LOADING = true
-  })
+  socket.on("disconnect", () => mapController.setLoading(true))
 
   socket.on("map", map => {
-    MAP = map
-    LOADING = false
+    mapController.setMap(map)
+    mapController.setLoading(false)
   })
 
-  socket.on("players", players => PLAYERS = players)
+  socket.on("players", mapController.setPlayers)
 
-  socket.on("boomerangs", boomerangs => BOOMERANGS = boomerangs)
+  socket.on("boomerangs", mapController.setBoomerangs)
 
   socket.on("version", version => {
     if (VERSION === "") {
       VERSION = version
-      LOADING = true
+      mapController.setLoading(true)
     } else if (VERSION !== version) {
       window.location.reload()
     }
   })
 
   const keyEvent = (ev: KeyboardEvent, pressed: boolean) => {
-    const you = PLAYERS.find(p => p.i === ID)
+    const you = mapController.you()
     if (!you) {
       return
     }
@@ -101,10 +79,7 @@ import BoomerangModel from "./model/BoomerangModel"
       socket.emit("move.down", pressed)
     }
     if (pressed && key === ";") {
-      SHOW_DEBUG = !SHOW_DEBUG
-    }
-    if (pressed && key === "tab") {
-      SHOW_PLAYERS = !SHOW_PLAYERS
+      mapController.toggleDebug()
     }
   }
 
@@ -117,7 +92,7 @@ import BoomerangModel from "./model/BoomerangModel"
   }
 
   const onMouseRelease = (ev: MouseEvent) => {
-    const you = PLAYERS.find(p => p.i === ID)
+    const you = mapController.you()
     if (!you) {
       return
     }
@@ -129,191 +104,9 @@ import BoomerangModel from "./model/BoomerangModel"
     ))
   }
 
-  const drawMap = () => {
-    let cx: number
-    let cy: number
 
-    const playerToFocus = PLAYERS.find(player => player.i === ID)
-    if (playerToFocus) {
-      cx = Math.round((playerToFocus.x * ratio + playerToFocus.w * ratio * .5) - c.width / 2)
-      cy = Math.round((playerToFocus.y * ratio + playerToFocus.h * ratio * .5) - c.height / 2)
-    } else {
-      cx = Math.round(c.width / 2)
-      cy = Math.round(c.height / 2)
-    }
-    for (const tile of MAP.filter(tile => tile.wa)) {
-      ctx.fillStyle = tile.c
-      let bx = 0, by = 0
-      switch (tile.i) {
-        case "wood":
-          bx = 48
-          break
-        case "grass":
-          bx = 32
-          break
-        case "dirt":
-          bx = 16
-          break
-      }
-      ctx.drawImage(
-        IMAGE_TILES,
-        bx,
-        by,
-        16,
-        16,
-        tile.x * ratio - cx,
-        tile.y * ratio - cy,
-        tile.w * ratio,
-        tile.h * ratio
-      )
-    }
-    for (const player of PLAYERS.filter(p => p.d === undefined)) {
-      const player_w = player.w * ratio
-      const player_h = player.h * ratio
-      const player_x = player.x * ratio
-      const player_y = player.y * ratio
-      ctx.textAlign = "center"
-      ctx.fillStyle = "#FFF"
-      ctx.font = `${12 * ratio}px ${FONT}`
-      ctx.fillText(player.n, player_x - cx + player_w * .5, player_y - cy + 2)
-
-      ctx.drawImage(
-        IMAGE_CHARACTER,
-        2,
-        0,
-        12,
-        16,
-        player_x - cx,
-        player_y - cy,
-        player_w,
-        player_h
-      )
-
-      ctx.fillStyle = player.c
-      ctx.fillRect(player_x - cx + 2, player_y - cy + 1, 7 * Math.round(player.w / 16) * ratio, 2 * Math.round(player.w / 16) * ratio)
-    }
-    for (const boomerang of BOOMERANGS) {
-      ctx.fillStyle = boomerang.color
-      ctx.fillRect(
-        boomerang.x * ratio - cx,
-        boomerang.y * ratio - cy,
-        boomerang.w * ratio,
-        boomerang.h * ratio
-      )
-    }
-  }
-
-  const drawMessage = () => {
-    const you = PLAYERS.find(p => p.i === ID)
-    if (!you) {
-      return
-    }
-    if (you.d === undefined) {
-      return
-    }
-    const now = Date.now()
-    ctx.fillStyle = "rgba(0,0,0,0.8)"
-    ctx.fillRect(0, 0, c.width, c.height)
-    ctx.textAlign = "center"
-    ctx.fillStyle = "#FFF"
-    ctx.font = `${50 * ratio}px ${FONT}`
-    ctx.fillText("YOU DIED", c.width / 2, c.height / 2)
-
-    ctx.font = `${30 * ratio}px ${FONT}`
-    ctx.fillText("Respawn in: " + Math.round(((you.d + 5000) - now) / 1000), c.width / 2, (c.height / 2) + (30 * ratio))
-
-  }
-  const drawLoading = () => {
-    ctx.fillStyle = "#1d1d1d"
-    ctx.fillRect(0, 0, c.width, c.height)
-    ctx.textAlign = "center"
-    ctx.fillStyle = "#f3f3f3"
-    ctx.font = `${50 * ratio}px ${FONT}`
-    ctx.fillText("LOADING", c.width / 2, c.height / 2)
-  }
-
-  const drawPlayerList = () => {
-    const side_bar = 200 * ratio
-    ctx.fillStyle = "#1d1d1d"
-    ctx.fillRect(c.width - 200, 0, 200, c.height)
-    let y = 20 * ratio
-    for (const player of PLAYERS) {
-      ctx.font = `${16 * ratio}px ${FONT}`
-      ctx.textAlign = "left"
-      ctx.fillStyle = player.c
-      ctx.fillText(player.n, c.width - side_bar, y)
-      y += side_bar * ratio
-    }
-  }
-
-
-  const drawDebug = (delta: number) => {
-    const you = PLAYERS.find(p => p.i === ID)
-
-    ctx.font = `${10 * ratio}px ${FONT}`
-    ctx.fillStyle = "white"
-    ctx.textAlign = "left"
-    let x = 2 * ratio
-    let y = 20 * ratio
-    ctx.fillText("version: " + VERSION, x, y)
-    y += 10 * ratio
-    ctx.fillText("delta: " + delta, x, y)
-    if (you == null || you.d !== undefined) {
-      return
-    }
-    y += 10 * ratio
-    ctx.fillText("name: " + you.n, x, y)
-    y += 10 * ratio
-    ctx.fillText("x: " + you.x, x, y)
-    y += 10 * ratio
-    ctx.fillText("y: " + you.y, x, y)
-    y += 10 * ratio
-    ctx.fillText("vx: " + you.vx, x, y)
-    y += 10 * ratio
-    ctx.fillText("vy: " + you.vy, x, y)
-    y += 10 * ratio
-    ctx.fillText("falling: " + (you.vy !== 0) ? "true" : "false", x, y)
-    y += 10 * ratio
-    ctx.fillText("alive: " + you.d !== undefined ? "true" : "false", x, y)
-    y += 10 * ratio
-    ctx.fillText("l.u: " + you.l.u, x, y)
-    y += 10 * ratio
-    ctx.fillText("l.d: " + you.l.d, x, y)
-    y += 10 * ratio
-    ctx.fillText("l.l: " + you.l.l, x, y)
-    y += 10 * ratio
-    ctx.fillText("l.r: " + you.l.r, x, y)
-
-    const boomerang = BOOMERANGS.find(b => b.player === you.i)
-    if (!boomerang) {
-      return
-    }
-    y += 10 * ratio
-    ctx.fillText("x: " + boomerang.x, x, y)
-    y += 10 * ratio
-    ctx.fillText("y: " + boomerang.y, x, y)
-    y += 10 * ratio
-    ctx.fillText("vx: " + boomerang.vx, x, y)
-    y += 10 * ratio
-    ctx.fillText("vy: " + boomerang.vy, x, y)
-  }
-
-  let lastRender = Date.now()
-  const tick = (timestamp: number) => {
-    const delta = timestamp - lastRender
-    ctx.clearRect(0, 0, c.width, c.height)
-    drawMap()
-    if (SHOW_PLAYERS) drawPlayerList()
-    drawMessage()
-    if (LOADING) drawLoading()
-    if (SHOW_DEBUG) drawDebug(delta)
-    lastRender = timestamp
-    window.requestAnimationFrame(tick)
-  }
-
-  window.requestAnimationFrame(tick)
   document.addEventListener('contextmenu', e => e.preventDefault())
   window.addEventListener("keydown", events => keyEvent(events, true))
   window.addEventListener("keyup", events => keyEvent(events, false))
-  c.addEventListener("mouseup", onMouseRelease)
+  window.addEventListener("mouseup", onMouseRelease)
 })()
