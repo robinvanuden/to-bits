@@ -176,8 +176,6 @@ import BoomerangModel from "./model/BoomerangModel"
       ctx.fillStyle = "#FFF"
       ctx.font = `${12 * ratio}px ${FONT}`
       ctx.fillText(player.n, player_x - cx + player_w * .5, player_y - cy + 2)
-      ctx.fillStyle = player.c
-      ctx.fillRect(player_x - cx, player_y - cy, player_w, player_h)
 
       ctx.drawImage(
         IMAGE_CHARACTER,
@@ -190,6 +188,9 @@ import BoomerangModel from "./model/BoomerangModel"
         player_w,
         player_h
       )
+
+      ctx.fillStyle = player.c
+      ctx.fillRect(player_x - cx + 2, player_y - cy + 1, 7 * Math.round(player.w / 16) * ratio, 2 * Math.round(player.w / 16) * ratio)
     }
     for (const boomerang of BOOMERANGS) {
       ctx.fillStyle = boomerang.color
