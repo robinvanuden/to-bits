@@ -3,7 +3,7 @@
   "version": "0.1.8",
   "scripts": {
     "clean": "rm -r dist && rm -r .parcel-cache",
-    "dev:server": "nodemon src/index.ts",
+    "dev:server": "nodemon --watch src src/index.ts",
     "dev:client": "npm run clean && parcel public/index.html --port=3001",
     "dev": "npm run dev:client & npm run dev:server",
     "build:client": "npm run clean && parcel build public/index.html",
