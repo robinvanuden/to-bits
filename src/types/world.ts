@@ -1,4 +1,4 @@
-import Tile, {A, D, G, TILE, W} from "./tile"
+import Tile, {A, D, G, TILE, W} from "./Tile"
 
 export default class World {
 
@@ -39,6 +39,8 @@ export default class World {
   blocksSolid = () => this.tiles.filter(tile => tile.solid)
 
   blocksWalkable = () => this.tiles.filter(tile => tile.walkable)
+
+  blocksAir = () => this.tiles.filter(tile => !tile.walkable && !tile.solid)
 
   randomSpawn = () => {
     const spawns = this.tiles.filter(t => t.spawn)

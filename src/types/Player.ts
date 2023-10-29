@@ -1,6 +1,7 @@
-import Tile from "./tile"
+import Tile from "./Tile"
 import {GRAVITY} from "../constants"
 import {names, uniqueNamesGenerator} from "unique-names-generator"
+import PowerUp, {PowerType} from "./PowerUp"
 
 const randomName = () => uniqueNamesGenerator({length: 1, dictionaries: [names]})
 
@@ -10,8 +11,6 @@ const PLAYER_WIDTH = 36
 const PLAYER_HEIGHT = 48
 const SPEED_WALK = 5
 const SPEED_JUMP = 7.5 // 7.7
-
-export enum PowerUp {BOOMERANG, BOMB, FIREBALL}
 
 export class Player {
   id: string // ID
@@ -23,8 +22,8 @@ export class Player {
   gravity: number // gravity
   sw: number // speed walking
   sj: number // speed falling
-  w: number // width
-  h: number // height
+  width: number // width
+  height: number // height
   x: number // x-coord
   y: number // y-coord
   vx: number // x velocity
@@ -32,7 +31,7 @@ export class Player {
   falling: boolean
   look: Direction // directions looking
   move: Direction // directions pressed
-  power_ups: PowerUp[] = []
+  power_ups: PowerType[] = []
 
   constructor(id: string, socket: string, spawn: Tile) {
     this.id = id
@@ -41,8 +40,8 @@ export class Player {
     this.died = undefined
     this.color = randomColor()
     this.name = randomName()
-    this.w = PLAYER_WIDTH
-    this.h = PLAYER_HEIGHT
+    this.width = PLAYER_WIDTH
+    this.height = PLAYER_HEIGHT
     this.x = spawn.x
     this.y = spawn.y
     this.vx = 0
@@ -63,18 +62,18 @@ export class Player {
       l: false,
       r: false
     }
-    this.power_ups = [PowerUp.BOOMERANG]
+    this.power_ups = []
   }
 
   canJump = (): boolean => !this.falling && this.vy >= 0 && this.vy < 1
 
   // +1 checks 1 row of pixels below player
-  hasPowerUp = (power_up: PowerUp): boolean => this.power_ups.indexOf(power_up) !== -1
+  hasPowerUp = (power_up: PowerType): boolean => this.power_ups.indexOf(power_up) !== -1
 
   static toModel = (player: Player): PlayerM => ({
     i: player.socket,
-    w: player.w,
-    h: player.h,
+    w: player.width,
+    h: player.height,
     x: player.x,
     y: player.y,
     vx: player.vx,
@@ -84,7 +83,8 @@ export class Player {
     n: player.name,
     c: player.color,
     l: player.look,
-    m: player.move
+    m: player.move,
+    pu: player.power_ups.map(PowerUp.typeToString)
   })
 }
 
@@ -109,4 +109,5 @@ export interface PlayerM {
   dc: number | undefined // disconnected
   l: Direction
   m: Direction
+  pu: string[]
 }

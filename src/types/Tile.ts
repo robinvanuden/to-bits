@@ -1,4 +1,5 @@
-import {Player} from "./player"
+import {Player} from "./Player"
+import PowerUp, {PowerUpModel} from "./PowerUp"
 
 export default class Tile {
   x: number
@@ -12,6 +13,7 @@ export default class Tile {
   spawn: boolean // spawn
   walkable: boolean // walkable
   solid: boolean // solid
+  power_up: PowerUp | undefined
 
   constructor(meta: MetaTile, x: number, y: number) {
     this.x = x * meta.w
@@ -27,16 +29,18 @@ export default class Tile {
     this.solid = meta.solid
   }
 
+  hasPowerUp = (): boolean => this.power_up !== undefined
+
   isColliding = (p: Player): boolean =>
-    this.x < p.x + p.w &&
+    this.x < p.x + p.width &&
     this.x + this.w > p.x &&
-    this.y < p.y + p.h &&
+    this.y < p.y + p.height &&
     this.y + this.h > p.y
 
   isAboutWalking = (p: Player): boolean =>
-    this.x < p.x + p.w &&
+    this.x < p.x + p.width &&
     this.x + this.w > p.x &&
-    this.y < p.y + p.h &&
+    this.y < p.y + p.height &&
     this.y + 1 > p.y
 
   static toModel = (tile: Tile): TileModel => ({
@@ -51,6 +55,7 @@ export default class Tile {
     sp: tile.spawn,
     wa: tile.walkable,
     so: tile.solid,
+    pu: PowerUp.toModel(tile.power_up)
   })
 }
 
@@ -66,6 +71,7 @@ export interface TileModel {
   sp: boolean // spawn
   wa: boolean // walkable
   so: boolean // solid
+  pu: PowerUpModel | undefined
 }
 
 export interface MetaTile {

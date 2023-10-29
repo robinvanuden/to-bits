@@ -1,3 +1,5 @@
+import PowerUpModel from "./PowerUpModel"
+
 export default interface TileModel {
   x: number
   y: number
@@ -10,4 +12,5 @@ export default interface TileModel {
   sp: boolean // spawn
   wa: boolean // walkable
   so: boolean // solid
+  pu: PowerUpModel | undefined
 }

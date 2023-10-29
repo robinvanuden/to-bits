@@ -1,5 +1,5 @@
-import Tile from "../types/tile"
-import {Player} from "../types/player"
+import Tile from "../types/Tile"
+import {Player} from "../types/Player"
 import {GRAVITY} from "../constants"
 
 export default class PlayerController {

@@ -1,4 +1,4 @@
-import {Player} from "../types/player"
+import {Player} from "../types/Player"
 import {v4} from "uuid"
 import {Boomerang} from "../types/boomerang"
 
@@ -13,8 +13,8 @@ export default class BoomerangController {
     this.__boomerangs.push(new Boomerang(
       v4(),
       player,
-      player.x + player.w * .5,
-      player.y + player.h * .5,
+      player.x + player.width * .5,
+      player.y + player.height * .5,
       radians
     ))
   }

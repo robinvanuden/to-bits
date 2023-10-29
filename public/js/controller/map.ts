@@ -2,6 +2,7 @@ import PlayerModel from "../model/PlayerModel"
 import TileModel from "../model/TileModel"
 import BoomerangModel from "../model/BoomerangModel"
 import ImageController from "./image"
+import PowerUpModel from "../model/PowerUpModel"
 
 const FONT_TEXT = "FiveFontsatFreddy"
 
@@ -19,6 +20,7 @@ export default class MapController {
   MAP = [] as TileModel[]
   PLAYERS = [] as PlayerModel[]
   BOOMERANGS = [] as BoomerangModel[]
+  POWER_UPS = [] as PowerUpModel[]
 
   constructor(canvas: HTMLCanvasElement, ratio: number, ID: string, ic: ImageController) {
     this.canvas = canvas
@@ -35,6 +37,8 @@ export default class MapController {
   toggleDebug = () => this.DEBUG = !this.DEBUG
 
   setLoading = (loading: boolean) => this.LOADING = loading
+
+  setPowerUps = (powers: PowerUpModel[]) => this.POWER_UPS = powers
 
   setPlayers = (players: PlayerModel[]) => this.PLAYERS = players
 
@@ -89,6 +93,25 @@ export default class MapController {
         this.size(tile.y) - cy,
         this.size(tile.w),
         this.size(tile.h)
+      )
+    }
+    for (const power of this.POWER_UPS) {
+      switch (power.t) {
+        case "BOMB":
+          this.ctx.fillStyle = "#1d1d1e"
+          break
+        case "RANG":
+          this.ctx.fillStyle = "#6c492e"
+          break
+        case "FIRE":
+          this.ctx.fillStyle = "#e87619"
+          break
+      }
+      this.ctx.fillRect(
+        this.size(power.x) - cx,
+        this.size(power.y) - cy,
+        this.size(power.w),
+        this.size(power.h)
       )
     }
     for (const player of this.PLAYERS.filter(p => p.d === undefined)) {
@@ -170,45 +193,58 @@ export default class MapController {
     this.ctx.textAlign = "left"
     let x = this.size(2)
     let y = this.size(20)
+    const SPACE = this.size(12)
     this.ctx.fillText("delta: " + delta, x, y)
     const you = this.you()
     if (you == null || you.d !== undefined) {
       return
     }
-    y += this.size(10)
+    console.log(you)
+    y += SPACE
     this.ctx.fillText("name: " + you.n, x, y)
-    y += this.size(10)
+    y += SPACE
     this.ctx.fillText("x: " + you.x, x, y)
-    y += this.size(10)
+    y += SPACE
     this.ctx.fillText("y: " + you.y, x, y)
-    y += this.size(10)
+    y += SPACE
     this.ctx.fillText("vx: " + you.vx, x, y)
-    y += this.size(10)
+    y += SPACE
     this.ctx.fillText("vy: " + you.vy, x, y)
-    y += this.size(10)
+    y += SPACE
     this.ctx.fillText("falling: " + (you.vy !== 0) ? "true" : "false", x, y)
-    y += this.size(10)
+    y += SPACE
     this.ctx.fillText("alive: " + you.d !== undefined ? "true" : "false", x, y)
-    y += this.size(10)
-    this.ctx.fillText("l.u: " + you.l.u, x, y)
-    y += this.size(10)
-    this.ctx.fillText("l.d: " + you.l.d, x, y)
-    y += this.size(10)
-    this.ctx.fillText("l.l: " + you.l.l, x, y)
-    y += this.size(10)
-    this.ctx.fillText("l.r: " + you.l.r, x, y)
+    // Moved directions
+    for (const direction in you.m) {
+      const value = you.m[direction] || false
+      y += SPACE
+      this.ctx.fillText("m." + direction + ": " + value, x, y)
+    }
+    // Look directions
+    for (const direction in you.l) {
+      const value = you.l[direction] || false
+      y += SPACE
+      this.ctx.fillText("l." + direction + ": " + value, x, y)
+    }
+    y += SPACE
+    this.ctx.fillText("powers: " + (you.pu !== undefined && you.pu.length > 0 ? "" : "-"), x, y)
+    // Look directions
+    for (const power of you.pu) {
+      y += SPACE
+      this.ctx.fillText("- " + power, x, y)
+    }
 
     const boomerang = this.BOOMERANGS.find(b => b.player === you.i)
     if (!boomerang) {
       return
     }
-    y += this.size(10)
+    y += SPACE
     this.ctx.fillText("x: " + boomerang.x, x, y)
-    y += this.size(10)
+    y += SPACE
     this.ctx.fillText("y: " + boomerang.y, x, y)
-    y += this.size(10)
+    y += SPACE
     this.ctx.fillText("vx: " + boomerang.vx, x, y)
-    y += this.size(10)
+    y += SPACE
     this.ctx.fillText("vy: " + boomerang.vy, x, y)
   }
 

@@ -12,6 +12,7 @@ export default interface PlayerModel {
   dc: number | undefined // disconnected
   l: Direction
   m: Direction
+  pu: string[]
 }
 
 interface Direction {

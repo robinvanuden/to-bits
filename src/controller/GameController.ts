@@ -1,16 +1,20 @@
 import PlayerController from "./PlayerController"
-import {Player} from "../types/player"
+import {Player} from "../types/Player"
 import World from "../types/world"
 import BoomerangController from "./BoomerangController"
 import lobby from "../map/lobby.json"
+import PowerUpController from "./PowerUpController"
 
 export default class GameController {
 
   DELTA = 0
   TICKS = 50
   lobby = new World(lobby.tiles)
+
   private __players = new PlayerController()
   private __boomerangs = new BoomerangController()
+  private __power_ups = new PowerUpController()
+
   private started = false
   private __interval: NodeJS.Timeout | undefined = undefined
 
@@ -18,14 +22,31 @@ export default class GameController {
 
   players = () => this.__players
 
+  power_ups = () => this.__power_ups
+
   map = (): World => this.lobby
 
   isStarted = () => this.started
 
+  // TODO: MOVE TO if statement
   private isKilled = (p: Player): boolean => p.died === undefined && p.y > this.map().void()
 
   private checkPlayerPosition = (delta: number) => {
     const solids = this.map().blocksSolid()
+    for (const boomerang of this.boomerangs().list()) {
+      boomerang.x += boomerang.vx
+      boomerang.y += boomerang.vy
+      if (solids.find(boomerang.isBroke)) {
+        this.boomerangs().delete(boomerang)
+      }
+    }
+    const airs = this.map().blocksAir()
+    for (const walkable of airs) {
+      const random = Math.round(Math.random() * 8000)
+      if (walkable && !walkable.hasPowerUp() && random === 1) {
+        this.power_ups().spawnPower(walkable)
+      }
+    }
     const walkables = this.map().blocksWalkable()
     for (const player of this.players().alive()) {
       player.vy += player.gravity * delta
@@ -48,11 +69,11 @@ export default class GameController {
       const solid = solids.find(t => t.isColliding(player) && !t.isAboutWalking(player))
       const walkable = walkables.find(t => t.isAboutWalking(player))
       if (solid && player.vy > 0) {
-        player.y = solid.y - player.h
+        player.y = solid.y - player.height
         player.vy = 0
         player.falling = false
       } else if (walkable && player.vy > 0) {
-        player.y = walkable.y - player.h
+        player.y = walkable.y - player.height
         player.vy = 0
         player.falling = false
       }
@@ -66,16 +87,15 @@ export default class GameController {
           this.boomerangs().delete(boomerang)
         }
       }
+      for (const power of this.power_ups().list()) {
+        if (power.isTouching(player)) {
+          player.power_ups.push(power.type)
+          this.power_ups().remove(power)
+        }
+      }
       if (this.isKilled(player)) {
         this.players().kill(player)
         this.boomerangs().deleteFrom(player)
-      }
-    }
-    for (const boomerang of this.boomerangs().list()) {
-      boomerang.x += boomerang.vx
-      boomerang.y += boomerang.vy
-      if (solids.find(boomerang.isBroke)) {
-        this.boomerangs().delete(boomerang)
       }
     }
   }

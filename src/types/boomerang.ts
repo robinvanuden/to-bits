@@ -1,5 +1,5 @@
-import Tile from "./tile"
-import {Player} from "./player"
+import Tile from "./Tile"
+import {Player} from "./Player"
 
 const BOOMERANG_SIZE = 18
 const BOOMERANG_THROW = 14
@@ -43,6 +43,6 @@ export class Boomerang {
   isHit = (p: Player): boolean => this.player !== p.id && this.isColliding(p)
 
   private isColliding = (p: Player): boolean => {
-    return this.x < p.x + p.w && this.x + this.w > p.x && this.y < p.y + p.h && this.y + this.h > p.y
+    return this.x < p.x + p.width && this.x + this.w > p.x && this.y < p.y + p.height && this.y + this.h > p.y
   }
 }

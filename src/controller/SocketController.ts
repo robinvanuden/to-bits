@@ -1,8 +1,9 @@
 import {Server, Socket} from "socket.io"
 import {v4, v5} from "uuid"
 import GameController from "./GameController"
-import {Player, PowerUp} from "../types/player"
-import Tile from "../types/tile"
+import {Player} from "../types/Player"
+import Tile from "../types/Tile"
+import PowerUp, {PowerType} from "../types/PowerUp"
 
 export default class SocketController {
 
@@ -38,6 +39,7 @@ export default class SocketController {
       this.game.start(this.emitProjectiles)
       client.emit("version", this.version)
       let continue_player = this.game.players().getConnected(uuid)
+      // TODO: Move respawn logic to GameController
       if (continue_player) {
         // Reconnect
         console.log('User reconnected', client.id, uuid)
@@ -87,11 +89,15 @@ export default class SocketController {
   }
 
   onRadius = (uuid: string, degrees: number) => {
+    // TODO: Move game logic to GameController
     if (!this.game) {
       return
     }
     const player = this.game.players().get(uuid)
-    if (player && player.hasPowerUp(PowerUp.BOOMERANG)) this.game.boomerangs().create(player, degrees)
+    if (!player || !player.hasPowerUp(PowerType.BOOMERANG)) {
+      return
+    }
+    this.game.boomerangs().create(player, degrees)
   }
 
   onMovement = (uuid: string, direction: string, bool: boolean) => {
@@ -129,12 +135,15 @@ export default class SocketController {
     }
   }
 
-  emitPlayers = () => this.io.emit("players", this.game?.players().list().map(Player.toModel) ?? [])
-
-  emitBoomerangs = () => this.io.emit("boomerangs", this.game?.boomerangs().list() ?? [])
-
   emitProjectiles = () => {
-    this.emitPlayers()
-    this.emitBoomerangs()
+    // TODO: CHANGE OUTPUT TO ARRAYS (no .list())
+    // Emit players
+    this.io.emit("players", this.game?.players().list().map(Player.toModel) ?? [])
+
+    // Emit players
+    this.io.emit("boomerangs", this.game?.boomerangs().list() ?? [])
+
+    // Emit players
+    this.io.emit("power_ups", this.game?.power_ups().list().map(PowerUp.toModel) ?? [])
   }
 }

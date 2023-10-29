@@ -15,7 +15,9 @@ import ImageController from "./controller/image"
     autoConnect: true,
     secure: secure,
     reconnection: true,
-    timeout: 10000
+    timeout: 10000,
+    reconnectionAttempts: 5,
+    forceNew: true
   })
 
   let VERSION = ""
@@ -48,6 +50,8 @@ import ImageController from "./controller/image"
   socket.on("players", mapController.setPlayers)
 
   socket.on("boomerangs", mapController.setBoomerangs)
+
+  socket.on("power_ups", mapController.setPowerUps)
 
   socket.on("version", version => {
     if (VERSION === "") {
