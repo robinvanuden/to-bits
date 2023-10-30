@@ -11,6 +11,7 @@ const PLAYER_WIDTH = 36
 const PLAYER_HEIGHT = 48
 const SPEED_WALK = 5
 const SPEED_JUMP = 7.5 // 7.7
+const MAX_POWER_UP = 3
 
 export class Player {
   id: string // ID
@@ -69,6 +70,37 @@ export class Player {
 
   // +1 checks 1 row of pixels below player
   hasPowerUp = (power_up: PowerType): boolean => this.power_ups.filter(p => p.type === power_up).length > 0
+
+  addPowerUp = (power_up: PowerUp): boolean => {
+    if (this.power_ups.length >= MAX_POWER_UP) {
+      return false
+    }
+    this.power_ups.push(power_up)
+    return true
+  }
+
+  recreate = (socket: string) => {
+    this.socket = socket
+    this.disconnected = undefined
+    this.move = {u: false, d: false, l: false, r: false}
+  }
+
+  respawn = (spawn: Tile) => {
+    this.died = undefined
+    this.x = spawn.x
+    this.y = spawn.y
+    this.gravity = GRAVITY
+    this.look = {u: false, d: false, l: false, r: true}
+  }
+
+  kill = () => {
+    this.died = Date.now()
+    this.vx = 0
+    this.vy = 0
+    this.gravity = 0
+    this.move = {u: false, d: false, l: false, r: false}
+    this.power_ups = []
+  }
 
   static toModel = (player: Player): PlayerM => ({
     i: player.socket,

@@ -43,7 +43,7 @@ export default class SocketController {
       if (continue_player) {
         // Reconnect
         console.log('User reconnected', client.id, uuid)
-        this.game.players().recreate(continue_player, client.id)
+        continue_player.recreate(client.id)
       } else {
         // New player
         const SPAWN_TILE = this.game.map().randomSpawn()

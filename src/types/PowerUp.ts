@@ -4,8 +4,8 @@ import {Player} from "./Player"
 
 export enum PowerType {BOOMERANG, BOMB, FIREBALL}
 
-const POWER_WIDTH = 16
-const POWER_HEIGHT = 16
+const POWER_WIDTH = 24
+const POWER_HEIGHT = 24
 
 export default class PowerUp {
 
@@ -60,17 +60,6 @@ export default class PowerUp {
       y: power.y,
       t: PowerUp.typeToString(power.type),
     }
-  }
-
-  static spawnPower = (tile: Tile) => {
-    if (tile.hasPowerUp()) {
-      return
-    }
-    const random = Math.round(Math.random() * 10000)
-    if (random !== 1) {
-      return
-    }
-    tile.power_up = new PowerUp(tile)
   }
 }
 

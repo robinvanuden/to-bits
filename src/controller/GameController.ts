@@ -1,9 +1,9 @@
 import PlayerController from "./PlayerController"
-import {Player} from "../types/Player"
 import World from "../types/world"
 import BoomerangController from "./BoomerangController"
 import lobby from "../map/lobby.json"
 import PowerUp, {PowerType} from "../types/PowerUp"
+import Tile from "../types/Tile"
 
 export default class GameController {
 
@@ -25,9 +25,6 @@ export default class GameController {
 
   power_ups = () => this.map().map().filter(t => t.power_up != undefined).map(t => t.power_up) as PowerUp[]
 
-  // TODO: MOVE TO if statement
-  private isKilled = (p: Player): boolean => p.died === undefined && p.y > this.map().void()
-
   private checkPlayerPosition = (delta: number) => {
     const solids = this.map().blocksSolid()
     for (const boomerang of this.boomerangs().list()) {
@@ -37,13 +34,8 @@ export default class GameController {
         this.boomerangs().delete(boomerang)
       }
     }
+    this.spawnPowerUp()
     const tiles_with_power_ups = this.map().blocksWithPowerUps()
-    const airs = this.map().blocksAir()
-    for (const tile of airs) {
-      if (tile) {
-        PowerUp.spawnPower(tile)
-      }
-    }
     const blocksWalkable = this.map().blocksWalkable()
     for (const player of this.players().alive()) {
       player.vy += player.gravity * delta
@@ -79,22 +71,36 @@ export default class GameController {
           this.boomerangs().delete(boomerang)
         }
         if (boomerang.isHit(player)) {
-          this.players().kill(player)
+          player.kill()
           this.boomerangs().deleteFrom(player)
           this.boomerangs().delete(boomerang)
         }
       }
       for (const power_tile of tiles_with_power_ups) {
         if (power_tile.power_up && power_tile.power_up.isTouching(player)) {
-          player.power_ups.push(power_tile.power_up)
-          power_tile.power_up = undefined
+          if (player.addPowerUp(power_tile.power_up)) {
+            power_tile.power_up = undefined
+          }
         }
       }
-      if (this.isKilled(player)) {
-        this.players().kill(player)
+      if (player.died === undefined && player.y > this.map().void()) {
+        player.kill()
         this.boomerangs().deleteFrom(player)
       }
     }
+  }
+
+  private spawnPowerUp = () => {
+    if (Math.round(Math.random() * 500) !== 1) {
+      return
+    }
+    const airs = this.map().blocksAir()
+    const index = Math.round(Math.random() * (airs.length - 1))
+    const tile: Tile | undefined = airs[index] || undefined
+    if (!tile) {
+      return
+    }
+    tile.spawnPower()
   }
 
   private checkDisconnectedPlayers = () => {
@@ -107,7 +113,7 @@ export default class GameController {
   private checkRespawnPlayers = () => {
     for (const player of this.players().respawns()) {
       console.log("Respawn player: " + player.id)
-      this.players().respawn(player, this.map().randomSpawn())
+      player.respawn(this.map().randomSpawn())
     }
   }
 

@@ -43,6 +43,13 @@ export default class Tile {
     this.y < p.y + p.height &&
     this.y + 1 > p.y
 
+  spawnPower = () => {
+    if (this.hasPowerUp()) {
+      return
+    }
+    this.power_up = new PowerUp(this)
+  }
+
   static toModel = (tile: Tile): TileModel => ({
     x: tile.x,
     y: tile.y,
