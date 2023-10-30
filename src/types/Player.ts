@@ -116,21 +116,11 @@ export class Player {
 
   throwBoomerang = (degrees: number) => {
     const radians = (degrees * Math.PI) / 180
-    this.boomerangs.push(new Boomerang(
-      v4(),
-      this,
-      this.x + this.width * .5,
-      this.y + this.height * .5,
-      radians
-    ))
+    this.boomerangs.push(new Boomerang(v4(), this, radians))
   }
 
   breakBoomerang = (boomerang: Boomerang) => {
     this.boomerangs = this.boomerangs.filter(b => b.id !== boomerang.id)
-  }
-
-  breakAllBoomerangs = () => {
-    this.boomerangs = []
   }
 
   static toModel = (player: Player): PlayerM => ({

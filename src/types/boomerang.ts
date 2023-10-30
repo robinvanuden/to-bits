@@ -17,12 +17,12 @@ export default class Boomerang {
   gravity: number = 0
   thrown: number = 0
 
-  constructor(id: string, player: Player, x: number, y: number, radians: number) {
+  constructor(id: string, player: Player, radians: number) {
     this.id = id
     this.player = player.id
     this.color = player.color
-    this.x = x
-    this.y = y
+    this.x = player.x + player.width * .5
+    this.y = player.y + player.height * .5
     this.vx = BOOMERANG_THROW * Math.cos(radians)
     this.vy = BOOMERANG_THROW * Math.sin(radians)
     this.width = BOOMERANG_SIZE

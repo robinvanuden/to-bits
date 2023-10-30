@@ -86,7 +86,7 @@ export default class GameController {
   }
 
   private spawnPowerUp = () => {
-    if (Math.round(Math.random() * 10) !== 1) {
+    if (Math.round(Math.random() * 800) !== 1) {
       return
     }
     const airs = this.map().blocksAir()
