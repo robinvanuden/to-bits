@@ -4,11 +4,11 @@ import {Player} from "./Player"
 const BOOMERANG_SIZE = 18
 const BOOMERANG_THROW = 14
 
-export class Boomerang {
+export default class Boomerang {
   id: string = ""
   player: string = ""
-  w: number = 0 // width
-  h: number = 0 // height
+  width: number = 0 // width
+  height: number = 0 // height
   x: number = 0 // x-coord
   y: number = 0 // y-coord
   vx: number = 0 // x velocity
@@ -25,16 +25,16 @@ export class Boomerang {
     this.y = y
     this.vx = BOOMERANG_THROW * Math.cos(radians)
     this.vy = BOOMERANG_THROW * Math.sin(radians)
-    this.w = BOOMERANG_SIZE
-    this.h = BOOMERANG_SIZE
+    this.width = BOOMERANG_SIZE
+    this.height = BOOMERANG_SIZE
     this.gravity = .4545
     this.thrown = Date.now()
   }
 
   isBroke = (t: Tile): boolean => this.x < t.x + t.w
-    && this.x + this.w > t.x
+    && this.x + this.width > t.x
     && this.y < t.y + t.h
-    && this.y + this.h > t.y
+    && this.y + this.height > t.y
 
   isThrown = (p: Player): boolean => this.id === p.id && this.thrown + 250 > Date.now()
 
@@ -43,6 +43,30 @@ export class Boomerang {
   isHit = (p: Player): boolean => this.player !== p.id && this.isColliding(p)
 
   private isColliding = (p: Player): boolean => {
-    return this.x < p.x + p.width && this.x + this.w > p.x && this.y < p.y + p.height && this.y + this.h > p.y
+    return this.x < p.x + p.width && this.x + this.width > p.x && this.y < p.y + p.height && this.y + this.height > p.y
   }
+
+  static toModel = (boomerang: Boomerang): BoomerangModel => ({
+    id: boomerang.id,
+    p: boomerang.player,
+    c: boomerang.color,
+    x: boomerang.x,
+    y: boomerang.y,
+    w: boomerang.width,
+    h: boomerang.height,
+    vx: boomerang.vx,
+    vy: boomerang.vy,
+  })
+}
+
+export interface BoomerangModel {
+  id: string
+  p: string
+  c: string
+  x: number
+  y: number
+  vx: number
+  vy: number
+  w: number
+  h: number
 }

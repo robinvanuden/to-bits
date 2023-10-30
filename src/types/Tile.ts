@@ -62,7 +62,7 @@ export default class Tile {
     sp: tile.spawn,
     wa: tile.walkable,
     so: tile.solid,
-    pu: PowerUp.toModel(tile.power_up)
+    pu: PowerUp.toMaybeModel(tile.power_up)
   })
 }
 

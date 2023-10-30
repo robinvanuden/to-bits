@@ -1,7 +1,9 @@
 import Tile from "./Tile"
 import {GRAVITY} from "../constants"
 import {names, uniqueNamesGenerator} from "unique-names-generator"
-import PowerUp, {PowerType} from "./PowerUp"
+import PowerUp, {PowerType, PowerUpModel} from "./PowerUp"
+import Boomerang, {BoomerangModel} from "./boomerang"
+import {v4} from "uuid"
 
 const randomName = () => uniqueNamesGenerator({length: 1, dictionaries: [names]})
 
@@ -33,6 +35,7 @@ export class Player {
   look: Direction // directions looking
   move: Direction // directions pressed
   power_ups: PowerUp[] = []
+  boomerangs: Boomerang[] = []
 
   constructor(id: string, socket: string, spawn: Tile) {
     this.id = id
@@ -91,6 +94,7 @@ export class Player {
     this.y = spawn.y
     this.gravity = GRAVITY
     this.look = {u: false, d: false, l: false, r: true}
+    this.boomerangs = []
   }
 
   kill = () => {
@@ -100,6 +104,33 @@ export class Player {
     this.gravity = 0
     this.move = {u: false, d: false, l: false, r: false}
     this.power_ups = []
+  }
+
+  usePowerUp = (type: PowerType) => {
+    const power_up = this.power_ups.find(p => p.type === type)
+    if (!power_up) {
+      return
+    }
+    this.power_ups = this.power_ups.filter(p => p.id !== power_up.id)
+  }
+
+  throwBoomerang = (degrees: number) => {
+    const radians = (degrees * Math.PI) / 180
+    this.boomerangs.push(new Boomerang(
+      v4(),
+      this,
+      this.x + this.width * .5,
+      this.y + this.height * .5,
+      radians
+    ))
+  }
+
+  breakBoomerang = (boomerang: Boomerang) => {
+    this.boomerangs = this.boomerangs.filter(b => b.id !== boomerang.id)
+  }
+
+  breakAllBoomerangs = () => {
+    this.boomerangs = []
   }
 
   static toModel = (player: Player): PlayerM => ({
@@ -116,7 +147,8 @@ export class Player {
     c: player.color,
     l: player.look,
     m: player.move,
-    pu: player.power_ups.map(p => PowerUp.typeToString(p.type))
+    pu: player.power_ups.map(PowerUp.toModel),
+    br: player.boomerangs.map(Boomerang.toModel)
   })
 }
 
@@ -141,5 +173,6 @@ export interface PlayerM {
   dc: number | undefined // disconnected
   l: Direction
   m: Direction
-  pu: string[]
+  pu: PowerUpModel[]
+  br: BoomerangModel[]
 }

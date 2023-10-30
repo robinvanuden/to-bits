@@ -1,6 +1,5 @@
 import PlayerModel from "../model/PlayerModel"
 import TileModel from "../model/TileModel"
-import BoomerangModel from "../model/BoomerangModel"
 import ImageController from "./image"
 import PowerUpModel from "../model/PowerUpModel"
 
@@ -17,10 +16,9 @@ export default class MapController {
   DEBUG = false
   LOADING = true
 
-  MAP = [] as TileModel[]
-  PLAYERS = [] as PlayerModel[]
-  BOOMERANGS = [] as BoomerangModel[]
-  POWER_UPS = [] as PowerUpModel[]
+  MAP: TileModel[] = []
+  POWER_UPS: PowerUpModel[] = []
+  PLAYERS: PlayerModel[] = []
 
   constructor(canvas: HTMLCanvasElement, ratio: number, ID: string, ic: ImageController) {
     this.canvas = canvas
@@ -38,12 +36,10 @@ export default class MapController {
 
   setLoading = (loading: boolean) => this.LOADING = loading
 
-  setPowerUps = (powers: PowerUpModel[]) => this.POWER_UPS = powers
-
   setPlayers = (players: PlayerModel[]) => this.PLAYERS = players
 
-  setBoomerangs = (boomerangs: BoomerangModel[]) => this.BOOMERANGS = boomerangs
-
+  setPowerUps = (powers: PowerUpModel[]) => this.POWER_UPS = powers
+  d
   setMap = (map: TileModel[]) => {
     this.MAP = map
     this.ctx.imageSmoothingEnabled = false
@@ -95,25 +91,29 @@ export default class MapController {
         this.size(tile.h)
       )
     }
+
     for (const power of this.POWER_UPS) {
-      switch (power.t) {
-        case "BOMB":
-          this.ctx.fillStyle = "#1d1d1e"
-          break
-        case "RANG":
-          this.ctx.fillStyle = "#6c492e"
-          break
-        case "FIRE":
-          this.ctx.fillStyle = "#e87619"
-          break
+      if (power) {
+        switch (power.t) {
+          case "BOMB":
+            this.ctx.fillStyle = "#1d1d1e"
+            break
+          case "RANG":
+            this.ctx.fillStyle = "#6c492e"
+            break
+          case "FIRE":
+            this.ctx.fillStyle = "#e87619"
+            break
+        }
+        this.ctx.fillRect(
+          this.size(power.x) - cx,
+          this.size(power.y) - cy,
+          this.size(power.w),
+          this.size(power.h)
+        )
       }
-      this.ctx.fillRect(
-        this.size(power.x) - cx,
-        this.size(power.y) - cy,
-        this.size(power.w),
-        this.size(power.h)
-      )
     }
+
     for (const player of this.PLAYERS.filter(p => p.d === undefined)) {
       const player_w = this.size(player.w)
       const player_h = this.size(player.h)
@@ -147,15 +147,15 @@ export default class MapController {
         player_w,
         player_h
       )
-    }
-    for (const boomerang of this.BOOMERANGS) {
-      this.ctx.fillStyle = boomerang.color
-      this.ctx.fillRect(
-        this.size(boomerang.x) - cx,
-        this.size(boomerang.y) - cy,
-        this.size(boomerang.w),
-        this.size(boomerang.h)
-      )
+      for (const boomerang of player.br) {
+        this.ctx.fillStyle = boomerang.c
+        this.ctx.fillRect(
+          this.size(boomerang.x) - cx,
+          this.size(boomerang.y) - cy,
+          this.size(boomerang.w),
+          this.size(boomerang.h)
+        )
+      }
     }
   }
 
@@ -231,10 +231,10 @@ export default class MapController {
     // Look directions
     for (const power of you.pu) {
       y += SPACE
-      this.ctx.fillText("- " + power, x, y)
+      this.ctx.fillText("- " + power.t, x, y)
     }
 
-    const boomerang = this.BOOMERANGS.find(b => b.player === you.i)
+    const boomerang = you.br[0]
     if (!boomerang) {
       return
     }

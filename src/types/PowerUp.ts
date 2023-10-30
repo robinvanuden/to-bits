@@ -48,7 +48,18 @@ export default class PowerUp {
     }
   }
 
-  static toModel = (power: PowerUp | undefined): PowerUpModel | undefined => {
+  static toModel = (power: PowerUp): PowerUpModel => {
+    return {
+      id: power.id,
+      w: power.width,
+      h: power.height,
+      x: power.x,
+      y: power.y,
+      t: PowerUp.typeToString(power.type),
+    }
+  }
+
+  static toMaybeModel = (power: PowerUp | undefined): PowerUpModel | undefined => {
     if (!power) {
       return undefined
     }

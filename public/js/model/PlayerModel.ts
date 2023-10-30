@@ -1,3 +1,6 @@
+import PowerUpModel from "./PowerUpModel"
+import BoomerangModel from "./BoomerangModel"
+
 export default interface PlayerModel {
   i: string
   n: string // color
@@ -12,7 +15,8 @@ export default interface PlayerModel {
   dc: number | undefined // disconnected
   l: Direction
   m: Direction
-  pu: string[]
+  pu: PowerUpModel[]
+  br: BoomerangModel[]
 }
 
 interface Direction {

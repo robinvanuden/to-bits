@@ -89,7 +89,6 @@ export default class SocketController {
   }
 
   onRadius = (uuid: string, degrees: number) => {
-    // TODO: Move game logic to GameController
     if (!this.game) {
       return
     }
@@ -132,14 +131,10 @@ export default class SocketController {
   }
 
   emitProjectiles = () => {
-    // TODO: CHANGE OUTPUT TO ARRAYS (no .list())
     // Emit players
     this.io.emit("players", this.game?.players().list().map(Player.toModel) ?? [])
 
-    // Emit players
-    this.io.emit("boomerangs", this.game?.boomerangs().list() ?? [])
-
-    // Emit players
-    this.io.emit("power_ups", this.game?.power_ups().map(PowerUp.toModel) ?? [])
+    // Emit power ups
+    this.io.emit("power_ups", this.game?.map().map().filter(t => t.power_up).flatMap(t => PowerUp.toMaybeModel(t.power_up)))
   }
 }

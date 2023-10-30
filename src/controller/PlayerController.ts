@@ -22,4 +22,6 @@ export default class PlayerController {
   get = (id: string) => this.players.find(player => player.id === id) ?? null
 
   getConnected = (id: string) => this.players.find(player => player.id === id && player.disconnected !== undefined) ?? null
+
+  others = (player: Player) => this.players.filter(p => p.id !== player.id)
 }
