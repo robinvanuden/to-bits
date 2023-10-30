@@ -3,7 +3,7 @@ import {v4, v5} from "uuid"
 import GameController from "./GameController"
 import {Player} from "../types/Player"
 import Tile from "../types/Tile"
-import PowerUp, {PowerType} from "../types/PowerUp"
+import PowerUp from "../types/PowerUp"
 
 export default class SocketController {
 
@@ -93,11 +93,7 @@ export default class SocketController {
     if (!this.game) {
       return
     }
-    const player = this.game.players().get(uuid)
-    if (!player || !player.hasPowerUp(PowerType.BOOMERANG)) {
-      return
-    }
-    this.game.boomerangs().create(player, degrees)
+    this.game.throwBoomerang(uuid, degrees)
   }
 
   onMovement = (uuid: string, direction: string, bool: boolean) => {
@@ -144,6 +140,6 @@ export default class SocketController {
     this.io.emit("boomerangs", this.game?.boomerangs().list() ?? [])
 
     // Emit players
-    this.io.emit("power_ups", this.game?.power_ups().list().map(PowerUp.toModel) ?? [])
+    this.io.emit("power_ups", this.game?.power_ups().map(PowerUp.toModel) ?? [])
   }
 }

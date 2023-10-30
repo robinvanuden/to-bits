@@ -3,7 +3,7 @@ import {Player} from "../types/Player"
 import World from "../types/world"
 import BoomerangController from "./BoomerangController"
 import lobby from "../map/lobby.json"
-import PowerUpController from "./PowerUpController"
+import PowerUp, {PowerType} from "../types/PowerUp"
 
 export default class GameController {
 
@@ -13,7 +13,6 @@ export default class GameController {
 
   private __players = new PlayerController()
   private __boomerangs = new BoomerangController()
-  private __power_ups = new PowerUpController()
 
   private started = false
   private __interval: NodeJS.Timeout | undefined = undefined
@@ -22,11 +21,9 @@ export default class GameController {
 
   players = () => this.__players
 
-  power_ups = () => this.__power_ups
-
   map = (): World => this.lobby
 
-  isStarted = () => this.started
+  power_ups = () => this.map().map().filter(t => t.power_up != undefined).map(t => t.power_up) as PowerUp[]
 
   // TODO: MOVE TO if statement
   private isKilled = (p: Player): boolean => p.died === undefined && p.y > this.map().void()
@@ -40,14 +37,14 @@ export default class GameController {
         this.boomerangs().delete(boomerang)
       }
     }
+    const tiles_with_power_ups = this.map().blocksWithPowerUps()
     const airs = this.map().blocksAir()
-    for (const walkable of airs) {
-      const random = Math.round(Math.random() * 8000)
-      if (walkable && !walkable.hasPowerUp() && random === 1) {
-        this.power_ups().spawnPower(walkable)
+    for (const tile of airs) {
+      if (tile) {
+        PowerUp.spawnPower(tile)
       }
     }
-    const walkables = this.map().blocksWalkable()
+    const blocksWalkable = this.map().blocksWalkable()
     for (const player of this.players().alive()) {
       player.vy += player.gravity * delta
 
@@ -67,7 +64,7 @@ export default class GameController {
       player.y += player.vy
 
       const solid = solids.find(t => t.isColliding(player) && !t.isAboutWalking(player))
-      const walkable = walkables.find(t => t.isAboutWalking(player))
+      const walkable = blocksWalkable.find(t => t.isAboutWalking(player))
       if (solid && player.vy > 0) {
         player.y = solid.y - player.height
         player.vy = 0
@@ -87,10 +84,10 @@ export default class GameController {
           this.boomerangs().delete(boomerang)
         }
       }
-      for (const power of this.power_ups().list()) {
-        if (power.isTouching(player)) {
-          player.power_ups.push(power.type)
-          this.power_ups().remove(power)
+      for (const power_tile of tiles_with_power_ups) {
+        if (power_tile.power_up && power_tile.power_up.isTouching(player)) {
+          player.power_ups.push(power_tile.power_up)
+          power_tile.power_up = undefined
         }
       }
       if (this.isKilled(player)) {
@@ -148,4 +145,16 @@ export default class GameController {
     this.__interval = undefined
   }
 
+  throwBoomerang = (uuid: string, degrees: number) => {
+    const player = this.players().get(uuid)
+    if (!player || !player.hasPowerUp(PowerType.BOOMERANG)) {
+      return
+    }
+    this.boomerangs().create(player, degrees)
+    const power_up = player.power_ups.find(p => p.type === PowerType.BOOMERANG)
+    if (!power_up) {
+      return
+    }
+    player.power_ups = player.power_ups.filter(p => p.id !== power_up.id)
+  }
 }

@@ -42,6 +42,8 @@ export default class World {
 
   blocksAir = () => this.tiles.filter(tile => !tile.walkable && !tile.solid)
 
+  blocksWithPowerUps = () => this.tiles.filter(tile => tile.power_up !== undefined)
+
   randomSpawn = () => {
     const spawns = this.tiles.filter(t => t.spawn)
     const index = Math.round((spawns.length - 1) * Math.random())

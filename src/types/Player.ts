@@ -31,7 +31,7 @@ export class Player {
   falling: boolean
   look: Direction // directions looking
   move: Direction // directions pressed
-  power_ups: PowerType[] = []
+  power_ups: PowerUp[] = []
 
   constructor(id: string, socket: string, spawn: Tile) {
     this.id = id
@@ -68,7 +68,7 @@ export class Player {
   canJump = (): boolean => !this.falling && this.vy >= 0 && this.vy < 1
 
   // +1 checks 1 row of pixels below player
-  hasPowerUp = (power_up: PowerType): boolean => this.power_ups.indexOf(power_up) !== -1
+  hasPowerUp = (power_up: PowerType): boolean => this.power_ups.filter(p => p.type === power_up).length > 0
 
   static toModel = (player: Player): PlayerM => ({
     i: player.socket,
@@ -84,7 +84,7 @@ export class Player {
     c: player.color,
     l: player.look,
     m: player.move,
-    pu: player.power_ups.map(PowerUp.typeToString)
+    pu: player.power_ups.map(p => PowerUp.typeToString(p.type))
   })
 }
 
