@@ -1,4 +1,4 @@
-export default class ImageController {
+export default class Images {
 
   images = {}
   host: URL

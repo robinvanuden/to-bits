@@ -1,9 +1,11 @@
 import {io} from "socket.io-client"
-import MapController from "./controller/map"
-import ImageController from "./controller/image"
+import Map from "./map"
+import Images from "./images"
+import Data from "./data"
+import Hud from "./hud"
+import Canvas from "./canvas"
 
 (() => {
-
   const host = new URL(location.toString())
   const secure = (location.protocol === "wss:" || location.protocol === "https:")
   host.protocol = secure ? "https:" : "http:"
@@ -22,46 +24,40 @@ import ImageController from "./controller/image"
 
   let VERSION = ""
 
-  const ratio = window.devicePixelRatio || 1
+  const canvas = new Canvas(document.getElementById("playground") as HTMLCanvasElement)
 
-  const c = document.getElementById("playground") as HTMLCanvasElement
+  const data = new Data()
 
-  const imageController = new ImageController(host)
+  const images = new Images(host)
 
-  const mapController = new MapController(c, ratio, socket.id, imageController)
+  const map = new Map(canvas, images, data)
 
-  c.width = window.innerWidth * ratio
-  c.height = window.innerHeight * ratio
-
-  window.addEventListener("resize", () => {
-    c.width = window.innerWidth * ratio
-    c.height = window.innerHeight * ratio
-  })
-
-  socket.on("connect", () => mapController.setID(socket.id))
-
-  socket.on("disconnect", () => mapController.setLoading(true))
-
-  socket.on("map", map => {
-    mapController.setMap(map)
-    mapController.setLoading(false)
-  })
-
-  socket.on("players", mapController.setPlayers)
-
-  socket.on("power_ups", mapController.setPowerUps)
+  const hud = new Hud(canvas, data)
 
   socket.on("version", version => {
     if (VERSION === "") {
       VERSION = version
-      mapController.setLoading(true)
+      hud.setLoading(true)
     } else if (VERSION !== version) {
       window.location.reload()
     }
   })
 
+  socket.on("connect", () => data.setID(socket.id))
+
+  socket.on("disconnect", () => hud.setLoading(true))
+
+  socket.on("map", map_data => {
+    data.setMap(map_data)
+    hud.setLoading(false)
+  })
+
+  socket.on("players", data.setPlayers)
+
+  socket.on("power_ups", data.setPowerUps)
+
   const keyEvent = (ev: KeyboardEvent, pressed: boolean) => {
-    const you = mapController.you()
+    const you = map.you()
     if (!you) {
       return
     }
@@ -81,7 +77,7 @@ import ImageController from "./controller/image"
       socket.emit("move.down", pressed)
     }
     if (pressed && key === ";") {
-      mapController.toggleDebug()
+      hud.toggleDebug()
     }
   }
 
@@ -94,10 +90,11 @@ import ImageController from "./controller/image"
   }
 
   const onMouseRelease = (ev: MouseEvent) => {
-    const you = mapController.you()
+    const you = map.you()
     if (!you) {
       return
     }
+    const ratio = canvas.ratio
     socket.emit("radius", getRotationDegrees(
       window.innerWidth / 2 * ratio,
       window.innerHeight / 2 * ratio,
@@ -111,4 +108,16 @@ import ImageController from "./controller/image"
   window.addEventListener("keydown", events => keyEvent(events, true))
   window.addEventListener("keyup", events => keyEvent(events, false))
   window.addEventListener("mouseup", onMouseRelease)
+
+  let lastRender = Date.now()
+  const loop = (timestamp: number) => {
+    const delta = timestamp - lastRender
+    canvas.clear()
+    if (!hud.loading()) map.tick()
+    hud.tick(delta)
+
+    lastRender = timestamp
+    window.requestAnimationFrame(loop)
+  }
+  window.requestAnimationFrame(loop)
 })()
