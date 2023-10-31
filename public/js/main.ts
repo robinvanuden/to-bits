@@ -22,23 +22,21 @@ import Canvas from "./canvas"
     forceNew: true
   })
 
-  let VERSION = ""
-
   const canvas = new Canvas(document.getElementById("playground") as HTMLCanvasElement)
 
   const data = new Data()
 
   const images = new Images(host)
 
-  const map = new Map(canvas, images, data)
+  const map = new Map(canvas, data, images)
 
   const hud = new Hud(canvas, data)
 
   socket.on("version", version => {
-    if (VERSION === "") {
-      VERSION = version
+    if (data.version() === "") {
+      data.setVersion(version)
       hud.setLoading(true)
-    } else if (VERSION !== version) {
+    } else if (data.version() !== version) {
       window.location.reload()
     }
   })

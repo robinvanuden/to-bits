@@ -13,7 +13,7 @@ export default class Hud {
   constructor(canvas: Canvas, data: Data) {
     this.canvas = canvas
     this.data = data
-    this.ctx = canvas.ctx()
+    this.ctx = canvas.ctx
   }
 
   toggleDebug = () => this.DEBUG = !this.DEBUG
@@ -59,6 +59,8 @@ export default class Hud {
     let x = this.canvas.size(2)
     let y = this.canvas.size(20)
     const SPACE = this.canvas.size(12)
+    this.ctx.fillText("version: " + this.data.version(), x, y)
+    y += SPACE
     this.ctx.fillText("delta: " + delta, x, y)
     const you = this.you()
     if (you == null || you.d !== undefined) {

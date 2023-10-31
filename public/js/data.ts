@@ -5,6 +5,7 @@ import PlayerModel from "./model/PlayerModel"
 export default class Data {
 
   private ID: string = ""
+  private VERSION: string = ""
   private MAP: TileModel[] = []
   private POWER_UPS: PowerUpModel[] = []
   private PLAYERS: PlayerModel[] = []
@@ -12,6 +13,10 @@ export default class Data {
   setID = (id: string) => this.ID = id
 
   id = () => this.ID
+
+  setVersion = (version: string) => this.VERSION = version
+
+  version = () => this.VERSION
 
   setPlayers = (players: PlayerModel[]) => this.PLAYERS = players
 

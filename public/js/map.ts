@@ -9,16 +9,16 @@ export default class Map {
   canvas: Canvas
   ctx: CanvasRenderingContext2D
 
-  constructor(canvas: Canvas, images: Images, data: Data) {
+  constructor(canvas: Canvas, data: Data, images: Images) {
     this.canvas = canvas
     this.images = images
     this.data = data
-    this.ctx = this.canvas.ctx()
+    this.ctx = this.canvas.ctx
   }
 
   you = () => this.data.players().find(p => p.i === this.data.id()) || undefined
 
-  drawMap = () => {
+  tick = () => {
     let cx: number
     let cy: number
 
@@ -122,10 +122,5 @@ export default class Map {
         )
       }
     }
-  }
-
-
-  tick = () => {
-    this.drawMap()
   }
 }
