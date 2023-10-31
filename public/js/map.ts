@@ -18,18 +18,23 @@ export default class Map {
 
   you = () => this.data.players().find(p => p.i === this.data.id()) || undefined
 
+  tileWidth = () => this.data.map()[0]?.w || 0
+  mapWidth = () => (this.data.map().map(tile => tile.x).sort((a, b) => b - a)[0] || 0) + this.tileWidth()
+  mapHeight = () => (this.data.map().map(tile => tile.y).sort((a, b) => b - a)[0] || 0) + this.tileWidth()
+
   tick = () => {
     let cx: number
     let cy: number
 
     const playerToFocus = this.you()
-    if (playerToFocus) {
-      cx = Math.round((this.canvas.size(playerToFocus.x) + this.canvas.size(playerToFocus.w) * .5) - this.canvas.width() / 2)
-      cy = Math.round((this.canvas.size(playerToFocus.y) + this.canvas.size(playerToFocus.h) * .5) - this.canvas.height() / 2)
+    if (playerToFocus && playerToFocus.d == undefined) {
+      cx = Math.round((this.canvas.size(playerToFocus.x) + this.canvas.size(playerToFocus.w) * .5) - this.canvas.width() * .5)
+      cy = Math.round((this.canvas.size(playerToFocus.y) + this.canvas.size(playerToFocus.h) * .5) - this.canvas.height() * .5)
     } else {
-      cx = Math.round(this.canvas.width() / 2)
-      cy = Math.round(this.canvas.height() / 2)
+      cx = Math.round((this.canvas.size(this.mapWidth() * .5)) - this.canvas.width() * .5)
+      cy = Math.round((this.canvas.size(this.mapHeight() * .5)) - this.canvas.height() * .5)
     }
+    console.log(cx, cy)
     for (const tile of this.data.map().filter(tile => tile.wa)) {
       this.ctx.fillStyle = tile.c
       let bx = 0, by = 0

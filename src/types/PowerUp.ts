@@ -21,7 +21,6 @@ export default class PowerUp {
     this.type = PowerUp.randomType()
     this.x = tile.x + Math.round((tile.w * .5) - (POWER_WIDTH * .5))
     this.y = tile.y + Math.round((tile.h * .5) - (POWER_HEIGHT * .5))
-    console.log(`Spawn PowerUp: ${this.x}x${this.y}`)
   }
 
   isTouching = (p: Player) =>

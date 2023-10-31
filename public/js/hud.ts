@@ -33,12 +33,12 @@ export default class Hud {
       return
     }
     const now = Date.now()
-    this.ctx.fillStyle = "rgba(0,0,0,0.8)"
+    this.ctx.fillStyle = "rgba(0,0,0,0.5)"
     this.ctx.fillRect(0, 0, this.canvas.width(), this.canvas.height())
     this.ctx.textAlign = "center"
     this.ctx.fillStyle = "#FFF"
     this.ctx.font = this.canvas.font(50)
-    this.ctx.fillText("You Died!", this.canvas.width() / 2, this.canvas.height() / 2)
+    this.ctx.fillText("YOU DIED!", this.canvas.width() / 2, this.canvas.height() / 2)
 
     this.ctx.font = this.canvas.font(24)
     this.ctx.fillText("Respawn in: " + Math.round(((you.d + 5000) - now) / 1000), this.canvas.width() / 2, (this.canvas.height() / 2) + this.canvas.size(70))

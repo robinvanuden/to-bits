@@ -29,4 +29,6 @@ export default class Data {
   players = () => this.PLAYERS
 
   power_ups = () => this.POWER_UPS
+
+
 }

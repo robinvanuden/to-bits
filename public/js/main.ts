@@ -113,7 +113,6 @@ import Canvas from "./canvas"
     canvas.clear()
     if (!hud.loading()) map.tick()
     hud.tick(delta)
-
     lastRender = timestamp
     window.requestAnimationFrame(loop)
   }
