@@ -1,5 +1,6 @@
 import PowerUpModel from "./PowerUpModel"
 import BoomerangModel from "./BoomerangModel"
+import {FireballModel} from "./FireballModel"
 
 export default interface PlayerModel {
   i: string
@@ -17,6 +18,7 @@ export default interface PlayerModel {
   m: Direction
   pu: PowerUpModel[]
   br: BoomerangModel[]
+  fb: FireballModel[]
   a: number
 }
 

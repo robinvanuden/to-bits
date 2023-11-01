@@ -4,6 +4,7 @@ import {names, uniqueNamesGenerator} from "unique-names-generator"
 import PowerUp, {PowerType, PowerUpModel} from "./PowerUp"
 import Boomerang, {BoomerangModel} from "./boomerang"
 import {v4} from "uuid"
+import Fireball, {FireballModel} from "./fireball"
 
 const randomName = () => uniqueNamesGenerator({length: 1, dictionaries: [names]})
 
@@ -36,6 +37,7 @@ export class Player {
   move: Direction // directions pressed
   power_ups: PowerUp[] = []
   boomerangs: Boomerang[] = []
+  fireballs: Fireball[] = []
 
   constructor(id: string, socket: string, spawn: Tile) {
     this.id = id
@@ -66,6 +68,8 @@ export class Player {
       l: false,
       r: false
     }
+    this.boomerangs = []
+    this.fireballs = []
     this.power_ups = []
   }
 
@@ -94,6 +98,7 @@ export class Player {
     this.y = spawn.y
     this.gravity = GRAVITY
     this.look = {u: false, d: false, l: false, r: true}
+    this.fireballs = []
     this.boomerangs = []
   }
 
@@ -105,6 +110,8 @@ export class Player {
     this.move = {u: false, d: false, l: false, r: false}
     this.power_ups = []
   }
+
+  getFirstPowerUp = () => this.power_ups[0] || null
 
   usePowerUp = (type: PowerType) => {
     const power_up = this.power_ups.find(p => p.type === type)
@@ -123,6 +130,15 @@ export class Player {
     this.boomerangs = this.boomerangs.filter(b => b.id !== boomerang.id)
   }
 
+  throwFireball = (degrees: number) => {
+    const radians = (degrees * Math.PI) / 180
+    this.fireballs.push(new Fireball(v4(), this, radians))
+  }
+
+  breakFireball = (fireball: Fireball) => {
+    this.fireballs = this.fireballs.filter(b => b.id !== fireball.id)
+  }
+
   static toModel = (player: Player): PlayerM => ({
     i: player.socket,
     w: player.width,
@@ -138,7 +154,8 @@ export class Player {
     l: player.look,
     m: player.move,
     pu: player.power_ups.map(PowerUp.toModel),
-    br: player.boomerangs.map(Boomerang.toModel)
+    br: player.boomerangs.map(Boomerang.toModel),
+    fb: player.fireballs.map(Fireball.toModel)
   })
 }
 
@@ -165,4 +182,5 @@ export interface PlayerM {
   m: Direction
   pu: PowerUpModel[]
   br: BoomerangModel[]
+  fb: FireballModel[]
 }

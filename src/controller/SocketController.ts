@@ -92,7 +92,7 @@ export default class SocketController {
     if (!this.game) {
       return
     }
-    this.game.throwBoomerang(uuid, degrees)
+    this.game.throwItem(uuid, degrees)
   }
 
   onMovement = (uuid: string, direction: string, bool: boolean) => {

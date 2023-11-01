@@ -33,6 +33,13 @@ export default class GameController {
           player.breakBoomerang(boomerang)
         }
       }
+      for (const fireball of player.fireballs) {
+        fireball.x += fireball.vx
+        fireball.y += fireball.vy
+        if (solids.find(fireball.isBroke)) {
+          player.breakFireball(fireball)
+        }
+      }
       player.vy += player.gravity * delta
 
       if (player.move.l) {
@@ -144,12 +151,20 @@ export default class GameController {
     this.__interval = undefined
   }
 
-  throwBoomerang = (uuid: string, degrees: number) => {
+  throwItem = (uuid: string, degrees: number) => {
     const player = this.players().get(uuid)
-    if (!player || !player.hasPowerUp(PowerType.BOOMERANG)) {
+    if (!player) {
       return
     }
-    player.throwBoomerang(degrees)
-    player.usePowerUp(PowerType.BOOMERANG)
+    const powerUp = player.getFirstPowerUp()
+    if (!powerUp) {
+      return
+    }
+    if (powerUp.type === PowerType.BOOMERANG) {
+      player.throwBoomerang(degrees)
+    } else if (powerUp.type === PowerType.FIREBALL) {
+      player.throwFireball(degrees)
+    }
+    player.usePowerUp(powerUp.type)
   }
 }

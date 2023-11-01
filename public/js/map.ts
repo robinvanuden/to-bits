@@ -142,6 +142,15 @@ export default class Map {
           this.canvas.size(boomerang.h)
         )
       }
+      for (const fireball of player.fb) {
+        this.ctx.fillStyle = "#e0511c"
+        this.ctx.fillRect(
+          this.canvas.size(fireball.x) - cx,
+          this.canvas.size(fireball.y) - cy,
+          this.canvas.size(fireball.w),
+          this.canvas.size(fireball.h)
+        )
+      }
     }
   }
 }
