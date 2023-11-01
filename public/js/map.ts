@@ -96,7 +96,7 @@ export default class Map {
       this.ctx.font = this.canvas.font(12)
       this.ctx.textAlign = "center"
       this.ctx.fillStyle = "#000"
-      const padding = 5
+      const padding = this.canvas.size(3)
       for (let nx = -padding; nx < padding; nx++) {
         for (let ny = -padding; ny < padding + 1; ny++) {
           this.ctx.fillText(player.n, name_x + nx, name_y + ny)
@@ -106,10 +106,26 @@ export default class Map {
       this.ctx.fillStyle = "#FFF"
       this.ctx.fillText(player.n, name_x, name_y)
 
+      let sx = 1
+      if (player.m.l || player.m.r) {
+        if (player.a < 10) {
+          sx = 17
+        } else if (player.a < 20) {
+          sx = 1
+        } else if (player.a < 30) {
+          sx = 33
+        } else if (player.a < 40) {
+          sx = 1
+        } else {
+          player.a = 0
+        }
+        player.a++
+      }
+
       this.ctx.drawImage(
         this.images.addImage("character"),
-        1,
-        0,
+        sx,
+        player.l.l ? 16 : 0,
         13,
         16,
         player_x - cx,

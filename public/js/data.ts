@@ -18,15 +18,22 @@ export default class Data {
 
   version = () => this.VERSION
 
-  setPlayers = (players: PlayerModel[]) => this.PLAYERS = players
-
-  setPowerUps = (powers: PowerUpModel[]) => this.POWER_UPS = powers
-
   setMap = (map: TileModel[]) => this.MAP = map
 
   map = () => this.MAP
 
+  setPlayers = (players: PlayerModel[]) => {
+    for (const p in players) {
+      const player = players[p]
+      const PLAYER = this.PLAYERS[p] || null
+      player.a = PLAYER?.a || 0
+      this.PLAYERS[p] = player
+    }
+  }
+
   players = () => this.PLAYERS
+
+  setPowerUps = (powers: PowerUpModel[]) => this.POWER_UPS = powers
 
   power_ups = () => this.POWER_UPS
 

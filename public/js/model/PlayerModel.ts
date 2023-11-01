@@ -17,6 +17,7 @@ export default interface PlayerModel {
   m: Direction
   pu: PowerUpModel[]
   br: BoomerangModel[]
+  a: number
 }
 
 interface Direction {
