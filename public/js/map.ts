@@ -50,7 +50,7 @@ export default class Map {
           break
       }
       this.ctx.drawImage(
-        this.images.addImage("tiles"),
+        this.images.addImage("img/tiles"),
         bx,
         by,
         16,
@@ -101,23 +101,17 @@ export default class Map {
       this.ctx.strokeText(player.n, name_x, name_y)
       this.ctx.fillText(player.n, name_x, name_y)
 
-      let sx = 1
-      if (player.m.l || player.m.r) {
-        if (player.a < 10) {
-          sx = 17
-        } else if (player.a < 20) {
-          sx = 33
-        } else {
-          player.a = 0
-          sx = 17
-        }
-        player.a++
-      }
+      let sx = player.l.r ? 1 : 2
+      this.ctx.fillStyle = player.c
+      this.ctx.fillRect(0, 0, 40, 40)
+
+      const image_name = "image/character." + player.ch + "." + (player.l.r ? "r" : "l")
+      const image = this.images.addImage(image_name)
 
       this.ctx.drawImage(
-        this.images.addImage("character"),
+        image,
         sx,
-        player.l.l ? 16 : 0,
+        0,
         13,
         16,
         player_x - cx,

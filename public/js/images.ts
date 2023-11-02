@@ -11,8 +11,11 @@ export default class Images {
     if (this.images.hasOwnProperty(name)) {
       return this.images[name]
     }
+    const url = new URL(this.host.toString())
     const image = new Image()
-    image.src = this.host.toString() + `img/${name}.png`
+    url.pathname = `${name}.png`
+    console.log(url)
+    image.src = url.toString()
     image.style.imageRendering = "pixelated"
     this.images[name] = image
     return image

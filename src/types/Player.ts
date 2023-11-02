@@ -8,7 +8,9 @@ import Fireball, {FireballModel} from "./fireball"
 
 const randomName = () => uniqueNamesGenerator({length: 1, dictionaries: [names]})
 
-const randomColor = () => `hsl(${360 * Math.random()}, 68%, 62%)`
+const randomColor = (hue: number) => `hsl(${hue}, 68%, 62%)`
+
+const randomHeu = () => Math.round(360 * Math.random())
 
 const PLAYER_WIDTH = 36
 const PLAYER_HEIGHT = 48
@@ -21,6 +23,7 @@ export class Player {
   socket: string
   disconnected: number | undefined // is disconnected
   died: number | undefined
+  hue: number
   color: string // color
   name: string // name
   gravity: number // gravity
@@ -44,7 +47,8 @@ export class Player {
     this.socket = socket
     this.disconnected = undefined
     this.died = undefined
-    this.color = randomColor()
+    this.hue = randomHeu()
+    this.color = randomColor(this.hue)
     this.name = randomName()
     this.width = PLAYER_WIDTH
     this.height = PLAYER_HEIGHT
@@ -151,6 +155,7 @@ export class Player {
     dc: player.disconnected,
     n: player.name,
     c: player.color,
+    ch: player.hue,
     l: player.look,
     m: player.move,
     pu: player.power_ups.map(PowerUp.toModel),
@@ -169,6 +174,7 @@ export interface Direction {
 export interface PlayerM {
   i: string
   n: string // name
+  ch: number // hue
   c: string // color
   w: number // width
   h: number // height

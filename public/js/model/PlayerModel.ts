@@ -6,6 +6,7 @@ export default interface PlayerModel {
   i: string
   n: string // color
   c: string // color
+  ch: number // width
   w: number // width
   h: number // height
   x: number // x-coord
