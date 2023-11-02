@@ -143,12 +143,19 @@ export default class Map {
         )
       }
       for (const fireball of player.fb) {
-        this.ctx.fillStyle = "#e0511c"
+        this.ctx.fillStyle = "#000"
         this.ctx.fillRect(
           this.canvas.size(fireball.x) - cx,
           this.canvas.size(fireball.y) - cy,
           this.canvas.size(fireball.w),
           this.canvas.size(fireball.h)
+        )
+        this.ctx.fillStyle = "#e0511c"
+        this.ctx.fillRect(
+          this.canvas.size(fireball.x + 2) - cx,
+          this.canvas.size(fireball.y + 2) - cy,
+          this.canvas.size(fireball.w - 4),
+          this.canvas.size(fireball.h - 4)
         )
       }
     }

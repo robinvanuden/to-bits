@@ -2,7 +2,7 @@ import Tile from "./Tile"
 import {Player} from "./Player"
 
 const BOOMERANG_SIZE = 18
-const BOOMERANG_THROW = 14
+const BOOMERANG_THROW = 10
 
 export default class Boomerang {
   id: string = ""
@@ -41,6 +41,8 @@ export default class Boomerang {
   isCaught = (p: Player): boolean => this.isThrown(p) && this.id === p.id && this.isColliding(p)
 
   isHit = (p: Player): boolean => this.player !== p.id && this.isColliding(p)
+
+  isOut = () => (Date.now() - this.thrown) > 5000
 
   private isColliding = (p: Player): boolean => {
     return this.x < p.x + p.width && this.x + this.width > p.x && this.y < p.y + p.height && this.y + this.height > p.y

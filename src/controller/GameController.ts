@@ -29,14 +29,14 @@ export default class GameController {
       for (const boomerang of player.boomerangs) {
         boomerang.x += boomerang.vx
         boomerang.y += boomerang.vy
-        if (solids.find(boomerang.isBroke)) {
+        if (solids.find(boomerang.isBroke) || boomerang.isOut()) {
           player.breakBoomerang(boomerang)
         }
       }
       for (const fireball of player.fireballs) {
         fireball.x += fireball.vx
         fireball.y += fireball.vy
-        if (solids.find(fireball.isBroke)) {
+        if (solids.find(fireball.isBroke) || fireball.isOut()) {
           player.breakFireball(fireball)
         }
       }
@@ -76,6 +76,12 @@ export default class GameController {
           if (boomerang.isHit(player)) {
             player.kill()
             other.breakBoomerang(boomerang)
+          }
+        }
+        for (const fireball of other.fireballs) {
+          if (fireball.isHit(player)) {
+            player.kill()
+            other.breakFireball(fireball)
           }
         }
       }

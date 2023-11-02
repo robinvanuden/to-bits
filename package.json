@@ -1,6 +1,6 @@
 {
   "name": "to-bits",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "scripts": {
     "clean": "rm -r dist && rm -r .parcel-cache",
     "dev:server": "nodemon --watch src src/index.ts",
