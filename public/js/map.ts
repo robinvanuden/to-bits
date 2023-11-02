@@ -95,15 +95,10 @@ export default class Map {
 
       this.ctx.font = this.canvas.font(12)
       this.ctx.textAlign = "center"
-      this.ctx.fillStyle = "#000"
-      const padding = this.canvas.size(3)
-      for (let nx = -padding; nx < padding; nx++) {
-        for (let ny = -padding; ny < padding + 1; ny++) {
-          this.ctx.fillText(player.n, name_x + nx, name_y + ny)
-        }
-      }
-
       this.ctx.fillStyle = "#FFF"
+      this.ctx.strokeStyle = "#000"
+      this.ctx.lineWidth = this.canvas.size(6)
+      this.ctx.strokeText(player.n, name_x, name_y)
       this.ctx.fillText(player.n, name_x, name_y)
 
       let sx = 1
