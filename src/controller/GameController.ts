@@ -1,6 +1,6 @@
 import PlayerController from "./PlayerController"
 import World from "../types/world"
-import lobby from "../map/arena.json"
+import lobby from "../map/lobby.json"
 import PowerUp, {PowerType} from "../types/PowerUp"
 import Tile from "../types/Tile"
 
