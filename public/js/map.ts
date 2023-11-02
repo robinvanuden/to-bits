@@ -97,7 +97,7 @@ export default class Map {
       this.ctx.textAlign = "center"
       this.ctx.fillStyle = "#FFF"
       this.ctx.strokeStyle = "#000"
-      this.ctx.lineWidth = this.canvas.size(6)
+      this.ctx.lineWidth = this.canvas.size(5)
       this.ctx.strokeText(player.n, name_x, name_y)
       this.ctx.fillText(player.n, name_x, name_y)
 
@@ -106,13 +106,10 @@ export default class Map {
         if (player.a < 10) {
           sx = 17
         } else if (player.a < 20) {
-          sx = 1
-        } else if (player.a < 30) {
           sx = 33
-        } else if (player.a < 40) {
-          sx = 1
         } else {
           player.a = 0
+          sx = 17
         }
         player.a++
       }
