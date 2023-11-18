@@ -102,9 +102,6 @@ export default class Map {
       this.ctx.fillText(player.n, name_x, name_y)
 
       let sx = player.l.r ? 1 : 2
-      this.ctx.fillStyle = player.c
-      this.ctx.fillRect(0, 0, 40, 40)
-
       const image_name = "image/character." + player.ch + "." + (player.l.r ? "r" : "l")
       const image = this.images.addImage(image_name)
 

@@ -56,63 +56,63 @@ export default class Hud {
     this.ctx.font = this.canvas.font(10)
     this.ctx.fillStyle = "white"
     this.ctx.textAlign = "left"
-    let x = this.canvas.size(2)
-    let y = this.canvas.size(20)
     const SPACE = this.canvas.size(12)
-    this.ctx.fillText("version: " + this.data.version(), x, y)
-    y += SPACE
-    this.ctx.fillText("delta: " + delta, x, y)
+
+    const debug_texts = ["version: " + this.data.version()]
+    debug_texts.push("delta: " + delta)
+
     const you = this.you()
-    if (you == null || you.d !== undefined) {
-      return
-    }
-    console.log(you)
-    y += SPACE
-    this.ctx.fillText("name: " + you.n, x, y)
-    y += SPACE
-    this.ctx.fillText("x: " + you.x, x, y)
-    y += SPACE
-    this.ctx.fillText("y: " + you.y, x, y)
-    y += SPACE
-    this.ctx.fillText("vx: " + you.vx, x, y)
-    y += SPACE
-    this.ctx.fillText("vy: " + you.vy, x, y)
-    y += SPACE
-    this.ctx.fillText("falling: " + (you.vy !== 0) ? "true" : "false", x, y)
-    y += SPACE
-    this.ctx.fillText("alive: " + you.d !== undefined ? "true" : "false", x, y)
-    // Moved directions
-    for (const direction in you.m) {
-      const value = you.m[direction] || false
-      y += SPACE
-      this.ctx.fillText("m." + direction + ": " + value, x, y)
-    }
-    // Look directions
-    for (const direction in you.l) {
-      const value = you.l[direction] || false
-      y += SPACE
-      this.ctx.fillText("l." + direction + ": " + value, x, y)
-    }
-    y += SPACE
-    this.ctx.fillText("powers: " + (you.pu !== undefined && you.pu.length > 0 ? "" : "-"), x, y)
-    // Look directions
-    for (const power of you.pu) {
-      y += SPACE
-      this.ctx.fillText("- " + power.t, x, y)
+    if (you != null && you.d === undefined) {
+      debug_texts.push("name: " + you.n)
+      debug_texts.push("x: " + you.x)
+      debug_texts.push("y: " + you.y)
+      debug_texts.push("vx: " + you.vx)
+      debug_texts.push("vy: " + you.vy)
+      debug_texts.push("falling: " + (you.vy !== 0) ? "true" : "false")
+      debug_texts.push("alive: " + you.d !== undefined ? "true" : "false")
+
+      // Moved directions
+      for (const direction in you.m) {
+        const value = you.m[direction] || false
+        debug_texts.push("m." + direction + ": " + value)
+      }
+      // Look directions
+      for (const direction in you.l) {
+        const value = you.l[direction] || false
+        debug_texts.push("l." + direction + ": " + value)
+      }
+      debug_texts.push("powers: " + (you.pu !== undefined && you.pu.length > 0 ? "" : "-"))
+      // Look directions
+      for (const power of you.pu) {
+        debug_texts.push("- " + power.t)
+      }
+      const boomerang = you.br[0]
+      if (boomerang) {
+        debug_texts.push("boomerang:")
+        debug_texts.push("- x: " + boomerang.x)
+        debug_texts.push("- y: " + boomerang.y)
+        debug_texts.push("- vx: " + boomerang.vx)
+        debug_texts.push("- vy: " + boomerang.vy)
+      } else {
+        debug_texts.push("boomerang: -")
+      }
+
+      const fireball = you.fb[0]
+      if (fireball) {
+        debug_texts.push("fireball:")
+        debug_texts.push("- x: " + fireball.x)
+        debug_texts.push("- y: " + fireball.y)
+        debug_texts.push("- vx: " + fireball.vx)
+        debug_texts.push("- vy: " + fireball.vy)
+      } else {
+        debug_texts.push("fireball: -")
+      }
     }
 
-    const boomerang = you.br[0]
-    if (!boomerang) {
-      return
+    for (const i in debug_texts) {
+      const line = debug_texts[i]
+      this.ctx.fillText(line, this.canvas.size(2), this.canvas.size(20) + (SPACE * Number(i)))
     }
-    y += SPACE
-    this.ctx.fillText("x: " + boomerang.x, x, y)
-    y += SPACE
-    this.ctx.fillText("y: " + boomerang.y, x, y)
-    y += SPACE
-    this.ctx.fillText("vx: " + boomerang.vx, x, y)
-    y += SPACE
-    this.ctx.fillText("vy: " + boomerang.vy, x, y)
   }
 
   tick = (delta: number) => {
