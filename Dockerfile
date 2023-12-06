@@ -1,9 +1,9 @@
 FROM node:18-alpine
 
-WORKDIR /app/
-
 COPY . .
 
-RUN npm install
+WORKDIR /app/
+
+RUN npm install && npm fund
 
 CMD ["npm", "run", "start"]
