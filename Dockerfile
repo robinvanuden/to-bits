@@ -1,6 +1,6 @@
 FROM node:20-slim
 
-RUN npm install -git npm@latest
+RUN npm install -g npm@latest
 
 COPY . .
 
