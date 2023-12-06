@@ -81,29 +81,36 @@ export default class Hud {
         const value = you.l[direction] || false
         debug_texts.push("l." + direction + ": " + value)
       }
-      debug_texts.push("powers: " + (you.pu !== undefined && you.pu.length > 0 ? "" : "-"))
-      // Look directions
-      for (const power of you.pu) {
-        debug_texts.push("- " + power.t)
+      if (you.pu.length > 0) {
+        debug_texts.push("powers:")
+        // Power ups
+        for (const power of you.pu) {
+          debug_texts.push("- " + power.t)
+        }
+      } else {
+        debug_texts.push("powers: -")
       }
-      const boomerang = you.br[0]
-      if (boomerang) {
-        debug_texts.push("boomerang:")
-        debug_texts.push("- x: " + boomerang.x)
-        debug_texts.push("- y: " + boomerang.y)
-        debug_texts.push("- vx: " + boomerang.vx)
-        debug_texts.push("- vy: " + boomerang.vy)
+      if (you.br.length > 0) {
+        debug_texts.push("boomerangs:")
+        for (const boomerang of you.br) {
+          debug_texts.push("-boomerang:")
+          debug_texts.push("--x: " + boomerang.x)
+          debug_texts.push("--y: " + boomerang.y)
+          debug_texts.push("--vx: " + boomerang.vx)
+          debug_texts.push("--vy: " + boomerang.vy)
+        }
       } else {
         debug_texts.push("boomerang: -")
       }
-
-      const fireball = you.fb[0]
-      if (fireball) {
-        debug_texts.push("fireball:")
-        debug_texts.push("- x: " + fireball.x)
-        debug_texts.push("- y: " + fireball.y)
-        debug_texts.push("- vx: " + fireball.vx)
-        debug_texts.push("- vy: " + fireball.vy)
+      if (you.fb.length > 0) {
+        debug_texts.push("fireballs:")
+        for (const fireball of you.fb) {
+          debug_texts.push("-fireball:")
+          debug_texts.push("--x: " + fireball.x)
+          debug_texts.push("--y: " + fireball.y)
+          debug_texts.push("--vx: " + fireball.vx)
+          debug_texts.push("--vy: " + fireball.vy)
+        }
       } else {
         debug_texts.push("fireball: -")
       }
