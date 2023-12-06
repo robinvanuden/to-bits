@@ -186,3 +186,6 @@ dist
 .pnp.*
 
 *.iml
+/dev/lobby.tmx
+/dev/to-bits.tiled-project
+/dev/to-bits.tiled-session
