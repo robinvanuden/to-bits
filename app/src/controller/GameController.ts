@@ -12,7 +12,8 @@ export default class GameController {
 
   private __players = new PlayerController()
 
-  private __interval: NodeJS.Timeout | undefined = undefined
+  private running: boolean = false
+  private updated: number = Date.now()
 
   players = () => this.__players
 
@@ -132,29 +133,32 @@ export default class GameController {
     this.checkDisconnectedPlayers()
   }
 
+  private loop = (run: () => void) => {
+    if (this.running) setTimeout(() => this.loop(run), 1000 / this.TICKS)
+    let now = Date.now()
+    this.tick(now - this.updated)
+    run()
+    this.updated = now
+    if (!this.players().filled()) this.stop()
+  }
+
   start = (run: () => void) => {
-    if (this.__interval) {
+    if (this.running) {
       console.log("Started game loop already started")
       return
     }
+    this.running = true
     console.log("Started game loop")
-    let updated = Date.now()
-    this.__interval = setInterval(() => {
-      let now = Date.now()
-      this.tick(now - updated)
-      run()
-      updated = now
-      if (!this.players().filled()) this.stop()
-    }, 1000 / this.TICKS)
+    this.updated = Date.now()
+    this.loop(run)
   }
 
   stop = () => {
-    if (!this.__interval) {
+    if (!this.running) {
       return
     }
     console.log("Stopped game loop")
-    clearInterval(this.__interval)
-    this.__interval = undefined
+    this.running = false
   }
 
   throwItem = (uuid: string, degrees: number) => {

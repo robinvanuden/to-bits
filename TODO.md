@@ -5,17 +5,8 @@
 - [x]  If some disconnects and dies. Don't respawn them until they reconnect.
 - [x]  Reduce loops in check logic
     - [x]  Move logic in separate files
-- [ ]  ~~Move boomerangs to separate controller and repository~~
 - [x]  Fix boomerang angels (do math)
-    - [ ]  ~~Write about Timer when thrown to start returning~~
-- [ ]  ~~Add shadow to player~~
-- [ ]  Reduce message size to front end
-- [ ]  Sprite manager / Character
-- [ ]  Sprite creator with tint.
-    - [ ]  Walking animation
-- [ ]  More map textures.
-- [ ]  Night mode / blindess
-- [ ]  Add more items
+- [ ]  More items
     - [ ]  Sword
     - [ ]  Bombs
     - [ ]  Boomerangs
@@ -26,10 +17,20 @@
     - [ ]  Coins
     - [ ]  Bows or cross bows
     - [ ]  Lances
+- [ ]  Night mode / blindness
 - [ ]  Map objects for navigating
     - [ ]  Add portals with unique colors
     - [ ]  Ladders
     - [ ]  Canon
+- [ ]  Reduce message size to front end
+- [ ]  Sprite manager / Character
+- [ ]  Sprite creator with tint.
+   - [ ]  Walking animation
+- [ ]  More map textures.
+- [ ] Point system
+   - Coin = 1 point
+   - Kill = 10 points
+   - Death = -1 point
 
 ## Ideas
 
@@ -47,3 +48,9 @@
     - [ ]  Case of tnt that explodes if you hit it
 - [ ]  When dead, you can look around.
 - [ ]  When the game has started, new players have to wait until the match is over.
+
+## Archive
+
+- [ ]  ~~Add shadow to player~~
+- [ ]  ~~Move boomerangs to separate controller and repository~~
+- [ ]  ~~Write about Timer when thrown boomerang to start returning~~

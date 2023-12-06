@@ -36,7 +36,6 @@ export default class SocketController {
         return
       }
       this.connected_ids.push(address)
-      this.game.start(this.emitProjectiles)
       client.emit("version", this.version)
       let continue_player = this.game.players().getConnected(uuid)
       // TODO: Move respawn logic to GameController
@@ -69,6 +68,8 @@ export default class SocketController {
         if (player) player.disconnected = Date.now()
         this.connected_ids = this.connected_ids.filter(addr => addr !== address)
       })
+
+      this.game.start(this.emitProjectiles)
     })
   }
 
