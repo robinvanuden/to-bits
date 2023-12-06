@@ -34,6 +34,7 @@ import Canvas from "./canvas"
 
   socket.on("version", version => {
     if (data.version() === "") {
+      document.title = `To Bits! v${version}`
       data.setVersion(version)
       hud.setLoading(true)
     } else if (data.version() !== version) {
