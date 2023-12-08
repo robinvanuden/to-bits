@@ -91,9 +91,9 @@ export default class Map {
       const player_y = this.canvas.size(player.y)
 
       const name_x = player_x - cx + player_w * .5
-      const name_y = player_y - cy - this.canvas.size(1)
+      const name_y = player_y - cy - this.canvas.size(6)
 
-      this.ctx.font = this.canvas.font(.8)
+      this.ctx.font = this.canvas.font(.9)
       this.ctx.textAlign = "center"
       this.ctx.fillStyle = "#FFF"
       this.ctx.strokeStyle = "#000"
