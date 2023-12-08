@@ -1,4 +1,5 @@
-const FONT_TEXT = "FiveFontsatFreddy"
+const FONT_TEXT = "Goodbye Despair"
+const FONT_SIZE = 16
 
 export default class Canvas {
 
@@ -18,9 +19,11 @@ export default class Canvas {
     window.addEventListener("resize", () => this.setDimensions(window.innerWidth, window.innerHeight))
   }
 
-  font = (size: number, family: string = FONT_TEXT) => `${this.size(size)}px ${family}`
+  font = (size: number, family: string = FONT_TEXT) => `${this.rem(size)}px ${family}`
 
   size = (n: number) => n * this.ratio
+
+  rem = (n: number) => this.size(Math.round(FONT_SIZE * n))
 
   width = () => this.__width
 

@@ -37,10 +37,10 @@ export default class Hud {
     this.ctx.fillRect(0, 0, this.canvas.width(), this.canvas.height())
     this.ctx.textAlign = "center"
     this.ctx.fillStyle = "#FFF"
-    this.ctx.font = this.canvas.font(50)
+    this.ctx.font = this.canvas.font(4)
     this.ctx.fillText("YOU DIED!", this.canvas.width() / 2, this.canvas.height() / 2)
 
-    this.ctx.font = this.canvas.font(24)
+    this.ctx.font = this.canvas.font(1.5)
     this.ctx.fillText("Respawn in: " + Math.round(((you.d + 5000) - now) / 1000), this.canvas.width() / 2, (this.canvas.height() / 2) + this.canvas.size(70))
 
   }
@@ -49,11 +49,11 @@ export default class Hud {
     this.ctx.fillRect(0, 0, this.canvas.width(), this.canvas.height())
     this.ctx.textAlign = "center"
     this.ctx.fillStyle = "#f3f3f3"
-    this.ctx.font = this.canvas.font(50)
+    this.ctx.font = this.canvas.font(4)
     this.ctx.fillText("LOADING", this.canvas.width() * .5, this.canvas.height() * .5)
   }
   drawDebug = (delta: number) => {
-    this.ctx.font = this.canvas.font(10)
+    this.ctx.font = this.canvas.font(.8)
     this.ctx.fillStyle = "white"
     this.ctx.textAlign = "left"
     const SPACE = this.canvas.size(12)

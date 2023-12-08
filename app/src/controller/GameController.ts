@@ -134,29 +134,24 @@ export default class GameController {
   }
 
   private loop = (run: () => void) => {
-    if (this.running) setTimeout(() => this.loop(run), 1000 / this.TICKS)
     let now = Date.now()
     this.tick(now - this.updated)
     run()
     this.updated = now
     if (!this.players().filled()) this.stop()
+    if (this.running) setTimeout(() => this.loop(run), 1000 / this.TICKS)
   }
 
   start = (run: () => void) => {
-    if (this.running) {
-      console.log("Started game loop already started")
-      return
+    if (!this.running) {
+      this.running = true
+      console.log("Started game loop")
+      this.updated = Date.now()
+      this.loop(run)
     }
-    this.running = true
-    console.log("Started game loop")
-    this.updated = Date.now()
-    this.loop(run)
   }
 
   stop = () => {
-    if (!this.running) {
-      return
-    }
     console.log("Stopped game loop")
     this.running = false
   }
@@ -170,11 +165,11 @@ export default class GameController {
     if (!powerUp) {
       return
     }
+    player.usePowerUp(powerUp.type)
     if (powerUp.type === PowerType.BOOMERANG) {
       player.throwBoomerang(degrees)
     } else if (powerUp.type === PowerType.FIREBALL) {
       player.throwFireball(degrees)
     }
-    player.usePowerUp(powerUp.type)
   }
 }

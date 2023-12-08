@@ -2,6 +2,7 @@ import {createServer} from "http"
 import express from "express"
 import SocketController from "./controller/SocketController"
 import image_router from "./controller/ImageController"
+import pack from "../package.json"
 
 const app = express()
 const server = createServer(app)
@@ -11,7 +12,7 @@ app.use("/", express.static("dist"))
 
 app.use(image_router)
 
-const VERSION: string = process.env.npm_package_version || "?.?.?"
+const VERSION: string = pack.version || "?.?.?"
 console.log("Starting ToBits: v" + VERSION)
 
 new SocketController(server, VERSION)
