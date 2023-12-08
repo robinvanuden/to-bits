@@ -49,8 +49,5 @@ ToBits!
 
 ### Fonts
 
-Five Fonts at Freddy's:
-https://www.dafont.com/five-fonts-at-freddy-s.font
-
-The Call:
-https://www.dafont.com/the-call.font
+[Goodbye Despair](https://www.dafont.com/goodbye-despair.font)
+by [UkiyoMoji Fonts](https://www.dafont.com/japanyoshi.d5804)
