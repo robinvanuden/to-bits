@@ -164,6 +164,7 @@ export default class GameController {
   stop = () => {
     console.log("Stopped game loop")
     this.running = false
+    this.map().clearPowerUps()
   }
 
   throwItem = (uuid: string, degrees: number) => {

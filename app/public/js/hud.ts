@@ -57,8 +57,8 @@ export default class Hud {
     this.ctx.fillStyle = "#FFF"
     this.ctx.textAlign = "left"
     this.ctx.strokeStyle = "#000"
-    this.ctx.lineWidth = this.canvas.size(6)
-    const SPACE = this.canvas.size(14)
+    this.ctx.lineWidth = this.canvas.size(4)
+    const SPACE = this.canvas.size(12)
 
     const debug_texts = ["version: " + this.data.version()]
     debug_texts.push("delta: " + delta)

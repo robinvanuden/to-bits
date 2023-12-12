@@ -49,4 +49,11 @@ export default class World {
     const index = Math.round((spawns.length - 1) * Math.random())
     return spawns[index]
   }
+
+  clearPowerUps = () => {
+    for (const tile of this.tiles) {
+      tile.power_up = undefined
+    }
+    console.log("Cleared power-ups")
+  }
 }

@@ -23,7 +23,6 @@ export default function (players: PlayerRepository) {
     const player = players.getBySocketUuid(uuid)
     const heu = player?.hue || 0
     const left = (req.params?.direction || "r").toLowerCase() === "l"
-    console.log("heu", heu)
     const tint = sharp(path.resolve(__dirname, "../assets/character.tint.png"))
       .flop(left)
       .modulate({lightness: -30})
