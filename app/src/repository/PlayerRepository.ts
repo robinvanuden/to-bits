@@ -1,7 +1,7 @@
 import Tile from "../types/Tile"
 import {Player} from "../types/Player"
 
-export default class PlayerController {
+export default class PlayerRepository {
 
   players: Player[] = []
 
@@ -19,7 +19,9 @@ export default class PlayerController {
 
   remove = (player: Player) => this.players = this.players.filter(p => p.id !== player.id)
 
-  get = (id: string) => this.players.find(player => player.id === id) ?? null
+  getById = (id: string) => this.players.find(player => player.id === id) ?? null
+
+  getBySocketUuid = (socket_id: string) => this.players.find(player => player.socket_uuid === socket_id) ?? null
 
   getConnected = (id: string) => this.players.find(player => player.id === id && player.disconnected !== undefined) ?? null
 

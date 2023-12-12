@@ -93,16 +93,16 @@ export default class Map {
       const name_x = player_x - cx + player_w * .5
       const name_y = player_y - cy - this.canvas.size(6)
 
-      this.ctx.font = this.canvas.font(.9)
+      this.ctx.font = this.canvas.font(1)
       this.ctx.textAlign = "center"
       this.ctx.fillStyle = "#FFF"
       this.ctx.strokeStyle = "#000"
-      this.ctx.lineWidth = this.canvas.size(5)
+      this.ctx.lineWidth = this.canvas.size(6)
       this.ctx.strokeText(player.n.toLowerCase(), name_x, name_y)
       this.ctx.fillText(player.n.toLowerCase(), name_x, name_y)
 
       let sx = player.l.r ? 1 : 2
-      const image_name = "image/character." + player.ch + "." + (player.l.r ? "r" : "l")
+      const image_name = "image/character/" + player.uid + "." + (player.l.r ? "r" : "l")
       const image = this.images.addImage(image_name)
 
       this.ctx.drawImage(

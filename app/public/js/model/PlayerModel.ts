@@ -4,6 +4,7 @@ import {FireballModel} from "./FireballModel"
 
 export default interface PlayerModel {
   i: string
+  uid: string
   n: string // color
   c: string // color
   ch: number // width

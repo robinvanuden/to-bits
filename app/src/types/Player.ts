@@ -3,7 +3,7 @@ import {GRAVITY} from "../constants"
 import {names, uniqueNamesGenerator} from "unique-names-generator"
 import PowerUp, {PowerType, PowerUpModel} from "./PowerUp"
 import Boomerang, {BoomerangModel} from "./boomerang"
-import {v4} from "uuid"
+import {v4, v5} from "uuid"
 import Fireball, {FireballModel} from "./fireball"
 
 const randomName = () => uniqueNamesGenerator({length: 1, dictionaries: [names]})
@@ -20,7 +20,8 @@ const MAX_POWER_UP = 3
 
 export class Player {
   id: string // ID
-  socket: string
+  socket_id: string
+  socket_uuid: string
   disconnected: number | undefined // is disconnected
   died: number | undefined
   hue: number
@@ -44,7 +45,8 @@ export class Player {
 
   constructor(id: string, socket: string, spawn: Tile) {
     this.id = id
-    this.socket = socket
+    this.socket_id = socket
+    this.socket_uuid = v5(socket, v4())
     this.disconnected = undefined
     this.died = undefined
     this.hue = randomHeu()
@@ -91,7 +93,7 @@ export class Player {
   }
 
   recreate = (socket: string) => {
-    this.socket = socket
+    this.socket_id = socket
     this.disconnected = undefined
     this.move = {u: false, d: false, l: false, r: false}
   }
@@ -143,24 +145,25 @@ export class Player {
     this.fireballs = this.fireballs.filter(b => b.id !== fireball.id)
   }
 
-  static toModel = (player: Player): PlayerM => ({
-    i: player.socket,
-    w: player.width,
-    h: player.height,
-    x: player.x,
-    y: player.y,
-    vx: player.vx,
-    vy: player.vy,
-    d: player.died,
-    dc: player.disconnected,
-    n: player.name,
-    c: player.color,
-    ch: player.hue,
-    l: player.look,
-    m: player.move,
-    pu: player.power_ups.map(PowerUp.toModel),
-    br: player.boomerangs.map(Boomerang.toModel),
-    fb: player.fireballs.map(Fireball.toModel)
+  static toModel = (p: Player): PlayerM => ({
+    i: p.socket_id,
+    uid: p.socket_uuid,
+    w: p.width,
+    h: p.height,
+    x: p.x,
+    y: p.y,
+    vx: p.vx,
+    vy: p.vy,
+    d: p.died,
+    dc: p.disconnected,
+    n: p.name,
+    c: p.color,
+    ch: p.hue,
+    l: p.look,
+    m: p.move,
+    pu: p.power_ups.map(PowerUp.toModel),
+    br: p.boomerangs.map(Boomerang.toModel),
+    fb: p.fireballs.map(Fireball.toModel)
   })
 }
 
@@ -172,7 +175,8 @@ export interface Direction {
 }
 
 export interface PlayerM {
-  i: string
+  i: string,
+  uid: string
   n: string // name
   ch: number // hue
   c: string // color

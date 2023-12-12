@@ -8,5 +8,5 @@
     - map
     - controllers
         - endpoints
-    - socket
+  - socket_id
         - endpoints

@@ -54,9 +54,11 @@ export default class Hud {
   }
   drawDebug = (delta: number) => {
     this.ctx.font = this.canvas.font(.7)
-    this.ctx.fillStyle = "white"
+    this.ctx.fillStyle = "#FFF"
     this.ctx.textAlign = "left"
-    const SPACE = this.canvas.size(12)
+    this.ctx.strokeStyle = "#000"
+    this.ctx.lineWidth = this.canvas.size(6)
+    const SPACE = this.canvas.size(14)
 
     const debug_texts = ["version: " + this.data.version()]
     debug_texts.push("delta: " + delta)
@@ -118,6 +120,7 @@ export default class Hud {
 
     for (const i in debug_texts) {
       const line = debug_texts[i]
+      this.ctx.strokeText(line, this.canvas.size(2), this.canvas.size(20) + (SPACE * Number(i)))
       this.ctx.fillText(line, this.canvas.size(2), this.canvas.size(20) + (SPACE * Number(i)))
     }
   }

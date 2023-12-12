@@ -1,4 +1,4 @@
-import PlayerController from "./PlayerController"
+import PlayerRepository from "../repository/PlayerRepository"
 import World from "../types/world"
 import lobby from "../map/lobby.json"
 import PowerUp, {PowerType} from "../types/PowerUp"
@@ -6,16 +6,26 @@ import Tile from "../types/Tile"
 
 export default class GameController {
 
+  VERSION: string = "?.?.?"
+
   DELTA = 0
-  TICKS = 50
+  TICKS = 60
   lobby = new World(lobby.tiles)
 
-  private __players = new PlayerController()
+  private __players!: PlayerRepository
 
   private running: boolean = false
   private updated: number = Date.now()
 
+  constructor(VERSION: string) {
+    this.VERSION = VERSION
+  }
+
+  version = () => this.VERSION
+
   players = () => this.__players
+
+  setPlayers = (players: PlayerRepository) => this.__players = players
 
   map = (): World => this.lobby
 
@@ -157,7 +167,7 @@ export default class GameController {
   }
 
   throwItem = (uuid: string, degrees: number) => {
-    const player = this.players().get(uuid)
+    const player = this.players().getById(uuid)
     if (!player) {
       return
     }

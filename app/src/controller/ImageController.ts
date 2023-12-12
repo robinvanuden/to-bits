@@ -1,8 +1,7 @@
 import {Router} from "express"
 import sharp from "sharp"
 import path from "path"
-
-const image_router = Router()
+import PlayerRepository from "../repository/PlayerRepository"
 
 function hslToRgb(h: number, s: number, l: number) {
   s /= 100
@@ -16,19 +15,23 @@ function hslToRgb(h: number, s: number, l: number) {
   return rgb
 }
 
-image_router.get("/image/character.:hue.:direction.png", async (req, res) => {
-  const heu = Number(req.params?.hue || "0")
-  const left = (req.params?.direction || "r").toLowerCase() === "l"
-  console.log("heu", heu)
-  const tint = sharp(path.resolve(__dirname, "../assets/character.tint.png"))
-    .flop(left)
-    .modulate({lightness: -30})
-    .tint(hslToRgb(heu, 62, 68))
-  const img = sharp(path.resolve(__dirname, "../assets/character.png")).flop(left)
-  let char = img.composite([{input: await tint.toBuffer()}])
-  res.contentType("image/png")
-  res.end(await char.toBuffer(), "utf-8")
-})
+export default function (players: PlayerRepository) {
+  const image_router = Router()
 
-
-export default image_router
+  image_router.get("/image/character/:uuid.:direction.png", async (req, res) => {
+    const uuid = req.params.uuid || ""
+    const player = players.getBySocketUuid(uuid)
+    const heu = player?.hue || 0
+    const left = (req.params?.direction || "r").toLowerCase() === "l"
+    console.log("heu", heu)
+    const tint = sharp(path.resolve(__dirname, "../assets/character.tint.png"))
+      .flop(left)
+      .modulate({lightness: -30})
+      .tint(hslToRgb(heu, 62, 68))
+    const img = sharp(path.resolve(__dirname, "../assets/character.png")).flop(left)
+    let char = img.composite([{input: await tint.toBuffer()}])
+    res.contentType("image/png")
+    res.end(await char.toBuffer(), "utf-8")
+  })
+  return image_router
+}

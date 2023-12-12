@@ -1,29 +1,24 @@
 import {Server, Socket} from "socket.io"
 import {v4, v5} from "uuid"
-import GameController from "./GameController"
 import {Player} from "../types/Player"
 import Tile from "../types/Tile"
 import PowerUp from "../types/PowerUp"
+import GameController from "./GameController"
 
 export default class SocketController {
 
   private io: Server
-  private readonly version: string
   private uuid_seed: string
   private connected_ids: string[] = []
-  private game: GameController | undefined
+  private readonly game: GameController
 
-  constructor(server: any, version: string) {
+  constructor(game: GameController, server: any) {
+    this.game = game
     this.io = new Server(server)
-    this.version = version
     this.uuid_seed = v4()
     this.connected_ids = []
 
     this.io.on("connection", client => {
-      if (!this.game) {
-        console.log("Start game instance")
-        this.game = new GameController()
-      }
       const address: string = this.getAddress(client)
       if (address === "") {
         console.log("No address")
@@ -36,7 +31,7 @@ export default class SocketController {
         return
       }
       this.connected_ids.push(address)
-      client.emit("version", this.version)
+      client.emit("version", this.game.version())
       let continue_player = this.game.players().getConnected(uuid)
       // TODO: Move respawn logic to GameController
       if (continue_player) {
@@ -64,7 +59,7 @@ export default class SocketController {
           return
         }
         console.log('User disconnected', uuid)
-        const player = this.game.players().get(uuid)
+        const player = this.game.players().getById(uuid)
         if (player) player.disconnected = Date.now()
         this.connected_ids = this.connected_ids.filter(addr => addr !== address)
       })
@@ -74,7 +69,7 @@ export default class SocketController {
   }
 
   reset = () => {
-    console.log("Reset socket params")
+    console.log("Reset socket_id params")
     this.uuid_seed = v4()
   }
 
@@ -100,7 +95,7 @@ export default class SocketController {
     if (!this.game) {
       return
     }
-    const player = this.game.players().get(uuid)
+    const player = this.game.players().getById(uuid)
     if (!player) {
       return
     }
