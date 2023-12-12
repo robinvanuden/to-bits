@@ -3,14 +3,16 @@ import World from "../types/world"
 import lobby from "../map/lobby.json"
 import PowerUp, {PowerType} from "../types/PowerUp"
 import Tile from "../types/Tile"
+import {v4} from "uuid"
 
 export default class GameController {
 
-  VERSION: string = "?.?.?"
+  private readonly VERSION: string = "?.?.?"
 
-  DELTA = 0
-  TICKS = 60
-  lobby = new World(lobby.tiles)
+  private DELTA = 0
+  private TICKS = 60
+  private UUID_SEED: string = ""
+  private lobby = new World(lobby.tiles)
 
   private __players!: PlayerRepository
 
@@ -19,6 +21,14 @@ export default class GameController {
 
   constructor(VERSION: string) {
     this.VERSION = VERSION
+    this.generate_seed()
+  }
+
+  uuid_seed = () => this.UUID_SEED
+
+  generate_seed = () => {
+    this.UUID_SEED = v4()
+    console.log("Seed generated: ", this.uuid_seed())
   }
 
   version = () => this.VERSION
@@ -165,6 +175,7 @@ export default class GameController {
     console.log("Stopped game loop")
     this.running = false
     this.map().clearPowerUps()
+    this.generate_seed()
   }
 
   throwItem = (uuid: string, degrees: number) => {

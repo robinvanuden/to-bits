@@ -8,7 +8,7 @@ import Fireball, {FireballModel} from "./fireball"
 
 const randomName = () => uniqueNamesGenerator({length: 1, dictionaries: [names]})
 
-const randomColor = (hue: number) => `hsl(${hue}, 68%, 62%)`
+const randomColor = (hue: number) => `hsl(${hue}, 74%, 58%)`
 
 const randomHeu = () => Math.round(360 * Math.random())
 

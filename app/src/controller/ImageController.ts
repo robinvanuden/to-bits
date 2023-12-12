@@ -10,9 +10,7 @@ function hslToRgb(h: number, s: number, l: number) {
   const a = s * Math.min(l, 1 - l)
   const f = n =>
     l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)))
-  const rgb = {r: 255 * f(0), g: 255 * f(8), b: 255 * f(4)}
-  console.log("rgb", rgb)
-  return rgb
+  return {r: 255 * f(0), g: 255 * f(8), b: 255 * f(4)}
 }
 
 export default function (players: PlayerRepository) {
@@ -26,7 +24,7 @@ export default function (players: PlayerRepository) {
     const tint = sharp(path.resolve(__dirname, "../assets/character.tint.png"))
       .flop(left)
       .modulate({lightness: -30})
-      .tint(hslToRgb(heu, 62, 68))
+      .tint(hslToRgb(heu, 80, 46))
     const img = sharp(path.resolve(__dirname, "../assets/character.png")).flop(left)
     let char = img.composite([{input: await tint.toBuffer()}])
     res.contentType("image/png")

@@ -1,5 +1,5 @@
 import {Server, Socket} from "socket.io"
-import {v4, v5} from "uuid"
+import {v5} from "uuid"
 import {Player} from "../types/Player"
 import Tile from "../types/Tile"
 import PowerUp from "../types/PowerUp"
@@ -8,14 +8,12 @@ import GameController from "./GameController"
 export default class SocketController {
 
   private io: Server
-  private uuid_seed: string
   private connected_ids: string[] = []
   private readonly game: GameController
 
   constructor(game: GameController, server: any) {
     this.game = game
     this.io = new Server(server)
-    this.uuid_seed = v4()
     this.connected_ids = []
 
     this.io.on("connection", client => {
@@ -24,7 +22,7 @@ export default class SocketController {
         console.log("No address")
         return
       }
-      const uuid = v5(address, this.uuid_seed)
+      const uuid = v5(address, this.game.uuid_seed())
       if (this.connected_ids.find(addr => addr === address)) {
         console.log("Disconnect double user", address)
         client.disconnect(true)
@@ -66,11 +64,6 @@ export default class SocketController {
 
       this.game.start(this.emitProjectiles)
     })
-  }
-
-  reset = () => {
-    console.log("Reset socket_id params")
-    this.uuid_seed = v4()
   }
 
   getAddress = (client: Socket): string => {
