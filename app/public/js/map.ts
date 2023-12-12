@@ -93,10 +93,6 @@ export default class Map {
       const name_x = player_x - cx + player_w * .5
       const name_y = player_y - cy - this.canvas.size(6)
 
-
-      this.ctx.fillStyle = player.c
-      this.ctx.fillRect(player_x - cx, player_y - cy, 30, 30)
-
       this.ctx.font = this.canvas.font(1)
       this.ctx.textAlign = "center"
       this.ctx.fillStyle = "#FFF"
