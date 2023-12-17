@@ -46,6 +46,8 @@ import Canvas from "./canvas"
 
   socket.on("disconnect", () => hud.setLoading(true))
 
+  socket.on("nope", () => hud.setNope(true))
+
   socket.on("map", map_data => {
     data.setMap(map_data)
     hud.setLoading(false)

@@ -9,6 +9,10 @@ export default class Hud {
 
   DEBUG = false
   LOADING = true
+  NOPE = false
+
+  COLOR_BLACK = "#151414"
+  COLOR_WHITE = "#F3F3F3"
 
   constructor(canvas: Canvas, data: Data) {
     this.canvas = canvas
@@ -21,6 +25,10 @@ export default class Hud {
   setLoading = (loading: boolean) => this.LOADING = loading
 
   loading = () => this.LOADING
+
+  setNope = (nope: boolean) => this.NOPE = nope
+
+  nope = () => this.NOPE
 
   you = () => this.data.players().find(p => p.i === this.data.id()) || undefined
 
@@ -36,7 +44,7 @@ export default class Hud {
     this.ctx.fillStyle = "rgba(0,0,0,0.5)"
     this.ctx.fillRect(0, 0, this.canvas.width(), this.canvas.height())
     this.ctx.textAlign = "center"
-    this.ctx.fillStyle = "#FFF"
+    this.ctx.fillStyle = this.COLOR_WHITE
     this.ctx.font = this.canvas.font(6)
     this.ctx.fillText("YOU DIED!", this.canvas.width() / 2, this.canvas.height() / 2)
 
@@ -45,18 +53,26 @@ export default class Hud {
 
   }
   drawLoading = () => {
-    this.ctx.fillStyle = "#1d1d1d"
+    this.ctx.fillStyle = this.COLOR_BLACK
     this.ctx.fillRect(0, 0, this.canvas.width(), this.canvas.height())
     this.ctx.textAlign = "center"
-    this.ctx.fillStyle = "#f3f3f3"
+    this.ctx.fillStyle = this.COLOR_WHITE
     this.ctx.font = this.canvas.font(7)
     this.ctx.fillText("LOADING", this.canvas.width() * .5, this.canvas.height() * .5)
   }
+  drawNope = () => {
+    this.ctx.fillStyle = this.COLOR_BLACK
+    this.ctx.fillRect(0, 0, this.canvas.width(), this.canvas.height())
+    this.ctx.textAlign = "center"
+    this.ctx.fillStyle = this.COLOR_WHITE
+    this.ctx.font = this.canvas.font(7)
+    this.ctx.fillText("NOPE", this.canvas.width() * .5, this.canvas.height() * .5)
+  }
   drawDebug = (delta: number) => {
     this.ctx.font = this.canvas.font(.7)
-    this.ctx.fillStyle = "#FFF"
+    this.ctx.fillStyle = this.COLOR_WHITE
     this.ctx.textAlign = "left"
-    this.ctx.strokeStyle = "#000"
+    this.ctx.strokeStyle = this.COLOR_WHITE
     this.ctx.lineWidth = this.canvas.size(4)
     const SPACE = this.canvas.size(12)
 
@@ -125,10 +141,26 @@ export default class Hud {
     }
   }
 
+  drawVersion = () => {
+    this.ctx.font = this.canvas.font(1)
+    this.ctx.fillStyle = this.COLOR_WHITE
+    this.ctx.textAlign = "center"
+    this.ctx.strokeStyle = this.COLOR_BLACK
+    this.ctx.lineWidth = this.canvas.size(4)
+    const line = "v" + this.data.version()
+    const x = window.innerWidth
+    const y = this.canvas.size(14)
+
+    this.ctx.strokeText(line, x, y)
+    this.ctx.fillText(line, x, y)
+  }
+
   tick = (delta: number) => {
     this.drawMessage()
-    if (this.LOADING) this.drawLoading()
+    this.drawVersion()
+    if (this.loading()) this.drawLoading()
     if (this.DEBUG) this.drawDebug(delta)
+    if (this.nope()) this.drawNope()
   }
 
 }

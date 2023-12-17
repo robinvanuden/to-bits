@@ -20,17 +20,19 @@ export default class PlayerSocket {
       const address: string = this.getAddress(client)
       if (address === "") {
         console.log("No address")
+        client.emit("nope", true)
         return
       }
-      const uuid = v5(address, this.game.uuid_seed())
       if (this.connected_ids.find(addr => addr === address)) {
         console.log("Disconnect double user", address)
+        client.emit("nope", true)
         client.disconnect(true)
         return
       }
       this.connected_ids.push(address)
       client.emit("version", this.game.version())
 
+      const uuid = v5(address, this.game.uuid_seed())
       this.game.addPlayer(uuid, client.id)
 
       client.emit("map", this.game.map().map().map(Tile.toModel))
