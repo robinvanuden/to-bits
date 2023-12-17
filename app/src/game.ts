@@ -1,11 +1,11 @@
-import PlayerRepository from "../repository/PlayerRepository"
-import World from "../types/world"
-import lobby from "../map/lobby.json"
-import PowerUp, {PowerType} from "../types/PowerUp"
-import Tile from "../types/Tile"
+import PlayerRepository from "./repository/PlayerRepository"
+import World from "./types/world"
+import lobby from "./map/lobby.json"
+import PowerUp, {PowerType} from "./types/PowerUp"
+import Tile from "./types/Tile"
 import {v4} from "uuid"
 
-export default class GameController {
+export default class Game {
 
   private readonly VERSION: string = "?.?.?"
 
@@ -14,7 +14,7 @@ export default class GameController {
   private UUID_SEED: string = ""
   private lobby = new World(lobby.tiles)
 
-  private __players!: PlayerRepository
+  private playerRepository!: PlayerRepository
 
   private running: boolean = false
   private updated: number = Date.now()
@@ -33,13 +33,27 @@ export default class GameController {
 
   version = () => this.VERSION
 
-  players = () => this.__players
+  players = () => this.playerRepository
 
-  setPlayers = (players: PlayerRepository) => this.__players = players
+  setPlayersRepository = (players: PlayerRepository) => this.playerRepository = players
 
   map = (): World => this.lobby
 
   power_ups = () => this.map().map().filter(t => t.power_up != undefined).map(t => t.power_up) as PowerUp[]
+
+  addPlayer = (uuid: string, socket_id: string) => {
+    let continue_player = this.players().getConnected(uuid)
+    if (continue_player) {
+      // Reconnect
+      console.log('User reconnected', socket_id, uuid)
+      continue_player.recreate(socket_id)
+    } else {
+      // New player
+      const SPAWN_TILE = this.map().randomSpawn()
+      console.log('User connected', uuid)
+      this.players().create(SPAWN_TILE, uuid, socket_id)
+    }
+  }
 
   private checkPlayerPosition = (delta: number) => {
     const solids = this.map().blocksSolid()

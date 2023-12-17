@@ -3,15 +3,15 @@ import {v5} from "uuid"
 import {Player} from "../types/Player"
 import Tile from "../types/Tile"
 import PowerUp from "../types/PowerUp"
-import GameController from "./GameController"
+import Game from "../game"
 
-export default class SocketController {
+export default class PlayerSocket {
 
   private io: Server
   private connected_ids: string[] = []
-  private readonly game: GameController
+  private readonly game: Game
 
-  constructor(game: GameController, server: any) {
+  constructor(game: Game, server: any) {
     this.game = game
     this.io = new Server(server)
     this.connected_ids = []
@@ -30,18 +30,9 @@ export default class SocketController {
       }
       this.connected_ids.push(address)
       client.emit("version", this.game.version())
-      let continue_player = this.game.players().getConnected(uuid)
-      // TODO: Move respawn logic to GameController
-      if (continue_player) {
-        // Reconnect
-        console.log('User reconnected', client.id, uuid)
-        continue_player.recreate(client.id)
-      } else {
-        // New player
-        const SPAWN_TILE = this.game.map().randomSpawn()
-        console.log('User connected', uuid)
-        this.game.players().create(SPAWN_TILE, uuid, client.id)
-      }
+
+      this.game.addPlayer(uuid, client.id)
+
       client.emit("map", this.game.map().map().map(Tile.toModel))
 
       client.on("move.left", (bool: boolean) => this.onMovement(uuid, "move.left", bool))

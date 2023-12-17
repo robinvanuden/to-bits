@@ -1,9 +1,9 @@
 import {createServer} from "http"
 import express from "express"
-import SocketController from "./controller/SocketController"
+import PlayerSocket from "./socket/PlayerSocket"
 import image_router from "./controller/ImageController"
 import pack from "../package.json"
-import GameController from "./controller/GameController"
+import Game from "./game"
 import PlayerRepository from "./repository/PlayerRepository"
 
 const app = express()
@@ -11,10 +11,10 @@ const server = createServer(app)
 
 const VERSION: string = pack.version || "?.?.?"
 
-const game: GameController | undefined = new GameController(VERSION)
+const game: Game | undefined = new Game(VERSION)
 
 const players = new PlayerRepository()
-game.setPlayers(players)
+game.setPlayersRepository(players)
 
 app.use("/img", express.static("public/img"))
 app.use("/", express.static("dist"))
@@ -22,7 +22,7 @@ app.use("/", express.static("dist"))
 app.use(image_router(players))
 console.log("Starting ToBits: v" + VERSION)
 
-new SocketController(game, server)
+new PlayerSocket(game, server)
 
 const PORT: number = Number.parseInt(process.env?.PORT ?? "80")
 server.listen(PORT)
