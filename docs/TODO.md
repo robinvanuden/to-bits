@@ -49,6 +49,11 @@
 - [ ]  When dead, you can look around.
 - [ ]  When the game has started, new players have to wait until the match is over.
 
+## Fixes
+
+- [ ] 2 people can't join from the same IP.
+- [ ] After disconnecting, people are just standing still and not dying.
+
 ## Archive
 
 - [ ]  ~~Add shadow to player~~
