@@ -28,6 +28,15 @@ const loadCharacterAsset = async (left: boolean): Promise<sharp.Sharp> => {
   return sharp(path.resolve(__dirname, "../assets/character.png")).flop(left)
 }
 
+const loadCharacterLegs = async (left: boolean): Promise<sharp.Sharp> => {
+  console.log("load character asset", "left:", left)
+  return sharp(path.resolve(__dirname, "../assets/character.legs.png")).flop(left)
+}
+
+const loadCharacterMask = async (type: number, left: boolean): Promise<sharp.Sharp> => {
+  return sharp(path.resolve(__dirname, `../assets/character.mask${type}.png`)).flop(left)
+}
+
 const loadCharacter = async (left: boolean): Promise<sharp.Sharp> => {
   let img = (left ? imgCharacterLeft : imgCharacterRight) || await loadCharacterAsset(left)
   if (!imgCharacterLeft && left) imgCharacterLeft = img
@@ -46,7 +55,13 @@ export default function (players: PlayerRepository) {
     const left = (req.params?.direction || "r").toLowerCase() === "l"
     const img = await loadCharacter(left)
     const tint = await loadCharacterTint(hue, left)
-    let char = img.composite([{input: await tint.toBuffer()}])
+    const mask = await loadCharacterMask(4, left)
+    const legs = await loadCharacterLegs(left)
+    let char = img.composite([
+      {input: await tint.toBuffer()},
+      {input: await mask.toBuffer(), left: left ? 2 : 5, top: 5},
+      {input: await legs.toBuffer()}
+    ])
     res.contentType("image/png")
     res.end(await char.toBuffer(), "utf-8")
   })
