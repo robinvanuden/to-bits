@@ -10,7 +10,7 @@ The Map update. More coming soon!
 
 ## 0.3
 
-Character personalization/randomness update
+Character personalization/randomness update.
 
 ### Added
 
@@ -24,7 +24,10 @@ Character personalization/randomness update
 - [ ] Changed the favicon to the players character instead of the default knight.
 - [x] Optimized colouring for the character tint.
 - [ ] Improved the image generation
+- [ ] All players are drawn based on join-time. But the player playing needs to be on top.
 
 ### Fixed
 
 - [ ] Character image loading at first load.
+- [ ] 2 people can't join from the same IP.
+- [ ] After disconnecting, people are just standing still and not dying.

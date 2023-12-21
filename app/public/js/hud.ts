@@ -41,13 +41,17 @@ export default class Hud {
       return
     }
     const now = Date.now()
+    // Background
     this.ctx.fillStyle = "rgba(0,0,0,0.5)"
     this.ctx.fillRect(0, 0, this.canvas.width(), this.canvas.height())
-    this.ctx.textAlign = "center"
+
+    // Title
     this.ctx.fillStyle = this.COLOR_WHITE
+    this.ctx.textAlign = "center"
     this.ctx.font = this.canvas.font(6)
     this.ctx.fillText("YOU DIED!", this.canvas.width() / 2, this.canvas.height() / 2)
 
+    // Subtitle
     this.ctx.font = this.canvas.font(1.5)
     this.ctx.fillText("Respawn in: " + Math.round(((you.d + 5000) - now) / 1000), this.canvas.width() / 2, (this.canvas.height() / 2) + this.canvas.size(70))
 
@@ -72,7 +76,7 @@ export default class Hud {
     this.ctx.font = this.canvas.font(.7)
     this.ctx.fillStyle = this.COLOR_WHITE
     this.ctx.textAlign = "left"
-    this.ctx.strokeStyle = this.COLOR_WHITE
+    this.ctx.strokeStyle = this.COLOR_BLACK
     this.ctx.lineWidth = this.canvas.size(4)
     const SPACE = this.canvas.size(12)
 
@@ -134,21 +138,22 @@ export default class Hud {
       }
     }
 
-    for (const i in debug_texts) {
-      const line = debug_texts[i]
-      this.ctx.strokeText(line, this.canvas.size(2), this.canvas.size(20) + (SPACE * Number(i)))
-      this.ctx.fillText(line, this.canvas.size(2), this.canvas.size(20) + (SPACE * Number(i)))
+    let i = 0
+    for (const line of debug_texts) {
+      this.ctx.strokeText(line, this.canvas.size(6), this.canvas.size(14) + (SPACE * i))
+      this.ctx.fillText(line, this.canvas.size(6), this.canvas.size(14) + (SPACE * i))
+      i++
     }
   }
 
   drawVersion = () => {
     this.ctx.font = this.canvas.font(1)
     this.ctx.fillStyle = this.COLOR_WHITE
-    this.ctx.textAlign = "center"
+    this.ctx.textAlign = "right"
     this.ctx.strokeStyle = this.COLOR_BLACK
     this.ctx.lineWidth = this.canvas.size(4)
     const line = "v" + this.data.version()
-    const x = window.innerWidth
+    const x = this.canvas.size(window.innerWidth)
     const y = this.canvas.size(14)
 
     this.ctx.strokeText(line, x, y)
