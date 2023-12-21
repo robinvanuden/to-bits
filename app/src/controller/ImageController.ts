@@ -55,7 +55,7 @@ export default function (players: PlayerRepository) {
     const left = (req.params?.direction || "r").toLowerCase() === "l"
     const img = await loadCharacter(left)
     const tint = await loadCharacterTint(hue, left)
-    const mask = await loadCharacterMask(4, left)
+    const mask = await loadCharacterMask(1, left)
     const legs = await loadCharacterLegs(left)
     let char = img.composite([
       {input: await tint.toBuffer()},

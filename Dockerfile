@@ -1,11 +1,11 @@
-FROM node:20-slim
+FROM node:20-alpine
 
 RUN npm install -g npm@latest
 
-COPY . .
+COPY app .
 
 WORKDIR /app/
 
-RUN npm install && npm audit fix
+RUN npm install
 
 CMD ["npm", "run", "start"]
