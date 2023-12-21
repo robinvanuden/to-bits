@@ -1,12 +1,22 @@
 # To-Bits ChangeLog
 
+## 0.6
+
+The HUD update. More coming soon!
+
+- Player text lines (join, death, etc)
+
 ## 0.5
 
 The Item update. More coming soon!
 
+- More items spawns, textures, etc.
+
 ## 0.4
 
 The Map update. More coming soon!
+
+- More tiles, better build-up and more interaction.
 
 ## 0.3
 
