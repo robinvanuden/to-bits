@@ -3,9 +3,6 @@ import sharp from "sharp"
 import path from "path"
 import PlayerRepository from "../repository/PlayerRepository"
 
-let imgCharacterLeft: sharp.Sharp | undefined = undefined
-let imgCharacterRight: sharp.Sharp | undefined = undefined
-
 function hslToRgb(h: number, s: number, l: number) {
   s /= 100
   l /= 100
@@ -16,32 +13,26 @@ function hslToRgb(h: number, s: number, l: number) {
   return {r: 255 * f(0), g: 255 * f(8), b: 255 * f(4)}
 }
 
-const loadCharacterTint = async (hue: number, left: boolean): Promise<sharp.Sharp> => {
+const loadCharacterTint = async (hue: number): Promise<sharp.Sharp> => {
+  console.log("load character tint", hue)
   return sharp(path.resolve(__dirname, "../assets/character.tint.png"))
-    .flop(left)
     .modulate({lightness: -30})
     .tint(hslToRgb(hue, 80, 46))
 }
 
-const loadCharacterAsset = async (left: boolean): Promise<sharp.Sharp> => {
-  console.log("load character asset", "left:", left)
-  return sharp(path.resolve(__dirname, "../assets/character.png")).flop(left)
+const loadCharacterAsset = async (): Promise<sharp.Sharp> => {
+  console.log("load character asset")
+  return sharp(path.resolve(__dirname, "../assets/character.png"))
 }
 
-const loadCharacterLegs = async (left: boolean): Promise<sharp.Sharp> => {
-  console.log("load character asset", "left:", left)
-  return sharp(path.resolve(__dirname, "../assets/character.legs.png")).flop(left)
+const loadCharacterLegs = async (): Promise<sharp.Sharp> => {
+  console.log("load character legs overlay")
+  return sharp(path.resolve(__dirname, "../assets/character.legs.png"))
 }
 
-const loadCharacterMask = async (type: number, left: boolean): Promise<sharp.Sharp> => {
-  return sharp(path.resolve(__dirname, `../assets/character.mask${type}.png`)).flop(left)
-}
-
-const loadCharacter = async (left: boolean): Promise<sharp.Sharp> => {
-  let img = (left ? imgCharacterLeft : imgCharacterRight) || await loadCharacterAsset(left)
-  if (!imgCharacterLeft && left) imgCharacterLeft = img
-  if (!imgCharacterRight && !left) imgCharacterRight = img
-  return img
+const loadCharacterMask = async (type: number): Promise<sharp.Sharp> => {
+  console.log("load character mask overlay")
+  return sharp(path.resolve(__dirname, `../assets/character.mask${type}.png`))
 }
 
 export default function (players: PlayerRepository) {
@@ -53,17 +44,18 @@ export default function (players: PlayerRepository) {
     const player = players.getBySocketUuid(uuid)
     const hue = player?.hue || 0
     const left = (req.params?.direction || "r").toLowerCase() === "l"
-    const img = await loadCharacter(left)
-    const tint = await loadCharacterTint(hue, left)
-    const mask = await loadCharacterMask(1, left)
-    const legs = await loadCharacterLegs(left)
+    const img = await loadCharacterAsset()
+    const tint = await loadCharacterTint(hue)
+    const mask = await loadCharacterMask(4)
+    const legs = await loadCharacterLegs()
     let char = img.composite([
       {input: await tint.toBuffer()},
-      {input: await mask.toBuffer(), left: left ? 2 : 5, top: 5},
+      {input: await mask.toBuffer(), left: 5, top: 5},
       {input: await legs.toBuffer()}
     ])
+    const char_final = sharp(await char.toBuffer()).flop(left)
     res.contentType("image/png")
-    res.end(await char.toBuffer(), "utf-8")
+    res.end(await char_final.toBuffer(), "utf-8")
   })
   return image_router
 }
