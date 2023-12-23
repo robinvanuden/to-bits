@@ -24,20 +24,25 @@ Character personalization/randomness update.
 
 ### Added
 
-- [ ] Added more character variations
-    - [ ] T-shape helmet
-    - [ ] Eyes-shape helmet
+- [x] Added more character variations
+  - [x] T-shape helmet
+  - [x] Eyes-shape helmet
 - [ ] A walking animation for the character
 
 ### Changed
 
 - [ ] Changed the favicon to the players character instead of the default knight.
 - [x] Optimized colouring for the character tint.
-- [ ] Improved the image generation
+- [ ] Improved the image generation.
+  - [x] Color tint manipulation.
+  - [ ] Asset loading.
+  - [ ] Layering assets.
+  - [ ] Temp directory for assets.
 - [ ] All players are drawn based on join-time. But the player playing needs to be on top.
 
 ### Fixed
 
-- [ ] Character image loading at first load.
+- [ ] Character image loading-glitch at first load.
 - [ ] 2 people can't join from the same IP.
+  - [ ] Better IP blocking using cookies to verify players.
 - [ ] After disconnecting, people are just standing still and not dying.

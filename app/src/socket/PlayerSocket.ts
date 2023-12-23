@@ -11,7 +11,7 @@ export default class PlayerSocket {
   private connected_ids: string[] = []
   private readonly game: Game
 
-  constructor(game: Game, server: any) {
+  constructor(game: Game, server: any, code: number) {
     this.game = game
     this.io = new Server(server)
     this.connected_ids = []
@@ -23,6 +23,7 @@ export default class PlayerSocket {
         client.emit("nope", true)
         return
       }
+      client.emit("build", code)
       if (this.connected_ids.find(addr => addr === address)) {
         console.log("Disconnect double user", address)
         client.emit("nope", true)

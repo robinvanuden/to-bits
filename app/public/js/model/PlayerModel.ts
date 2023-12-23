@@ -7,7 +7,6 @@ export default interface PlayerModel {
   uid: string
   n: string // color
   c: string // color
-  ch: number // width
   w: number // width
   h: number // height
   x: number // x-coord

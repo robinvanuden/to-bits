@@ -22,6 +22,8 @@ import Canvas from "./canvas"
     forceNew: true
   })
 
+  let BUILD = 0
+
   const canvas = new Canvas(document.getElementById("playground") as HTMLCanvasElement)
 
   const data = new Data()
@@ -37,7 +39,13 @@ import Canvas from "./canvas"
       document.title = `To Bits! v${version}`
       data.setVersion(version)
       hud.setLoading(true)
-    } else if (data.version() !== version) {
+    }
+  })
+
+  socket.on("build", build => {
+    if (BUILD === 0) {
+      BUILD = build
+    } else if (BUILD !== build) {
       window.location.reload()
     }
   })

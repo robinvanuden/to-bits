@@ -10,6 +10,7 @@ const app = express()
 const server = createServer(app)
 
 const VERSION: string = pack.version || "?.?.?"
+const VERSION_CODE: number = Date.now()
 
 const game: Game | undefined = new Game(VERSION)
 
@@ -22,7 +23,7 @@ app.use("/", express.static("dist"))
 app.use(image_router(players))
 console.log("Starting ToBits: v" + VERSION)
 
-new PlayerSocket(game, server)
+new PlayerSocket(game, server, VERSION_CODE)
 
 const PORT: number = Number.parseInt(process.env?.PORT ?? "80")
 server.listen(PORT)
