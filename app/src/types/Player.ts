@@ -94,6 +94,7 @@ export class Player {
 
   recreate = (socket: string) => {
     this.socket_id = socket
+    this.socket_uuid = v5(socket, v4())
     this.disconnected = undefined
     this.move = {u: false, d: false, l: false, r: false}
   }

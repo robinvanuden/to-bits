@@ -10,29 +10,14 @@ import {COOKIE_PLAYER_ID} from "../constants"
 export default class PlayerSocket {
 
   private io: Server
-  private connected_ids: string[] = []
   private readonly game: Game
 
   constructor(game: Game, server: any, code: number) {
     this.game = game
     this.io = new Server(server)
-    this.connected_ids = []
 
     this.io.on("connection", client => {
-      const address: string = this.getAddress(client)
-      if (address === "") {
-        console.log("No address")
-        client.emit("nope", true)
-        return
-      }
       client.emit("build", code)
-      if (this.connected_ids.find(addr => addr === address)) {
-        console.log("Disconnect double user", address)
-        client.emit("nope", true)
-        client.disconnect(true)
-        return
-      }
-      this.connected_ids.push(address)
       client.emit("version", this.game.version())
 
       const cookies = cookie.parse(client.handshake.headers.cookie || "")
@@ -61,7 +46,6 @@ export default class PlayerSocket {
         console.log('User disconnected', uuid)
         const player = this.game.players().getById(uuid)
         if (player) player.disconnected = Date.now()
-        this.connected_ids = this.connected_ids.filter(addr => addr !== address)
       })
 
       this.game.start(this.emitProjectiles)

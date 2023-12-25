@@ -31,6 +31,31 @@ export default function (players: PlayerRepository) {
 
   const image_router = Router()
 
+  image_router.get("/image/:hash.png", async (req, res) => {
+    const img = await loadCharacterAsset()
+    const hash = req.params.hash || ""
+    const uuid = hash.substring(0, hash.length - 1)
+    const direction = hash.substring(hash.length - 1, hash.length) || "r"
+    console.log("image character", uuid, direction)
+    const player = players.getBySocketUuid(uuid)
+    if (!player) {
+      res.sendStatus(404)
+      return
+    }
+    const left = direction.toLowerCase() === "l"
+    const tint = await loadCharacterTint(player.color)
+    const mask = await loadCharacterMask(player.mask)
+    const legs = await loadCharacterLegs()
+    let char = img.composite([
+      {input: await tint.toBuffer()},
+      {input: await mask.toBuffer(), left: 5, top: 5},
+      {input: await legs.toBuffer()}
+    ])
+    const char_final = sharp(await char.toBuffer()).flop(left)
+    res.contentType("image/png")
+    res.end(await char_final.toBuffer(), "utf-8")
+  })
+
   image_router.get("/image/favicon.:timestamp.ico", async (req, res) => {
     const img = await loadCharacterAsset()
     const uuid = req.cookies[COOKIE_PLAYER_ID] || ""
@@ -53,27 +78,5 @@ export default function (players: PlayerRepository) {
     res.end(await char_final.toBuffer(), "utf-8")
   })
 
-  image_router.get("/image/character.:direction.png", async (req, res) => {
-    const img = await loadCharacterAsset()
-    const uuid = req.cookies[COOKIE_PLAYER_ID] || ""
-    console.log("image asset", uuid)
-    const player = players.getById(uuid)
-    if (!player) {
-      res.sendStatus(404)
-      return
-    }
-    const left = (req.params?.direction || "r").toLowerCase() === "l"
-    const tint = await loadCharacterTint(player.color)
-    const mask = await loadCharacterMask(player.mask)
-    const legs = await loadCharacterLegs()
-    let char = img.composite([
-      {input: await tint.toBuffer()},
-      {input: await mask.toBuffer(), left: 5, top: 5},
-      {input: await legs.toBuffer()}
-    ])
-    const char_final = sharp(await char.toBuffer()).flop(left)
-    res.contentType("image/png")
-    res.end(await char_final.toBuffer(), "utf-8")
-  })
   return image_router
 }

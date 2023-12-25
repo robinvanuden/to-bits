@@ -7,6 +7,7 @@ import pack from "../package.json"
 import Game from "./game"
 import PlayerRepository from "./repository/PlayerRepository"
 import {COOKIE_PLAYER_ID} from "./constants"
+import path from "path"
 
 const app = express()
 const server = createServer(app)
@@ -24,13 +25,26 @@ game.setPlayersRepository(players)
 app.use("/img", express.static("public/img"))
 app.use("/game", express.static("dist"))
 
+app.get("/game", (req, res) => {
+  const uuid = req.cookies[COOKIE_PLAYER_ID] || ""
+  if (uuid.length === 0) {
+    setTimeout(() => res.redirect("../"), 1000)
+    return
+  }
+  res.sendFile(path.resolve(__dirname, "../dist/main.html"))
+})
+
 app.get("/", (req, res) => {
-  const player_id = req.cookies[COOKIE_PLAYER_ID] || ""
-  console.log("player", player_id)
-  if (player_id.length === 0) {
-    res.cookie(COOKIE_PLAYER_ID, game.generate_uuid(), {httpOnly: true, maxAge: 900000})
-  } else if (!players.getById(player_id)) {
-    res.cookie(COOKIE_PLAYER_ID, game.generate_uuid(), {httpOnly: true, maxAge: 900000})
+  const uuid = req.cookies[COOKIE_PLAYER_ID] || game.generate_uuid()
+  const player = players.getById(uuid)
+  console.log("player", uuid, player)
+  if (uuid.length === 0) {
+    res.cookie(COOKIE_PLAYER_ID, uuid, {httpOnly: true, maxAge: 900000})
+  } else if (uuid.length === 0 || !player) {
+    console.log(!player ? "Generated new ID" : "Regenerated ID", uuid)
+    res.cookie(COOKIE_PLAYER_ID, uuid, {httpOnly: true, maxAge: 900000})
+  } else {
+    console.log("No new ID. Using: ", uuid)
   }
   res.redirect("/game")
 })
