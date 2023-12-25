@@ -31,6 +31,28 @@ export default function (players: PlayerRepository) {
 
   const image_router = Router()
 
+  image_router.get("/image/favicon.:timestamp.ico", async (req, res) => {
+    const img = await loadCharacterAsset()
+    const uuid = req.cookies[COOKIE_PLAYER_ID] || ""
+    console.log("favicon", uuid)
+    const player = players.getById(uuid)
+    if (!player) {
+      res.sendStatus(404)
+      return
+    }
+    const tint = await loadCharacterTint(player.color)
+    const mask = await loadCharacterMask(player.mask)
+    const legs = await loadCharacterLegs()
+    let char = img.composite([
+      {input: await tint.toBuffer()},
+      {input: await mask.toBuffer(), left: 5, top: 5},
+      {input: await legs.toBuffer()}
+    ])
+    const char_final = sharp(await char.toBuffer())
+    res.contentType("image/x-icon")
+    res.end(await char_final.toBuffer(), "utf-8")
+  })
+
   image_router.get("/image/character.:direction.png", async (req, res) => {
     const img = await loadCharacterAsset()
     const uuid = req.cookies[COOKIE_PLAYER_ID] || ""

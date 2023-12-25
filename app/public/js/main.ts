@@ -6,6 +6,10 @@ import Hud from "./hud"
 import Canvas from "./canvas"
 
 (() => {
+
+  (document.getElementById("main-icon") as HTMLLinkElement)
+    .href = `/image/favicon.${Date.now()}.ico`
+
   const host = new URL(location.toString())
   const secure = (location.protocol === "wss:" || location.protocol === "https:")
   host.protocol = secure ? "https:" : "http:"
