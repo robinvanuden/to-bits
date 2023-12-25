@@ -102,7 +102,7 @@ export default class Map {
       this.ctx.fillText(player.n.toLowerCase(), name_x, name_y)
 
       let sx = player.l.r ? 1 : 2
-      const image_name = "image/character/" + player.uid + "." + (player.l.r ? "r" : "l")
+      const image_name = "image/character." + (player.l.r ? "r" : "l")
       const image = this.images.addImage(image_name)
 
       this.ctx.drawImage(

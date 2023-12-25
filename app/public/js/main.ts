@@ -9,9 +9,16 @@ import Canvas from "./canvas"
   const host = new URL(location.toString())
   const secure = (location.protocol === "wss:" || location.protocol === "https:")
   host.protocol = secure ? "https:" : "http:"
-  host.pathname = ""
+  host.pathname = "/"
+
+  const origin = new URL(host)
+  origin.pathname = "/game/"
+
+  console.log(origin, host)
+
   const socket = io({
     "transports": ['websocket'],
+    host: origin.toString(),
     upgrade: true,
     ackTimeout: 2000,
     autoConnect: true,

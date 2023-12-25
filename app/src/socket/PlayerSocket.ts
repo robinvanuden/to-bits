@@ -1,9 +1,11 @@
 import {Server, Socket} from "socket.io"
-import {v5} from "uuid"
 import {Player} from "../types/Player"
 import Tile from "../types/Tile"
 import PowerUp from "../types/PowerUp"
 import Game from "../game"
+
+import cookie from "cookie"
+import {COOKIE_PLAYER_ID} from "../constants"
 
 export default class PlayerSocket {
 
@@ -33,7 +35,13 @@ export default class PlayerSocket {
       this.connected_ids.push(address)
       client.emit("version", this.game.version())
 
-      const uuid = v5(address, this.game.uuid_seed())
+      const cookies = cookie.parse(client.handshake.headers.cookie || "")
+      const uuid = cookies[COOKIE_PLAYER_ID] || ""
+      if (uuid.length === 0) {
+        client.disconnect()
+        client.emit("nope", true)
+        return
+      }
       this.game.addPlayer(uuid, client.id)
 
       client.emit("map", this.game.map().map().map(Tile.toModel))

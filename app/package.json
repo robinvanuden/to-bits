@@ -4,7 +4,7 @@
   "scripts": {
     "clean": "rm -r dist & rm -r .parcel-cache || echo 'nope'",
     "dev:server": "nodemon --watch src src/index.ts",
-    "dev:client": "npm run clean && parcel public/index.html --port=3001",
+    "dev:client": "npm run clean && parcel public/index.html --port=3001 --public-url /game/",
     "dev": "npm run dev:client & npm run dev:server",
     "build:client": "npm run clean && parcel build public/index.html",
     "start:server": "ts-node src/index.ts",
@@ -22,9 +22,11 @@
   "devDependencies": {
     "@parcel/transformer-sass": "^2.10.3",
     "@types/color": "^3.0.6",
+    "@types/cookie-parser": "^1.4.6",
     "@types/express": "^4.17.21",
     "@types/uuid": "^9.0.7",
     "buffer": "^6.0.3",
+    "cookie-parser": "^1.4.6",
     "nodemon": "^3.0.2",
     "parcel": "^2.10.3",
     "sass": "^1.69.5",

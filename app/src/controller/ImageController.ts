@@ -3,6 +3,7 @@ import sharp from "sharp"
 import path from "path"
 import PlayerRepository from "../repository/PlayerRepository"
 import Color from "color"
+import {COOKIE_PLAYER_ID} from "../constants"
 
 const loadCharacterTint = async (hsl: string): Promise<sharp.Sharp> => {
   console.log("load character tint", hsl)
@@ -30,10 +31,11 @@ export default function (players: PlayerRepository) {
 
   const image_router = Router()
 
-  image_router.get("/image/character/:uuid.:direction.png", async (req, res) => {
+  image_router.get("/image/character.:direction.png", async (req, res) => {
     const img = await loadCharacterAsset()
-    const uuid = req.params.uuid || ""
-    const player = players.getBySocketUuid(uuid)
+    const uuid = req.cookies[COOKIE_PLAYER_ID] || ""
+    console.log("image asset", uuid)
+    const player = players.getById(uuid)
     if (!player) {
       res.sendStatus(404)
       return

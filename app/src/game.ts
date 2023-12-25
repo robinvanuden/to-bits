@@ -3,7 +3,7 @@ import World from "./types/world"
 import lobby from "./map/lobby.json"
 import PowerUp, {PowerType} from "./types/PowerUp"
 import Tile from "./types/Tile"
-import {v4} from "uuid"
+import {v4, v5} from "uuid"
 
 export default class Game {
 
@@ -30,6 +30,8 @@ export default class Game {
     this.UUID_SEED = v4()
     console.log("Seed generated: ", this.uuid_seed())
   }
+
+  generate_uuid = () => v5(Date.now() + "", this.uuid_seed())
 
   version = () => this.VERSION
 
