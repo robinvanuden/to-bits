@@ -8,7 +8,7 @@ import {COOKIE_PLAYER_ID} from "../constants"
 const loadCharacterTint = async (hsl: string): Promise<sharp.Sharp> => {
   console.log("load character tint", hsl)
   return sharp(path.resolve(__dirname, "../assets/character.tint.png"))
-    .modulate({lightness: -30})
+    .modulate({lightness: -26})
     .tint(Color(hsl, "hsl").object())
 }
 

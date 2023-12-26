@@ -118,6 +118,13 @@ export default class Map {
         player_w,
         player_h
       )
+
+      this.ctx.fillStyle = player.c
+      this.ctx.fillRect(
+        player_x - cx,
+        player_y - cy,
+        50, 50
+      )
       for (const boomerang of player.br) {
         this.ctx.fillStyle = boomerang.c
         this.ctx.fillRect(
