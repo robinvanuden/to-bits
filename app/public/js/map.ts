@@ -34,7 +34,6 @@ export default class Map {
       cx = Math.round((this.canvas.size(this.mapWidth() * .5)) - this.canvas.width() * .5)
       cy = Math.round((this.canvas.size(this.mapHeight() * .5)) - this.canvas.height() * .5)
     }
-    console.log(cx, cy)
     for (const tile of this.data.map().filter(tile => tile.wa)) {
       this.ctx.fillStyle = tile.c
       let bx = 0, by = 0

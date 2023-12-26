@@ -5,6 +5,8 @@ export default class PlayerRepository {
 
   players: Player[] = []
 
+  list = () => this.players
+
   filled = () => this.players.length > 0
 
   alive = () => this.players.filter(p => p.died === undefined)

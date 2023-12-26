@@ -14,7 +14,6 @@ export default class Images {
     const url = new URL(this.host.toString())
     const image = new Image()
     url.pathname = `${name}.png`
-    console.log(url)
     image.src = url.toString()
     image.style.imageRendering = "pixelated"
     this.images[name] = image

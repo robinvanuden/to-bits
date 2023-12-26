@@ -18,8 +18,6 @@ import Canvas from "./canvas"
   const origin = new URL(host)
   origin.pathname = "/game/"
 
-  console.log(origin, host)
-
   const socket = io({
     "transports": ['websocket'],
     host: origin.toString(),
@@ -72,7 +70,13 @@ import Canvas from "./canvas"
     hud.setLoading(false)
   })
 
-  socket.on("players", data.setPlayers)
+  socket.on("players", players => {
+    data.setPlayers(players)
+    for (const player of players) {
+      images.addImage("image/" + player.uid + "r")
+      images.addImage("image/" + player.uid + "l")
+    }
+  })
 
   socket.on("power_ups", data.setPowerUps)
 
