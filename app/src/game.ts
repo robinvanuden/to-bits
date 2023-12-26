@@ -162,8 +162,8 @@ export default class Game {
   private checkDisconnectedPlayers = () => {
     for (const player of this.players().disconnected()) {
       console.log("Remove player: " + player.id)
-      this.players().remove(player)
       this.sessions().remove(player.id)
+      this.players().remove(player)
     }
   }
 

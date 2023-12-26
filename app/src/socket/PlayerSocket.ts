@@ -111,7 +111,7 @@ export default class PlayerSocket {
 
   emitProjectiles = () => {
     // Emit players
-    this.io.emit("players", this.game?.players().list().map(Player.toModel) ?? [])
+    this.io.emit("players", this.game?.players().alive().map(Player.toModel) ?? [])
 
     // Emit power ups
     this.io.emit("power_ups", this.game?.map().map().filter(t => t.power_up).flatMap(t => PowerUp.toMaybeModel(t.power_up)))

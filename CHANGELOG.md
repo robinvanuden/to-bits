@@ -44,4 +44,4 @@ Character personalization/randomness update.
 - [ ] Character image loading-glitch at first load.
 - [x] 2 people can't join from the same IP.
   - [x] Better IP blocking using cookies to verify players.
-- [ ] After disconnecting, people are just standing still and not dying.
+- [x] After disconnecting, the player's ghost will be visible for certain players.

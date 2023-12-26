@@ -23,6 +23,7 @@ export default class Data {
   map = () => this.MAP
 
   setPlayers = (players: PlayerModel[]) => {
+    this.PLAYERS = []
     for (const p in players) {
       const player = players[p]
       const PLAYER = this.PLAYERS[p] || null
