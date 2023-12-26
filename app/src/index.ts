@@ -26,32 +26,31 @@ game.setPlayersRepository(players)
 game.setSessionsRepository(sessions)
 
 app.use("/img", express.static("public/img"))
-app.use("/game", express.static("dist"))
-
-app.get("/game", (req, res) => {
-  const uuid = req.cookies[COOKIE_PLAYER_ID] || ""
-  if (uuid.length === 0) {
-    console.log("Redirect empty id", uuid)
-    res.redirect("/")
-    return
-  }
-  if (!sessions.contains(uuid)) {
-    console.log("Redirect not in list", uuid)
-    res.redirect("/")
-    return
-  }
-  res.sendFile(path.resolve(__dirname, "../dist/main.html"))
-})
+app.use("/", express.static("dist"))
 
 app.get("/", (req, res) => {
-  const uuid = req.cookies[COOKIE_PLAYER_ID] || game.generate_uuid()
-  if (!sessions.add(uuid)) {
-    res.sendStatus(403)
+  let uuid = req.cookies[COOKIE_PLAYER_ID] || ""
+  let isNew = false
+  if (uuid.length <= 0) {
+    uuid = game.generate_uuid()
+    isNew = true
+  } else if (uuid.length > 0 && !sessions.contains(uuid)) {
+    // Old cookie
+    uuid = game.generate_uuid()
+    isNew = true
+  }
+  if (isNew && sessions.add(uuid)) {
+    res.cookie(COOKIE_PLAYER_ID, uuid, {httpOnly: true, maxAge: 900000})
+    res.sendFile(path.resolve(__dirname, "../dist/main.html"))
     return
   }
-  res.cookie(COOKIE_PLAYER_ID, uuid, {httpOnly: true, maxAge: 900000})
-  console.log("Added", uuid)
-  res.redirect("/game")
+  const player = players.getById(uuid)
+  if (!isNew && player && player.disconnected !== undefined) {
+    res.sendFile(path.resolve(__dirname, "../dist/main.html"))
+    return
+  }
+  console.log("Invalid session", uuid)
+  res.sendStatus(403)
 })
 
 app.use(image_router(players))
