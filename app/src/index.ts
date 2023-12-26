@@ -34,10 +34,12 @@ app.get("/", (req, res) => {
   if (uuid.length <= 0) {
     uuid = game.generate_uuid()
     isNew = true
+    console.log("Generated uuid for new player", uuid)
   } else if (uuid.length > 0 && !sessions.contains(uuid)) {
     // Old cookie
     uuid = game.generate_uuid()
     isNew = true
+    console.log("Generated uuid for an old player (outdated cookie)", uuid)
   }
   if (isNew && sessions.add(uuid)) {
     res.cookie(COOKIE_PLAYER_ID, uuid, {httpOnly: true, maxAge: 900000})

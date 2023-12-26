@@ -22,7 +22,7 @@ export default class PlayerSocket {
 
       const cookies = cookie.parse(client.handshake.headers.cookie || "")
       const uuid = cookies[COOKIE_PLAYER_ID] || ""
-      if (uuid.length === 0) {
+      if (uuid.length === 0 || !this.game.sessions().contains(uuid)) {
         client.disconnect()
         client.emit("nope", true)
         return
