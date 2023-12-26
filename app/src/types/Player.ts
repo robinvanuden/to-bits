@@ -48,7 +48,7 @@ export class Player {
     this.disconnected = undefined
     this.died = undefined
     this.color = randomColor()
-    this.mask = 4
+    this.mask = randomMask()
     this.name = randomName()
     this.width = PLAYER_WIDTH
     this.height = PLAYER_HEIGHT
