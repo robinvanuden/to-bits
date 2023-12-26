@@ -23,7 +23,8 @@ export default class Data {
   map = () => this.MAP
 
   setPlayers = (players: PlayerModel[]) => {
-    this.PLAYERS = []
+    const uuids = players.map(p => p.i)
+    this.PLAYERS = this.PLAYERS.filter(p => uuids.includes(p.i))
     for (const p in players) {
       const player = players[p]
       const PLAYER = this.PLAYERS[p] || null

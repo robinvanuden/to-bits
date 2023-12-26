@@ -17,9 +17,9 @@ const loadCharacterAsset = async (): Promise<sharp.Sharp> => {
   return sharp(path.resolve(__dirname, "../assets/character.png"))
 }
 
-const loadCharacterLegs = async (): Promise<sharp.Sharp> => {
+const loadCharacterLegs = async (type: number): Promise<sharp.Sharp> => {
   console.log("load character legs overlay")
-  return sharp(path.resolve(__dirname, "../assets/character.legs.png"))
+  return sharp(path.resolve(__dirname, `../assets/character.legs${type}.png`))
 }
 
 const loadCharacterMask = async (type: number): Promise<sharp.Sharp> => {
@@ -34,8 +34,9 @@ export default function (players: PlayerRepository) {
   image_router.get("/image/:hash.png", async (req, res) => {
     const img = await loadCharacterAsset()
     const hash = req.params.hash || ""
-    const uuid = hash.substring(0, hash.length - 1)
-    const direction = hash.substring(hash.length - 1, hash.length) || "r"
+    const uuid = hash.substring(0, hash.length - 2)
+    const direction = hash.substring(hash.length - 2, hash.length - 1) || "r"
+    const walk = Number(hash.substring(hash.length - 1, hash.length) || "0")
     console.log("image character", uuid, direction)
     const player = players.getById(uuid)
     if (!player) {
@@ -45,7 +46,7 @@ export default function (players: PlayerRepository) {
     const left = direction.toLowerCase() === "l"
     const tint = await loadCharacterTint(player.color)
     const mask = await loadCharacterMask(player.mask)
-    const legs = await loadCharacterLegs()
+    const legs = await loadCharacterLegs(walk)
     let char = img.composite([
       {input: await tint.toBuffer()},
       {input: await mask.toBuffer(), left: 5, top: 5},
@@ -67,7 +68,7 @@ export default function (players: PlayerRepository) {
     }
     const tint = await loadCharacterTint(player.color)
     const mask = await loadCharacterMask(player.mask)
-    const legs = await loadCharacterLegs()
+    const legs = await loadCharacterLegs(0)
     let char = img.composite([
       {input: await tint.toBuffer()},
       {input: await mask.toBuffer(), left: 5, top: 5},

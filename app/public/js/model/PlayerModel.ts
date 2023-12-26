@@ -3,9 +3,9 @@ import BoomerangModel from "./BoomerangModel"
 import {FireballModel} from "./FireballModel"
 
 export default interface PlayerModel {
-  i: string
-  uid: string
-  n: string // color
+  i: string // id
+  uid: string // client-id
+  n: string // name
   c: string // color
   w: number // width
   h: number // height
@@ -15,17 +15,17 @@ export default interface PlayerModel {
   vy: number // y velocity
   d: number | undefined // died
   dc: number | undefined // disconnected
-  l: Direction
-  m: Direction
+  l: Direction // looking
+  m: Direction // moving
   pu: PowerUpModel[]
   br: BoomerangModel[]
   fb: FireballModel[]
-  a: number
+  a: number // animation
 }
 
 interface Direction {
-  u: boolean
-  d: boolean
-  l: boolean
-  r: boolean
+  u: boolean // up
+  d: boolean // down
+  l: boolean // left
+  r: boolean // right
 }

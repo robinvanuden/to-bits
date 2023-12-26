@@ -74,8 +74,10 @@ import Canvas from "./canvas"
   socket.on("players", players => {
     data.setPlayers(players)
     for (const player of players) {
-      images.addImage("image/" + player.uid + "r")
-      images.addImage("image/" + player.uid + "l")
+      for (let i = 0; i < 4; i++) {
+        images.addImage("image/" + player.uid + "r" + i)
+        images.addImage("image/" + player.uid + "l" + i)
+      }
     }
   })
 
