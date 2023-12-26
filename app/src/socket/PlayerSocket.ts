@@ -27,7 +27,11 @@ export default class PlayerSocket {
         client.emit("nope", true)
         return
       }
-      this.game.addPlayer(uuid, client.id)
+      if (!this.game.addPlayer(uuid, client.id)) {
+        client.disconnect()
+        client.emit("nope", true)
+        return
+      }
 
       client.emit("map", this.game.map().map().map(Tile.toModel))
 

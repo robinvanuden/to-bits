@@ -37,7 +37,7 @@ export default function (players: PlayerRepository) {
     const uuid = hash.substring(0, hash.length - 1)
     const direction = hash.substring(hash.length - 1, hash.length) || "r"
     console.log("image character", uuid, direction)
-    const player = players.getBySocketUuid(uuid)
+    const player = players.getById(uuid)
     if (!player) {
       res.sendStatus(404)
       return

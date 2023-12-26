@@ -3,7 +3,7 @@ import {GRAVITY} from "../constants"
 import {names, uniqueNamesGenerator} from "unique-names-generator"
 import PowerUp, {PowerType, PowerUpModel} from "./PowerUp"
 import Boomerang, {BoomerangModel} from "./boomerang"
-import {v4, v5} from "uuid"
+import {v4} from "uuid"
 import Fireball, {FireballModel} from "./fireball"
 
 const randomName = () => uniqueNamesGenerator({length: 1, dictionaries: [names]})
@@ -21,7 +21,6 @@ const MAX_POWER_UP = 3
 export class Player {
   id: string // ID
   socket_id: string
-  socket_uuid: string
   disconnected: number | undefined // is disconnected
   died: number | undefined
   color: string // color
@@ -46,11 +45,10 @@ export class Player {
   constructor(id: string, socket: string, spawn: Tile) {
     this.id = id
     this.socket_id = socket
-    this.socket_uuid = v5(socket, v4())
     this.disconnected = undefined
     this.died = undefined
     this.color = randomColor()
-    this.mask = randomMask()
+    this.mask = 4
     this.name = randomName()
     this.width = PLAYER_WIDTH
     this.height = PLAYER_HEIGHT
@@ -94,7 +92,6 @@ export class Player {
 
   recreate = (socket: string) => {
     this.socket_id = socket
-    this.socket_uuid = v5(socket, v4())
     this.disconnected = undefined
     this.move = {u: false, d: false, l: false, r: false}
   }
@@ -148,7 +145,7 @@ export class Player {
 
   static toModel = (p: Player): PlayerM => ({
     i: p.socket_id,
-    uid: p.socket_uuid,
+    uid: p.id,
     w: p.width,
     h: p.height,
     x: p.x,

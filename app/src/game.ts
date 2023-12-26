@@ -4,6 +4,7 @@ import lobby from "./map/lobby.json"
 import PowerUp, {PowerType} from "./types/PowerUp"
 import Tile from "./types/Tile"
 import {v4, v5} from "uuid"
+import SessionRepository from "./repository/SessionRepository"
 
 export default class Game {
 
@@ -15,6 +16,7 @@ export default class Game {
   private lobby = new World(lobby.tiles)
 
   private playerRepository!: PlayerRepository
+  private sessionRepository!: SessionRepository
 
   private running: boolean = false
   private updated: number = Date.now()
@@ -37,24 +39,33 @@ export default class Game {
 
   players = () => this.playerRepository
 
+  sessions = () => this.sessionRepository
+
   setPlayersRepository = (players: PlayerRepository) => this.playerRepository = players
+
+  setSessionsRepository = (session: SessionRepository) => this.sessionRepository = session
 
   map = (): World => this.lobby
 
   power_ups = () => this.map().map().filter(t => t.power_up != undefined).map(t => t.power_up) as PowerUp[]
 
-  addPlayer = (uuid: string, socket_id: string) => {
-    let continue_player = this.players().getConnected(uuid)
+  addPlayer = (uuid: string, socket_id: string): boolean => {
+    const continue_player = this.players().getConnected(uuid)
     if (continue_player) {
       // Reconnect
       console.log('User reconnected', socket_id, uuid)
       continue_player.recreate(socket_id)
-    } else {
+      return true
+    }
+    const player = this.players().getById(uuid)
+    if (!player) {
       // New player
       const SPAWN_TILE = this.map().randomSpawn()
       console.log('User connected', uuid)
       this.players().create(SPAWN_TILE, uuid, socket_id)
+      return true
     }
+    return false
   }
 
   private checkPlayerPosition = (delta: number) => {
@@ -152,6 +163,7 @@ export default class Game {
     for (const player of this.players().disconnected()) {
       console.log("Remove player: " + player.id)
       this.players().remove(player)
+      this.sessions().remove(player.id)
     }
   }
 
