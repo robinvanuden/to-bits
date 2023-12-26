@@ -45,7 +45,7 @@ app.get("/", (req, res) => {
     return
   }
   const player = players.getById(uuid)
-  if (!isNew && player && player.disconnected !== undefined) {
+  if (!isNew && player && player.disconnected != undefined) {
     res.sendFile(path.resolve(__dirname, "../dist/main.html"))
     return
   }

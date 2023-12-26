@@ -84,7 +84,10 @@ export default class Map {
       }
     }
 
-    for (const player of this.data.players().filter(p => p.d === undefined)) {
+    for (const player of this.data.players().filter(p => p.d === undefined).sort((a, b) => {
+      const you_id = (this.you()?.i || "")
+      return (a.i === you_id ? 1 : -1) - (b.i === you_id ? 1 : -1) || a.i.localeCompare(b.i)
+    })) {
       const player_w = this.canvas.size(player.w)
       const player_h = this.canvas.size(player.h)
       const player_x = this.canvas.size(player.x)
