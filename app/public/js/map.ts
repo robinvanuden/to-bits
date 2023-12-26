@@ -87,6 +87,9 @@ export default class Map {
       const you_id = (this.you()?.i || "")
       return (a.i === you_id ? 1 : -1) - (b.i === you_id ? 1 : -1) || a.i.localeCompare(b.i)
     })) {
+
+      this.ctx.globalAlpha = player.dc != undefined ? 0.5 : 1
+
       const player_w = this.canvas.size(player.w)
       const player_h = this.canvas.size(player.h)
       const player_x = this.canvas.size(player.x)
@@ -119,12 +122,6 @@ export default class Map {
         player_h
       )
 
-      this.ctx.fillStyle = player.c
-      this.ctx.fillRect(
-        player_x - cx,
-        player_y - cy,
-        50, 50
-      )
       for (const boomerang of player.br) {
         this.ctx.fillStyle = boomerang.c
         this.ctx.fillRect(
