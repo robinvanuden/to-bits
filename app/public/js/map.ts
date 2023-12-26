@@ -112,21 +112,11 @@ export default class Map {
       } else {
         player.a = 0
       }
-      if (player.a >= 50) {
+      if (player.a >= 20) {
         player.a = 0
       }
       let image_name = ""
-      if (player.a >= 60) {
-        image_name = "image/" + player.uid + (player.l.r ? "r" : "l") + 0
-      } else if (player.a >= 50) {
-        image_name = "image/" + player.uid + (player.l.r ? "r" : "l") + 1
-      } else if (player.a >= 40) {
-        image_name = "image/" + player.uid + (player.l.r ? "r" : "l") + 3
-      } else if (player.a >= 30) {
-        image_name = "image/" + player.uid + (player.l.r ? "r" : "l") + 2
-      } else if (player.a >= 20) {
-        image_name = "image/" + player.uid + (player.l.r ? "r" : "l") + 3
-      } else if (player.a >= 10) {
+      if (player.a >= 10) {
         image_name = "image/" + player.uid + (player.l.r ? "r" : "l") + 1
       } else {
         image_name = "image/" + player.uid + (player.l.r ? "r" : "l") + 0

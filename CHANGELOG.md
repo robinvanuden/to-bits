@@ -27,7 +27,7 @@ Character personalization/randomness update.
 - [x] Added more character variations
   - [x] T-shape helmet
   - [x] Eyes-shape helmet
-- [ ] A walking animation for the character
+- [x] A walking animation for the character
 
 ### Changed
 

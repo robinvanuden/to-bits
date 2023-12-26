@@ -35,14 +35,14 @@ export default function (players: PlayerRepository) {
     const img = await loadCharacterAsset()
     const hash = req.params.hash || ""
     const uuid = hash.substring(0, hash.length - 2)
-    const direction = hash.substring(hash.length - 2, hash.length - 1) || "r"
-    const walk = Number(hash.substring(hash.length - 1, hash.length) || "0")
-    console.log("image character", uuid, direction)
     const player = players.getById(uuid)
     if (!player) {
       res.sendStatus(404)
       return
     }
+    const direction = (hash.substring(hash.length - 2, hash.length - 1) || "r") === "r" ? "r" : "l"
+    const walk = (hash.substring(hash.length - 1, hash.length) || "0") === "0" ? 0 : 1
+    console.log("image character", uuid, direction)
     const left = direction.toLowerCase() === "l"
     const tint = await loadCharacterTint(player.color)
     const mask = await loadCharacterMask(player.mask)
