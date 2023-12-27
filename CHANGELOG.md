@@ -14,9 +14,35 @@ The Item update. More coming soon!
 
 ## 0.4
 
-The Map update. More coming soon!
+The Map update.
 
 - More tiles, better build-up and more interaction.
+
+### Added
+
+- [ ] Repository for the map data with better control of the tiles.
+- [ ] Using Tiles JSON files for the map data.
+- [ ] More map textures.
+  - [ ] Stone textures
+  - [ ] Connected textures
+  - [ ] Bridges
+- [ ] Interface elements for the player.
+  - [ ] The players name
+  - [ ] Inventory items
+  - [ ] All players
+
+### Changed
+
+- [ ] Moved tile-items to their own repository.
+- [ ] Moved player-items to their own repository.
+- [ ] The background of the player name-tags is now totally black.
+- [ ] Update only the movement of players but not all the player data.
+- [ ] Event separation
+  - [ ] Events for joining or disconnecting players.
+  - [ ] Events for projectiles
+  - [ ] Events for player movement
+
+### Fixed
 
 ## 0.3
 
@@ -24,24 +50,25 @@ Character personalization/randomness update.
 
 ### Added
 
-- [x] Added more character variations
+- [x] More character variations
   - [x] T-shape helmet
-  - [x] Eyes-shape helmet
+  - [x] Eyes-hole helmet
+  - [x] Eye-line helmet
 - [x] A walking animation for the character
 
 ### Changed
 
-- [x] Changed the favicon to the players character instead of the default knight.
-- [x] Optimized colouring for the character tint.
+- [x] The favicon changes to the players character instead of the default knight.
 - [x] Improved the image generation.
-  - [x] Color tint manipulation.
-  - [x] Asset loading.
-  - [x] Layering assets.
-- [x] All players are drawn based on join-time. But the player playing needs to be on top.
+  - [x] Asset loading for different image layers.
+  - [x] Layering assets on top of each other.
+  - [x] Color tint manipulation of character feather.
+- [x] The order which players are rendered is changed so the playing character is always on top.
 
 ### Fixed
 
-- [x] Character image loading-glitch at first load.
+- [x] Character image loading-glitch at first load, blinking character when changing direction.
 - [x] 2 people can't join from the same IP.
   - [x] Better IP blocking using cookies to verify players.
 - [x] After disconnecting, the player's ghost will be visible for certain players.
+  - [x] Players are only added to the render list but not removed.
