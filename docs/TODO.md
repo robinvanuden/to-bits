@@ -24,13 +24,15 @@
     - [ ]  Canon
 - [ ]  Reduce message size to front end
 - [ ]  Sprite manager / Character
-- [ ]  Sprite creator with tint.
-   - [ ]  Walking animation
-- [ ]  More map textures.
+- [x]  Sprite creator with tint.
+   - [x]  Walking animation
+- [ ] More map textures.
 - [ ] Point system
    - Coin = 1 point
    - Kill = 10 points
    - Death = -1 point
+- [ ]  Disconnect & kill messages.
+- [ ] Lobby system (Not just join to play)
 
 ## Ideas
 
@@ -38,9 +40,8 @@
 - [ ]  Double jump
 - [ ]  Canon to shoot you across the map
 - [ ]  Meteor crash random on the map
-- [ ]  Items to. change gravity and speed
+- [ ]  Items to change gravity and speed
 - [ ]  Leaderboard
-- [ ]  Disconnect & kill messages.
 - [ ]  Generate sprites for player based on type and color
 - [ ]  Add a castle (stone blocks)
 - [ ]  Teams (pirates vs knights)

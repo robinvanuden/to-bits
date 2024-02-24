@@ -1,0 +1,15 @@
+{ "columns":2,
+ "fillmode":"preserve-aspect-fit",
+ "image":"..\/assets\/map\/grass.jpg",
+ "imageheight":32,
+ "imagewidth":32,
+ "margin":0,
+ "name":"grass",
+ "spacing":0,
+ "tilecount":4,
+ "tiledversion":"1.10.2",
+ "tileheight":16,
+ "tilewidth":16,
+ "type":"tileset",
+ "version":"1.10"
+}
