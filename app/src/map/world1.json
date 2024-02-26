@@ -25,7 +25,7 @@
             24, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 40],
          "height":20,
          "id":1,
-         "name":"Tile Layer 1",
+          "name": "map",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
@@ -42,15 +42,19 @@
  "tilesets":[
         {
          "firstgid":1,
-         "source":"wall.tsx"
-        }, 
+          "source": "wall.json"
+        },
         {
          "firstgid":5,
-         "source":"stone.tsx"
-        }, 
+          "source": "stone.json"
+        },
         {
          "firstgid":9,
-         "source":"roof.tsx"
+          "source": "roof.json"
+        },
+        {
+         "firstgid":41,
+          "source": "grass.json"
         }],
  "tilewidth":16,
  "type":"map",

@@ -31,12 +31,14 @@ The Map update.
 
 ### Added
 
-- [ ] Using Tiles JSON files for the map data.
+- [ ] Using TILED JSON files for the map data.
 - [ ] More map textures.
     - [ ] Stone textures
     - [ ] Connected textures
     - [ ] Bridges
 - [ ] Repository for the map data with better control of the tiles.
+- [ ] Change gameplay to be 3D.
+  - [ ] Remove gravity logic (players can now walk up and down)
 
 ### Changed
 
