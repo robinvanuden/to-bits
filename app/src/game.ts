@@ -1,6 +1,6 @@
 import PlayerRepository from "./repository/PlayerRepository"
 import World from "./types/world"
-import lobby from "./map/lobby.json"
+import lobby from "./map/old/lobby.json"
 import PowerUp, {PowerType} from "./types/PowerUp"
 import Tile from "./types/Tile"
 import {v4, v5} from "uuid"
