@@ -7,24 +7,24 @@ import {COOKIE_PLAYER_ID} from "../constants"
 
 const loadCharacterTint = async (hsl: string): Promise<sharp.Sharp> => {
   console.log("load character tint", hsl)
-  return sharp(path.resolve(__dirname, "../assets/character.tint.png"))
+  return sharp(path.resolve(__dirname, "../assets/character/tint.png"))
     .modulate({lightness: -26})
     .tint(Color(hsl, "hsl").object())
 }
 
 const loadCharacterAsset = async (): Promise<sharp.Sharp> => {
   console.log("load character asset")
-  return sharp(path.resolve(__dirname, "../assets/character.png"))
+  return sharp(path.resolve(__dirname, "../assets/character/body.png"))
 }
 
 const loadCharacterLegs = async (type: number): Promise<sharp.Sharp> => {
   console.log("load character legs overlay")
-  return sharp(path.resolve(__dirname, `../assets/character.legs${type}.png`))
+  return sharp(path.resolve(__dirname, `../assets/character/legs${type}.png`))
 }
 
 const loadCharacterMask = async (type: number): Promise<sharp.Sharp> => {
   console.log("load character mask overlay", type)
-  return sharp(path.resolve(__dirname, `../assets/character.mask${type}.png`))
+  return sharp(path.resolve(__dirname, `../assets/character/mask${type}.png`))
 }
 
 export default function (players: PlayerRepository) {
