@@ -4,7 +4,6 @@ import lobby from "./map/old/lobby.json"
 import PowerUp, {PowerType} from "./types/PowerUp"
 import Tile from "./types/Tile"
 import {v4, v5} from "uuid"
-import SessionRepository from "./repository/SessionRepository"
 
 export default class Game {
 
@@ -16,7 +15,6 @@ export default class Game {
   private lobby = new World(lobby.tiles)
 
   private playerRepository!: PlayerRepository
-  private sessionRepository!: SessionRepository
 
   private running: boolean = false
   private updated: number = Date.now()
@@ -39,11 +37,7 @@ export default class Game {
 
   players = () => this.playerRepository
 
-  sessions = () => this.sessionRepository
-
   setPlayersRepository = (players: PlayerRepository) => this.playerRepository = players
-
-  setSessionsRepository = (session: SessionRepository) => this.sessionRepository = session
 
   map = (): World => this.lobby
 
@@ -162,7 +156,6 @@ export default class Game {
   private checkDisconnectedPlayers = () => {
     for (const player of this.players().disconnected()) {
       console.log("Remove player: " + player.id)
-      this.sessions().remove(player.id)
       this.players().remove(player)
     }
   }

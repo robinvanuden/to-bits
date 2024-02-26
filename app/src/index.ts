@@ -8,7 +8,6 @@ import Game from "./game"
 import PlayerRepository from "./repository/PlayerRepository"
 import {COOKIE_PLAYER_ID} from "./constants"
 import path from "path"
-import SessionRepository from "./repository/SessionRepository"
 
 const app = express()
 const server = createServer(app)
@@ -20,38 +19,38 @@ const VERSION_CODE: number = Date.now()
 
 const game: Game | undefined = new Game(VERSION)
 
-const sessions = new SessionRepository()
 const players = new PlayerRepository()
 game.setPlayersRepository(players)
-game.setSessionsRepository(sessions)
 
 app.use("/img", express.static("public/img"))
 app.use("/", express.static("dist"))
 
 app.get("/", (req, res) => {
-  let uuid = req.cookies[COOKIE_PLAYER_ID] || ""
-  let isNew = false
+  let uuid: string = req.cookies[COOKIE_PLAYER_ID] || ""
+  console.log("incoming uuid", uuid, uuid.length)
   if (uuid.length <= 0) {
+    // No cookie yet
     uuid = game.generate_uuid()
-    isNew = true
     console.log("Generated uuid for new player", uuid)
-  } else if (uuid.length > 0 && !sessions.contains(uuid)) {
-    // Old cookie
-    uuid = game.generate_uuid()
-    isNew = true
-    console.log("Generated uuid for an old player (outdated cookie)", uuid)
-  }
-  if (isNew && sessions.add(uuid)) {
-    res.cookie(COOKIE_PLAYER_ID, uuid, {httpOnly: true, maxAge: 900000})
+    res.cookie(COOKIE_PLAYER_ID, uuid, {httpOnly: true, sameSite: "strict", maxAge: 900000})
     res.sendFile(path.resolve(__dirname, "../dist/main.html"))
     return
   }
   const player = players.getById(uuid)
-  if (!isNew && player && player.disconnected != undefined) {
+  if (uuid.length > 30 && !player) {
+    // Old cookie
+    uuid = game.generate_uuid()
+    console.log("Generated uuid for an old player (outdated cookie)", uuid)
+    res.cookie(COOKIE_PLAYER_ID, uuid, {httpOnly: true, sameSite: "strict", maxAge: 900000})
     res.sendFile(path.resolve(__dirname, "../dist/main.html"))
     return
   }
-  console.log("Invalid session", uuid)
+  if (player && player.disconnected) {
+    res.cookie(COOKIE_PLAYER_ID, uuid, {httpOnly: true, sameSite: "strict", maxAge: 900000})
+    res.sendFile(path.resolve(__dirname, "../dist/main.html"))
+    return
+  }
+  // console.log("Invalid session", uuid)
   res.sendStatus(403)
 })
 

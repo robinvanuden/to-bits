@@ -5,19 +5,19 @@ import PlayerRepository from "../repository/PlayerRepository"
 import Color from "color"
 import {COOKIE_PLAYER_ID} from "../constants"
 
-const loadImage = (name: string) => sharp(path.resolve(__dirname, "../assets/character/", name))
+const loadImage = (name: string) => sharp(path.resolve(__dirname, "../assets/character", name))
 
 const loadCharacterFeatherTint = async (hsl: string) => loadImage("feather.tint.png")
-  .modulate({lightness: -26})
+  .modulate({lightness: -45})
   .tint(Color(hsl, "hsl").object())
 
 const loadCharacterFeather = async () => loadImage("feather.png")
 
 const loadCharacterBody = async () => loadImage("body.png")
 
-const loadCharacterLegs = async (type: number) => loadImage(`legs${type}.png`)
+const loadCharacterLegs = async (type: number) => loadImage("legs" + type + ".png")
 
-const loadCharacterMask = async (type: number) => loadImage(`mask${type}.png`)
+const loadCharacterMask = async (type: number) => loadImage("mask" + type + ".png")
 
 const generateCharacter = async (hsl: string, mask_type: number, walk_type: number) => {
   const body = await loadCharacterBody()
