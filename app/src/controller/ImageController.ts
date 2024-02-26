@@ -7,9 +7,13 @@ import {COOKIE_PLAYER_ID} from "../constants"
 
 const loadCharacterTint = async (hsl: string): Promise<sharp.Sharp> => {
   console.log("load character tint", hsl)
-  return sharp(path.resolve(__dirname, "../assets/character/tint.png"))
+  return sharp(path.resolve(__dirname, "../assets/character/feather.tint.png"))
     .modulate({lightness: -26})
     .tint(Color(hsl, "hsl").object())
+}
+
+const loadCharacterFeather = async (): Promise<sharp.Sharp> => {
+  return sharp(path.resolve(__dirname, "../assets/character/feather.png"))
 }
 
 const loadCharacterAsset = async (): Promise<sharp.Sharp> => {
@@ -44,10 +48,12 @@ export default function (players: PlayerRepository) {
     const walk = (hash.substring(hash.length - 1, hash.length) || "0") === "0" ? 0 : 1
     console.log("image character", uuid, direction)
     const left = direction.toLowerCase() === "l"
+    const feather = await loadCharacterFeather()
     const tint = await loadCharacterTint(player.color)
     const mask = await loadCharacterMask(player.mask)
     const legs = await loadCharacterLegs(walk)
     let char = img.composite([
+      {input: await feather.toBuffer()},
       {input: await tint.toBuffer()},
       {input: await mask.toBuffer(), left: 5, top: 5},
       {input: await legs.toBuffer()}
@@ -66,10 +72,12 @@ export default function (players: PlayerRepository) {
       res.sendStatus(404)
       return
     }
+    const feather = await loadCharacterFeather()
     const tint = await loadCharacterTint(player.color)
     const mask = await loadCharacterMask(player.mask)
     const legs = await loadCharacterLegs(0)
     let char = img.composite([
+      {input: await feather.toBuffer()},
       {input: await tint.toBuffer()},
       {input: await mask.toBuffer(), left: 5, top: 5},
       {input: await legs.toBuffer()}
