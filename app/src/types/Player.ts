@@ -48,6 +48,7 @@ export class Player {
     this.disconnected = undefined
     this.died = undefined
     this.color = randomColor()
+    console.log("color", this.color)
     this.mask = randomMask()
     this.name = randomName()
     this.width = PLAYER_WIDTH

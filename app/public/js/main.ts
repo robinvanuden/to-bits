@@ -7,6 +7,9 @@ import Canvas from "./canvas"
 
 (() => {
 
+  const updateFavicon = () => (document.getElementById("main-icon") as HTMLLinkElement)
+    .href = '/favicon.ico?t=' + Date.now()
+
   const host = new URL(location.toString())
   const secure = (location.protocol === "wss:" || location.protocol === "https:")
   host.protocol = secure ? "https:" : "http:"
@@ -57,9 +60,8 @@ import Canvas from "./canvas"
   })
 
   socket.on("connect", () => {
-    (document.getElementById("main-icon") as HTMLLinkElement)
-      .href = `/image/favicon.${Date.now()}.ico`
     data.setID(socket.id)
+    updateFavicon()
   })
 
   socket.on("disconnect", () => hud.setLoading(true))
@@ -135,6 +137,8 @@ import Canvas from "./canvas"
   window.addEventListener("keydown", events => keyEvent(events, true))
   window.addEventListener("keyup", events => keyEvent(events, false))
   window.addEventListener("mouseup", onMouseRelease)
+
+  updateFavicon()
 
   let lastRender = Date.now()
   const loop = (timestamp: number) => {
