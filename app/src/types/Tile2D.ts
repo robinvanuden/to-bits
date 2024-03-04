@@ -1,7 +1,7 @@
 import {Player} from "./Player"
 import PowerUp, {PowerUpModel} from "./PowerUp"
 
-export default class Tile {
+export default class Tile2D {
   x: number
   y: number
   w: number // width
@@ -50,7 +50,7 @@ export default class Tile {
     this.power_up = new PowerUp(this)
   }
 
-  static toModel = (tile: Tile): TileModel => ({
+  static toModel = (tile: Tile2D): TileModel => ({
     x: tile.x,
     y: tile.y,
     w: tile.w,

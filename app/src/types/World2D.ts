@@ -1,14 +1,14 @@
-import Tile, {A, D, G, TILE, W} from "./Tile"
+import Tile2D, {A, D, G, TILE, W} from "./Tile2D"
 
-export default class World {
+export default class World2D {
 
-  private tiles: Tile[] = []
+  private tiles: Tile2D[] = []
   private readonly bottom: number = 0
 
   constructor(tiles: string[][]) {
     for (let y = 0; y < tiles.length; y++) {
       for (let x = 0; x < tiles[y].length; x++) {
-        this.tiles.push(new Tile(this.toMeta(tiles[y][x]), x, y))
+        this.tiles.push(new Tile2D(this.toMeta(tiles[y][x]), x, y))
       }
       this.bottom = y
     }

@@ -1,5 +1,5 @@
-import Tile from "./Tile"
 import {Player} from "./Player"
+import {Tile} from "./TileSet"
 
 const BOOMERANG_SIZE = 18
 const BOOMERANG_THROW = 10
@@ -31,9 +31,9 @@ export default class Boomerang {
     this.thrown = Date.now()
   }
 
-  isBroke = (t: Tile): boolean => this.x < t.x + t.w
+  isBroke = (t: Tile): boolean => this.x < t.x + t.width
     && this.x + this.width > t.x
-    && this.y < t.y + t.h
+    && this.y < t.y + t.height
     && this.y + this.height > t.y
 
   isThrown = (p: Player): boolean => this.id === p.id && this.thrown + 250 > Date.now()

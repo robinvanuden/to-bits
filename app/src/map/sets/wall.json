@@ -1,7 +1,8 @@
-{ "columns":2,
- "image":"..\/assets\/map\/wall.jpg",
- "imageheight":32,
- "imagewidth":32,
+{
+ "columns": 4,
+ "image": "..\/..\/assets\/map\/wall.jpg",
+ "imageheight": 16,
+ "imagewidth": 64,
  "margin":0,
  "name":"wall",
  "spacing":0,

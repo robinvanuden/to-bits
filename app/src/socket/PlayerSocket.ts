@@ -1,6 +1,6 @@
 import {Server, Socket} from "socket.io"
 import {Player} from "../types/Player"
-import Tile from "../types/Tile"
+import Tile2D from "../types/Tile2D"
 import PowerUp from "../types/PowerUp"
 import Game from "../game"
 
@@ -33,7 +33,7 @@ export default class PlayerSocket {
         return
       }
 
-      client.emit("map", this.game.map().map().map(Tile.toModel))
+      client.emit("map", this.game.world().map().map(Tile2D.toModel))
 
       client.on("move.left", (bool: boolean) => this.onMovement(uuid, "move.left", bool))
       client.on("move.right", (bool: boolean) => this.onMovement(uuid, "move.right", bool))
@@ -114,6 +114,6 @@ export default class PlayerSocket {
     this.io.emit("players", this.game?.players().list().map(Player.toModel) ?? [])
 
     // Emit power ups
-    this.io.emit("power_ups", this.game?.map().map().filter(t => t.power_up).flatMap(t => PowerUp.toMaybeModel(t.power_up)))
+    this.io.emit("power_ups", this.game?.world().map().filter(t => t.power_up).flatMap(t => PowerUp.toMaybeModel(t.power_up)))
   }
 }

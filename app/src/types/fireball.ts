@@ -1,5 +1,5 @@
-import Tile from "./Tile"
 import {Player} from "./Player"
+import {Tile} from "./TileSet"
 
 const FIREBALL_SIZE = 18
 const FIREBALL_THROW = 14
@@ -31,9 +31,9 @@ export default class Fireball {
     this.thrown = Date.now()
   }
 
-  isBroke = (t: Tile): boolean => this.x < t.x + t.w
+  isBroke = (t: Tile): boolean => this.x < t.x + t.width
     && this.x + this.width > t.x
-    && this.y < t.y + t.h
+    && this.y < t.y + t.height
     && this.y + this.height > t.y
 
   isHit = (p: Player): boolean => this.player !== p.id && this.isColliding(p)

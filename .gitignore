@@ -190,3 +190,6 @@ dist
 /dev/to-bits.tiled-project
 /dev/to-bits.tiled-session
 /dev/
+
+
+*.tiled-*

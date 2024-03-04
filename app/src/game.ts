@@ -1,18 +1,20 @@
 import PlayerRepository from "./repository/PlayerRepository"
-import World from "./types/world"
+import World2D from "./types/World2D"
 import lobby from "./map/old/lobby.json"
 import PowerUp, {PowerType} from "./types/PowerUp"
-import Tile from "./types/Tile"
+import Tile2D from "./types/Tile2D"
 import {v4, v5} from "uuid"
+import WorldLoader from "./world/WorldLoader"
 
 export default class Game {
 
   private readonly VERSION: string = "?.?.?"
 
-  private DELTA = 0
-  private TICKS = 60
+  private DELTA: number = 0
+  private TICKS: number = 60
   private UUID_SEED: string = ""
-  private lobby = new World(lobby.tiles)
+  private readonly lobby: World2D
+  private world1: WorldLoader
 
   private playerRepository!: PlayerRepository
 
@@ -22,6 +24,8 @@ export default class Game {
   constructor(VERSION: string) {
     this.VERSION = VERSION
     this.generate_seed()
+    this.lobby = new World2D(lobby.tiles)
+    this.world1 = new WorldLoader('world1')
   }
 
   uuid_seed = () => this.UUID_SEED
@@ -39,9 +43,9 @@ export default class Game {
 
   setPlayersRepository = (players: PlayerRepository) => this.playerRepository = players
 
-  map = (): World => this.lobby
+  world = (): WorldLoader => this.world1
 
-  power_ups = () => this.map().map().filter(t => t.power_up != undefined).map(t => t.power_up) as PowerUp[]
+  power_ups = () => this.world().getPowers().getTiles().filter(t => t.power_up != undefined).map(t => t.power_up) as PowerUp[]
 
   addPlayer = (uuid: string, socket_id: string): boolean => {
     const continue_player = this.players().getConnected(uuid)
@@ -54,7 +58,7 @@ export default class Game {
     const player = this.players().getById(uuid)
     if (!player) {
       // New player
-      const SPAWN_TILE = this.map().randomSpawn()
+      const SPAWN_TILE = this.world().randomSpawn()
       console.log('User connected', uuid)
       this.players().create(SPAWN_TILE, uuid, socket_id)
       return true
@@ -63,10 +67,10 @@ export default class Game {
   }
 
   private checkPlayerPosition = (delta: number) => {
-    const solids = this.map().blocksSolid()
+    const solids = this.world().getWalls().getTiles()
     this.spawnPowerUp()
-    const tiles_with_power_ups = this.map().blocksWithPowerUps()
-    const blocksWalkable = this.map().blocksWalkable()
+    const tiles_with_power_ups = this.world().getPowers().getTiles()
+    const blocksWalkable = this.world().getWalls().getTiles()
     for (const player of this.players().alive()) {
       for (const boomerang of player.boomerangs) {
         boomerang.x += boomerang.vx
@@ -134,7 +138,7 @@ export default class Game {
           }
         }
       }
-      if (player.died === undefined && player.y > this.map().void()) {
+      if (player.died === undefined && player.y > this.world().void()) {
         player.kill()
       }
     }
@@ -144,9 +148,9 @@ export default class Game {
     if (Math.round(Math.random() * 800) !== 1) {
       return
     }
-    const airs = this.map().blocksAir()
+    const airs = this.world().blocksAir()
     const index = Math.round(Math.random() * (airs.length - 1))
-    const tile: Tile | undefined = airs[index] || undefined
+    const tile: Tile2D | undefined = airs[index] || undefined
     if (!tile) {
       return
     }
@@ -163,7 +167,7 @@ export default class Game {
   private checkRespawnPlayers = () => {
     for (const player of this.players().respawns()) {
       console.log("Respawn player: " + player.id)
-      player.respawn(this.map().randomSpawn())
+      player.respawn(this.world().randomSpawn())
     }
   }
 
@@ -195,7 +199,7 @@ export default class Game {
   stop = () => {
     console.log("Stopped game loop")
     this.running = false
-    this.map().clearPowerUps()
+    this.world().clearPowerUps()
     this.generate_seed()
   }
 

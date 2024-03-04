@@ -1,10 +1,11 @@
-import Tile from "./Tile"
+import Tile2D from "./Tile2D"
 import {GRAVITY} from "../constants"
 import {names, uniqueNamesGenerator} from "unique-names-generator"
 import PowerUp, {PowerType, PowerUpModel} from "./PowerUp"
 import Boomerang, {BoomerangModel} from "./boomerang"
 import {v4} from "uuid"
 import Fireball, {FireballModel} from "./fireball"
+import {Tile} from "./TileSet"
 
 const randomName = () => uniqueNamesGenerator({length: 1, dictionaries: [names]})
 
@@ -97,7 +98,7 @@ export class Player {
     this.move = {u: false, d: false, l: false, r: false}
   }
 
-  respawn = (spawn: Tile) => {
+  respawn = (spawn: Tile2D) => {
     this.died = undefined
     this.x = spawn.x
     this.y = spawn.y
