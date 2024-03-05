@@ -20,7 +20,7 @@
     "uuid": "^9.0"
   },
   "devDependencies": {
-    "@parcel/transformer-sass": "^2.11",
+    "@parcel/transformer-sass": "^2.12",
     "@types/color": "^3.0",
     "@types/cookie-parser": "^1.4",
     "@types/express": "^4.17",
@@ -28,7 +28,7 @@
     "buffer": "^6.0",
     "cookie-parser": "^1.4",
     "nodemon": "^3.1",
-    "parcel": "^2.11",
+    "parcel": "^2.12",
     "sass": "^1.71",
     "ts-node": "^10.9",
     "typescript": "^5.3"
