@@ -88,9 +88,6 @@ export default class Hud {
       debug_texts.push("name: " + you.n)
       debug_texts.push("x: " + you.x)
       debug_texts.push("y: " + you.y)
-      debug_texts.push("vx: " + you.vx)
-      debug_texts.push("vy: " + you.vy)
-      debug_texts.push("falling: " + (you.vy !== 0) ? "true" : "false")
       debug_texts.push("alive: " + you.d !== undefined ? "true" : "false")
 
       // Moved directions
@@ -153,7 +150,7 @@ export default class Hud {
     this.ctx.strokeStyle = this.COLOR_BLACK
     this.ctx.lineWidth = this.canvas.size(4)
     const line = "v" + this.data.version()
-    const x = this.canvas.size(window.innerWidth)
+    const x = this.canvas.size(this.canvas.width())
     const y = this.canvas.size(14)
 
     this.ctx.strokeText(line, x, y)

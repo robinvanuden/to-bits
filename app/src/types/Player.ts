@@ -1,11 +1,9 @@
-import Tile2D from "./Tile2D"
-import {GRAVITY} from "../constants"
 import {names, uniqueNamesGenerator} from "unique-names-generator"
 import PowerUp, {PowerType, PowerUpModel} from "./PowerUp"
 import Boomerang, {BoomerangModel} from "./boomerang"
 import {v4} from "uuid"
 import Fireball, {FireballModel} from "./fireball"
-import {Tile} from "./TileSet"
+import {Tile} from "./Tile"
 
 const randomName = () => uniqueNamesGenerator({length: 1, dictionaries: [names]})
 
@@ -13,10 +11,10 @@ const randomColor = () => `hsl(${Math.round(360 * Math.random())}, 74%, 58%)`
 
 const randomMask = () => Math.round(Math.random() * 3) + 1
 
-const PLAYER_WIDTH = 36
-const PLAYER_HEIGHT = 48
-const SPEED_WALK = 5
-const SPEED_JUMP = 7.5 // 7.7
+const PLAYER_WIDTH = 12
+const PLAYER_HEIGHT = 16
+const SPEED_WALK = 1.3
+const SPEED_JUMP = 2.5 // 7.7
 const MAX_POWER_UP = 3
 
 export class Player {
@@ -27,15 +25,12 @@ export class Player {
   color: string // color
   mask: number // mask
   name: string // name
-  gravity: number // gravity
   sw: number // speed walking
   sj: number // speed falling
   width: number // width
   height: number // height
   x: number // x-coord
   y: number // y-coord
-  vx: number // x velocity
-  vy: number // y velocity
   falling: boolean
   look: Direction // directions looking
   move: Direction // directions pressed
@@ -49,17 +44,13 @@ export class Player {
     this.disconnected = undefined
     this.died = undefined
     this.color = randomColor()
-    console.log("color", this.color)
     this.mask = randomMask()
     this.name = randomName()
     this.width = PLAYER_WIDTH
     this.height = PLAYER_HEIGHT
     this.x = spawn.x
     this.y = spawn.y
-    this.vx = 0
-    this.vy = 0
     this.falling = false
-    this.gravity = GRAVITY
     this.sw = SPEED_WALK
     this.sj = SPEED_JUMP
     this.look = {
@@ -78,9 +69,6 @@ export class Player {
     this.fireballs = []
     this.power_ups = []
   }
-
-  canJump = (): boolean => !this.falling && this.vy >= 0 && this.vy < 1
-
   // +1 checks 1 row of pixels below player
   hasPowerUp = (power_up: PowerType): boolean => this.power_ups.filter(p => p.type === power_up).length > 0
 
@@ -98,11 +86,10 @@ export class Player {
     this.move = {u: false, d: false, l: false, r: false}
   }
 
-  respawn = (spawn: Tile2D) => {
+  respawn = (spawn: Tile) => {
     this.died = undefined
     this.x = spawn.x
     this.y = spawn.y
-    this.gravity = GRAVITY
     this.look = {u: false, d: false, l: false, r: true}
     this.fireballs = []
     this.boomerangs = []
@@ -110,9 +97,6 @@ export class Player {
 
   kill = () => {
     this.died = Date.now()
-    this.vx = 0
-    this.vy = 0
-    this.gravity = 0
     this.move = {u: false, d: false, l: false, r: false}
     this.power_ups = []
   }
@@ -152,8 +136,6 @@ export class Player {
     h: p.height,
     x: p.x,
     y: p.y,
-    vx: p.vx,
-    vy: p.vy,
     d: p.died,
     dc: p.disconnected,
     n: p.name,
@@ -182,8 +164,6 @@ export interface PlayerM {
   h: number // height
   x: number // x-coord
   y: number // y-coord
-  vx: number // x velocity
-  vy: number // y velocity
   d: number | undefined // died
   dc: number | undefined // disconnected
   l: Direction

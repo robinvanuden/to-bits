@@ -2448,7 +2448,7 @@
      ],
      "height": 20,
      "id": 8,
-     "name": "spawn",
+     "name": "spawns",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,

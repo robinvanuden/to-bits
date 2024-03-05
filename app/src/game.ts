@@ -1,10 +1,8 @@
 import PlayerRepository from "./repository/PlayerRepository"
-import World2D from "./types/World2D"
-import lobby from "./map/old/lobby.json"
 import PowerUp, {PowerType} from "./types/PowerUp"
-import Tile2D from "./types/Tile2D"
 import {v4, v5} from "uuid"
 import WorldLoader from "./world/WorldLoader"
+import {Tile} from "./types/Tile"
 
 export default class Game {
 
@@ -13,8 +11,7 @@ export default class Game {
   private DELTA: number = 0
   private TICKS: number = 60
   private UUID_SEED: string = ""
-  private readonly lobby: World2D
-  private world1: WorldLoader
+  private readonly world1: WorldLoader
 
   private playerRepository!: PlayerRepository
 
@@ -24,7 +21,6 @@ export default class Game {
   constructor(VERSION: string) {
     this.VERSION = VERSION
     this.generate_seed()
-    this.lobby = new World2D(lobby.tiles)
     this.world1 = new WorldLoader('world1')
   }
 
@@ -45,7 +41,7 @@ export default class Game {
 
   world = (): WorldLoader => this.world1
 
-  power_ups = () => this.world().getPowers().getTiles().filter(t => t.power_up != undefined).map(t => t.power_up) as PowerUp[]
+  power_ups = () => this.world().powers().tiles().filter(t => t.power_up != undefined).map(t => t.power_up) as PowerUp[]
 
   addPlayer = (uuid: string, socket_id: string): boolean => {
     const continue_player = this.players().getConnected(uuid)
@@ -59,6 +55,10 @@ export default class Game {
     if (!player) {
       // New player
       const SPAWN_TILE = this.world().randomSpawn()
+      console.log(SPAWN_TILE)
+      if (!SPAWN_TILE) {
+        return false
+      }
       console.log('User connected', uuid)
       this.players().create(SPAWN_TILE, uuid, socket_id)
       return true
@@ -67,10 +67,9 @@ export default class Game {
   }
 
   private checkPlayerPosition = (delta: number) => {
-    const solids = this.world().getWalls().getTiles()
+    const solids = this.world().walls().tiles()
     this.spawnPowerUp()
-    const tiles_with_power_ups = this.world().getPowers().getTiles()
-    const blocksWalkable = this.world().getWalls().getTiles()
+    const tiles_with_power_ups = this.world().floor().tiles()
     for (const player of this.players().alive()) {
       for (const boomerang of player.boomerangs) {
         boomerang.x += boomerang.vx
@@ -86,7 +85,6 @@ export default class Game {
           player.breakFireball(fireball)
         }
       }
-      player.vy += player.gravity * delta
 
       if (player.move.l) {
         player.x -= player.sw
@@ -96,24 +94,15 @@ export default class Game {
         player.x += player.sw
         if (solids.find(t => t.isColliding(player))) player.x -= player.sw
       }
-      if (player.move.u && player.canJump() && !solids.find(t => t.isColliding(player))) {
-        player.vy -= player.sj
-        player.falling = true
+      if (player.move.u) {
+        player.y -= player.sw
+        if (solids.find(t => t.isColliding(player))) player.y += player.sw
       }
-      player.x += player.vx
-      player.y += player.vy
+      if (player.move.d) {
+        player.y += player.sw
+        if (solids.find(t => t.isColliding(player))) player.y -= player.sw
+      }
 
-      const solid = solids.find(t => t.isColliding(player) && !t.isAboutWalking(player))
-      const walkable = blocksWalkable.find(t => t.isAboutWalking(player))
-      if (solid && player.vy > 0) {
-        player.y = solid.y - player.height
-        player.vy = 0
-        player.falling = false
-      } else if (walkable && player.vy > 0) {
-        player.y = walkable.y - player.height
-        player.vy = 0
-        player.falling = false
-      }
       for (const other of this.players().others(player)) {
         for (const boomerang of other.boomerangs) {
           if (boomerang.isCaught(player)) {
@@ -138,9 +127,6 @@ export default class Game {
           }
         }
       }
-      if (player.died === undefined && player.y > this.world().void()) {
-        player.kill()
-      }
     }
   }
 
@@ -148,9 +134,9 @@ export default class Game {
     if (Math.round(Math.random() * 800) !== 1) {
       return
     }
-    const airs = this.world().blocksAir()
+    const airs = this.world().floor().tiles()
     const index = Math.round(Math.random() * (airs.length - 1))
-    const tile: Tile2D | undefined = airs[index] || undefined
+    const tile: Tile | undefined = airs[index] || undefined
     if (!tile) {
       return
     }
@@ -167,7 +153,8 @@ export default class Game {
   private checkRespawnPlayers = () => {
     for (const player of this.players().respawns()) {
       console.log("Respawn player: " + player.id)
-      player.respawn(this.world().randomSpawn())
+      const spawn = this.world().randomSpawn()
+      if (spawn) player.respawn(spawn)
     }
   }
 

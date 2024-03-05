@@ -1,8 +1,8 @@
 import {Player} from "./Player"
-import {Tile} from "./TileSet"
+import {Tile} from "./Tile"
 
-const BOOMERANG_SIZE = 18
-const BOOMERANG_THROW = 10
+const BOOMERANG_SIZE = 12
+const BOOMERANG_THROW = 6
 
 export default class Boomerang {
   id: string = ""

@@ -1,8 +1,8 @@
 import {Player} from "./Player"
-import {Tile} from "./TileSet"
+import {Tile} from "./Tile"
 
-const FIREBALL_SIZE = 18
-const FIREBALL_THROW = 14
+const FIREBALL_SIZE = 12
+const FIREBALL_THROW = 7
 
 export default class Fireball {
   id: string = ""

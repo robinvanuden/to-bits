@@ -1,22 +1,23 @@
 import World, {WorldLayer} from "../types/World"
 import * as path from "path"
 import * as fs from "fs"
-import TileSet, {Tile, TileSetItem} from "../types/TileSet"
+import TileSet, {TileSetItem} from "../types/TileSet"
+import {Tile} from "../types/Tile"
 
 export default class WorldLoader {
 
   private world: World
   private sets: TileSetLoader[] = []
 
-  private readonly spawns!: LayerLoader
-  private readonly powers!: LayerLoader
-  private readonly floor!: LayerLoader
-  private readonly walls!: LayerLoader
+  private readonly _spawns!: LayerLoader
+  private readonly _powers!: LayerLoader
+  private readonly _floor!: LayerLoader
+  private readonly _walls!: LayerLoader
 
-  public getSpawns = (): LayerLoader => this.spawns
-  public getPowers = (): LayerLoader => this.powers
-  public getFloor = (): LayerLoader => this.floor
-  public getWalls = (): LayerLoader => this.walls
+  public spawns = (): LayerLoader => this._spawns
+  public powers = (): LayerLoader => this._powers
+  public floor = (): LayerLoader => this._floor
+  public walls = (): LayerLoader => this._walls
 
   constructor(name: string) {
     this.world = this.load(name)
@@ -26,20 +27,22 @@ export default class WorldLoader {
     for (const layer of this.world.layers) {
       switch (layer.name) {
         case "walls":
-          this.walls = new LayerLoader(layer, this.sets)
+          this._walls = new LayerLoader(layer, this.sets)
           break
         case "floor":
-          this.floor = new LayerLoader(layer, this.sets)
+          this._floor = new LayerLoader(layer, this.sets)
           break
         case "powers":
-          this.powers = new LayerLoader(layer, this.sets)
+          this._powers = new LayerLoader(layer, this.sets)
           break
         case "spawns":
-          this.spawns = new LayerLoader(layer, this.sets)
+          this._spawns = new LayerLoader(layer, this.sets)
           break
       }
     }
   }
+
+  allTiles = () => this.walls().tiles().slice(0).concat(this.floor().tiles()).concat()
 
   load(name: string): World {
     switch (name) {
@@ -51,75 +54,85 @@ export default class WorldLoader {
 
   loadJsonMap = (name: string): World => JSON.parse(fs.readFileSync(path.resolve(__dirname, "../map/", name)).toString("utf-8"))
 
-  randomSpawn = () => {
-    const spawns = this.spawns.getTiles()
-    return spawns[Math.round(Math.random() * spawns.length) - 1]
+  randomSpawn = (): Tile | undefined => {
+    const spawns = this.floor().tiles().filter(t => t !== undefined)
+    console.log("spawns", spawns)
+    return spawns[Math.round(Math.random() * spawns.length) - 1] || undefined
+  }
+
+
+  clearPowerUps = () => {
+    for (const tile of this.powers().tiles()) {
+      tile.power_up = undefined
+    }
+    console.log("Cleared power-ups")
   }
 }
 
 class TileSetLoader {
 
-  private name: string
-  private set: TileSet
-  private tiles: TileSetItem[] = []
-
-  public getTiles = (): TileSetItem[] => this.tiles
+  private _name: string
+  private _first_id: number
+  private _set: TileSet
+  private _tiles: TileSetItem[] = []
 
   constructor(name: string, index: number) {
-    this.set = this.loadJsonTileSet(name)
-    this.name = path.basename(name)
+    this._first_id = index
+    this._set = this.loadJsonTileSet(name)
+    this._name = path.basename(name)
 
-    for (let c = 0; c < Math.round(this.set.imagewidth / this.set.tilewidth); c++) {
-      for (let r = 0; r < Math.round(this.set.imageheight / this.set.tileheight); r++) {
-        this.tiles.push({
-          id: index + (c + r),
-          width: this.set.tilewidth,
-          height: this.set.tileheight,
-          type: this.set.type,
-          version: this.set.version,
-          tiledversion: this.set.tiledversion
+    for (let c = 0; c < Math.round(this._set.imagewidth / this._set.tilewidth); c++) {
+      for (let r = 0; r < Math.round(this._set.imageheight / this._set.tileheight); r++) {
+        const id = index + (c + r)
+        this._tiles.push({
+          id: id,
+          width: this._set.tilewidth,
+          height: this._set.tileheight,
+          type: this._set.type,
+          version: this._set.version,
+          tiledversion: this._set.tiledversion
         })
       }
     }
   }
 
+  public firstId = () => this._first_id
+
   loadJsonTileSet = (name: string): TileSet => JSON.parse(fs.readFileSync(path.resolve(__dirname, "../map/", name)).toString("utf-8"))
 
-  getTileById = (id: number) => this.tiles.find(t => t.id === id)
+  getTileById = (id: number) => this._tiles.find(t => t.id === id)
 
 }
 
 class LayerLoader {
 
-  private tiles: Tile[] = []
-  private sets: TileSetLoader[] = []
+  private _tiles: Tile[] = []
 
-  public getTiles = (): Tile[] => this.tiles
+  public tiles = (): Tile[] => this._tiles
 
   constructor(layer: WorldLayer, sets: TileSetLoader[]) {
-    this.sets = sets
+    let c = 0
     for (let x = 0; x < layer.width; x++) {
       for (let y = 0; y < layer.height; y++) {
-        const index = x + y
-        const id = layer.data[index]
-        const item = this.findTileById(id)
+        const index = x * y
+        const id = layer.data[c]
+        const item = sets.find(s => id >= s.firstId() && s.getTileById(id))?.getTileById(id)
         if (item) {
-          this.tiles.push({
-            id: id,
-            x: x * item.width,
-            y: y * item.height,
-            layer: layer.name,
-            width: item.width,
-            height: item.height,
-            type: item.type,
-            version: item.version,
-            tiledversion: item.tiledversion,
-            power_up: undefined
-          })
+          console.log(id, index, c, layer.name)
+          this._tiles.push(new Tile(
+            id,
+            x * item.width,
+            y * item.height,
+            item.type,
+            item.version,
+            item.tiledversion,
+            item.width,
+            item.height,
+            layer.name,
+          ))
         }
+        c++
       }
     }
   }
-
-  findTileById = (id: number) => this.sets.find(s => s.getTileById(id))?.getTileById(id)
 }

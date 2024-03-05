@@ -34,8 +34,8 @@ export default class Map {
       cx = Math.round((this.canvas.size(this.mapWidth() * .5)) - this.canvas.width() * .5)
       cy = Math.round((this.canvas.size(this.mapHeight() * .5)) - this.canvas.height() * .5)
     }
-    for (const tile of this.data.map().filter(tile => tile.wa)) {
-      this.ctx.fillStyle = tile.c
+    for (const tile of this.data.map()) {
+      this.ctx.fillStyle = tile.c || "#000"
       let bx = 0, by = 0
       switch (tile.i) {
         case "wood":
@@ -122,12 +122,11 @@ export default class Map {
         image_name = "image/" + player.uid + (player.l.r ? "r" : "l") + 0
       }
       const image = this.images.addImage(image_name)
-      console.log(player.a)
       this.ctx.drawImage(
         image,
         sx,
         0,
-        13,
+        12,
         16,
         player_x - cx,
         player_y - cy,

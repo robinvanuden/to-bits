@@ -11,8 +11,6 @@ export default interface PlayerModel {
   h: number // height
   x: number // x-coord
   y: number // y-coord
-  vx: number // x velocity
-  vy: number // y velocity
   d: number | undefined // died
   dc: number | undefined // disconnected
   l: Direction // looking

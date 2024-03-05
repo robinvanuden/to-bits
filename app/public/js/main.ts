@@ -69,6 +69,7 @@ import Canvas from "./canvas"
   socket.on("nope", () => hud.setNope(true))
 
   socket.on("map", map_data => {
+    console.log(map_data)
     data.setMap(map_data)
     hud.setLoading(false)
   })

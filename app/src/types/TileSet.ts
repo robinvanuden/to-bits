@@ -1,5 +1,3 @@
-import PowerUp from "./PowerUp"
-
 export default interface TileSet {
   columns: number
   image: string
@@ -23,17 +21,4 @@ export interface TileSetItem {
   tiledversion: string
   height: number
   width: number
-}
-
-export interface Tile {
-  id: number
-  x: number
-  y: number
-  type: string
-  version: string
-  tiledversion: string
-  height: number
-  width: number
-  layer: string
-  power_up: PowerUp | undefined
 }

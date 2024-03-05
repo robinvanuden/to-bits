@@ -1,5 +1,5 @@
 import {Player} from "../types/Player"
-import {Tile} from "../types/TileSet"
+import {Tile} from "../types/Tile"
 
 export default class PlayerRepository {
 

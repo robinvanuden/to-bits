@@ -1,6 +1,6 @@
 import {v4} from "uuid"
-import Tile2D from "./Tile2D"
 import {Player} from "./Player"
+import {Tile} from "./Tile"
 
 export enum PowerType {BOOMERANG, BOMB, FIREBALL}
 
@@ -16,11 +16,11 @@ export default class PowerUp {
   x: number
   y: number
 
-  constructor(tile: Tile2D) {
+  constructor(tile: Tile) {
     this.id = v4()
     this.type = PowerUp.randomType()
-    this.x = tile.x + Math.round((tile.w * .5) - (POWER_WIDTH * .5))
-    this.y = tile.y + Math.round((tile.h * .5) - (POWER_HEIGHT * .5))
+    this.x = tile.x + Math.round((tile.width * .5) - (POWER_WIDTH * .5))
+    this.y = tile.y + Math.round((tile.height * .5) - (POWER_HEIGHT * .5))
   }
 
   isTouching = (p: Player) =>
