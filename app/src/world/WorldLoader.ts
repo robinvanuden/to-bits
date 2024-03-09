@@ -1,7 +1,7 @@
 import World, {WorldLayer} from "../types/World"
 import * as path from "path"
 import * as fs from "fs"
-import TileSet, {PROP_SEMI_SOLID, TileSetItem} from "../types/TileSet"
+import TileSet, {TileSetItem} from "../types/TileSet"
 import {Tile} from "../types/Tile"
 import {Player} from "../types/Player"
 
@@ -132,30 +132,17 @@ class LayerLoader {
 
   public tiles = (): Tile[] => this._tiles || []
 
-  public solids = (): Tile[] => this.tiles().filter(t => t.properties?.find(p => p.name !== PROP_SEMI_SOLID))
+  public solids = (): Tile[] => this.tiles().filter(t => !t.isSemiSolid())
 
-  public semis = (): Tile[] => this.tiles().filter(t => t.properties?.find(p => p.name === PROP_SEMI_SOLID && p.value))
+  public semis = (): Tile[] => this.tiles().filter(t => t.isSemiSolid())
 
   constructor(layer: WorldLayer, sets: TileSetLoader[]) {
     let c = 0
-    for (let x = 0; x < layer.width; x++) {
-      for (let y = 0; y < layer.height; y++) {
+    for (let y = 0; y < layer.height; y++) {
+      for (let x = 0; x < layer.width; x++) {
         const id = layer.data[c]
         const item = sets.find(s => id >= s.firstId() && s.getTileById(id))?.getTileById(id)
-        if (item) {
-          this._tiles.push(new Tile(
-            id,
-            x * item.width,
-            y * item.height,
-            item.type,
-            item.version,
-            item.tiledversion,
-            item.width,
-            item.height,
-            layer.name,
-            item.properties
-          ))
-        }
+        if (item) this._tiles.push(new Tile(id, x, y, layer, item))
         c++
       }
     }

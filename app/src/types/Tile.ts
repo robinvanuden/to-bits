@@ -1,6 +1,9 @@
 import PowerUp, {PowerUpModel} from "./PowerUp"
 import {Player} from "./Player"
-import {TileSetProperty} from "./TileSet"
+import {PROP_SEMI_SOLID, TileSetItem, TileSetProperty} from "./TileSet"
+import {WorldLayer} from "./World"
+
+export const TILE_SIZE = 48
 
 export class Tile {
   id: number
@@ -13,35 +16,37 @@ export class Tile {
   width: number
   layer: string
   power_up: PowerUp | undefined
-  properties: TileSetProperty[] | undefined
+  properties: TileSetProperty[]
 
-  constructor(id: number, x: number, y: number, type: string, version: string, tiledversion: string, height: number, width: number, layer: string, properties: TileSetProperty[] | undefined) {
+  constructor(id: number, x: number, y: number, layer: WorldLayer, item: TileSetItem) {
     this.id = id
-    this.x = x
-    this.y = y
-    this.type = type
-    this.version = version
-    this.tiledversion = tiledversion
-    this.height = height
-    this.width = width
-    this.layer = layer
+    this.x = x * TILE_SIZE
+    this.y = y * TILE_SIZE
+    this.type = item.type
+    this.version = item.version
+    this.tiledversion = item.tiledversion
+    this.height = TILE_SIZE
+    this.width = TILE_SIZE
+    this.layer = layer.name
     this.power_up = undefined
-    this.properties = properties
+    this.properties = item.properties || []
   }
 
-  public isColliding = (p: Player): boolean =>
+  isColliding = (p: Player): boolean =>
     this.x < p.x + p.width &&
     this.x + this.width > p.x &&
     this.y < p.y + p.height &&
     this.y + this.height > p.y
 
-  public isAboutWalking = (p: Player): boolean =>
+  isAboutWalking = (p: Player): boolean =>
     this.x < p.x + p.width &&
     this.x + this.width > p.x &&
     this.y < p.y + p.height &&
     this.y + 1 > p.y
 
   public hasPowerUp = (): boolean => this.power_up !== undefined
+
+  public isSemiSolid = (): boolean => this.properties.find(p => p.name === PROP_SEMI_SOLID && p.value) != undefined
 
   public spawnPower = () => {
     if (!this.hasPowerUp()) this.power_up = new PowerUp(this)
@@ -53,11 +58,11 @@ export class Tile {
     w: tile.width,
     h: tile.height,
     t: tile.id,
-    i: "dirt",
+    i: tile.isSemiSolid() ? "wood" : "dirt",
     d: 0,
     sp: tile.layer === "spawn",
-    wa: tile.layer === "floor",
-    so: false,
+    wa: tile.isSemiSolid(),
+    so: !tile.isSemiSolid(),
     pu: PowerUp.toMaybeModel(tile.power_up)
   })
 }
@@ -65,13 +70,20 @@ export class Tile {
 export interface TileModel {
   x: number
   y: number
-  w: number // width
-  h: number // height
-  t: number // type
+  // width
+  w: number
+  // height
+  h: number
+  // type
+  t: number
   i: string | undefined
-  d: number // damage
-  sp: boolean // spawn
-  wa: boolean // walkable
-  so: boolean // solid
+  // damage
+  d: number
+  // spawn
+  sp: boolean
+  // walkable
+  wa: boolean
+  // solid
+  so: boolean
   pu: PowerUpModel | undefined
 }

@@ -94,6 +94,14 @@ export default class Map {
       const player_h = this.canvas.size(player.h)
       const player_x = this.canvas.size(player.x)
       const player_y = this.canvas.size(player.y)
+      this.ctx.fillStyle = player.c
+
+      this.ctx.fillRect(
+        this.canvas.size(player.x) - cx,
+        this.canvas.size(player.y) - cy,
+        this.canvas.size(player.w),
+        this.canvas.size(player.h)
+      )
 
       const name_x = player_x - cx + player_w * .5
       const name_y = player_y - cy - this.canvas.size(6)
@@ -126,7 +134,7 @@ export default class Map {
         image,
         sx,
         0,
-        12,
+        13,
         16,
         player_x - cx,
         player_y - cy,

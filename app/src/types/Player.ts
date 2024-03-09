@@ -12,11 +12,11 @@ const randomColor = () => `hsl(${Math.round(360 * Math.random())}, 74%, 58%)`
 
 const randomMask = () => Math.round(Math.random() * 3) + 1
 
-const PLAYER_WIDTH = 12
-const PLAYER_HEIGHT = 16
-const SPEED_WALK = 1.3
-const SPEED_JUMP = 2.5 // 7.7
-const MAX_POWER_UP = 3
+const PLAYER_WIDTH = 36
+const PLAYER_HEIGHT = 48
+const SPEED_WALK = 4
+const SPEED_JUMP = 7.7
+const MAX_POWER_UP = 5
 
 export class Player {
   id: string // ID

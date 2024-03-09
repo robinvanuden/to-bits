@@ -1,5 +1,5 @@
 const FONT_TEXT = "Goodbye Despair"
-const FONT_SIZE = 6
+const FONT_SIZE = 16
 
 export default class Canvas {
 
