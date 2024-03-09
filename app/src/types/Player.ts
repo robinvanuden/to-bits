@@ -12,7 +12,7 @@ const randomColor = () => `hsl(${Math.round(360 * Math.random())}, 74%, 58%)`
 
 const randomMask = () => Math.round(Math.random() * 3) + 1
 
-const PLAYER_WIDTH = 36
+const PLAYER_WIDTH = 39
 const PLAYER_HEIGHT = 48
 const SPEED_WALK = 4
 const SPEED_JUMP = 7.7

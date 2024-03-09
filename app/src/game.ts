@@ -102,7 +102,7 @@ export default class Game {
       player.y += player.vy
 
 
-      const solid = solids.find(t => t.isColliding(player) && !t.isAboutWalking(player))
+      const solid = solids.find(t => t.isColliding(player) && t.isAboutWalking(player))
       const walkable = blocksWalkable.find(t => t.isAboutWalking(player))
       if (solid && player.vy > 0) {
         player.y = solid.y - player.height

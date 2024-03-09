@@ -37,8 +37,6 @@ The Map update.
     - [ ] Connected textures
     - [ ] Bridges
 - [ ] Repository for the map data with better control of the tiles.
-- [ ] Change gameplay to be 3D.
-  - [ ] Remove gravity logic (players can now walk up and down)
 
 ### Changed
 
