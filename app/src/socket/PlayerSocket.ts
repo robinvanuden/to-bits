@@ -33,7 +33,7 @@ export default class PlayerSocket {
         return
       }
 
-      client.emit("map", this.game.world().allTiles().map(Tile.toModel))
+      client.emit("map", this.game.world().floor().tiles().map(Tile.toModel))
 
       client.on("move.left", (bool: boolean) => this.onMovement(uuid, "move.left", bool))
       client.on("move.right", (bool: boolean) => this.onMovement(uuid, "move.right", bool))

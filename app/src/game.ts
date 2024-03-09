@@ -1,7 +1,7 @@
 import PlayerRepository from "./repository/PlayerRepository"
 import PowerUp, {PowerType} from "./types/PowerUp"
 import {v4, v5} from "uuid"
-import WorldLoader from "./world/WorldLoader"
+import WorldLoader, {useWorld1} from "./world/WorldLoader"
 import {Tile} from "./types/Tile"
 
 export default class Game {
@@ -20,7 +20,7 @@ export default class Game {
   constructor(VERSION: string) {
     this.VERSION = VERSION
     this.generate_seed()
-    this.world1 = new WorldLoader('world1')
+    this.world1 = useWorld1()
   }
 
   uuid_seed = () => this.UUID_SEED
@@ -108,7 +108,8 @@ export default class Game {
         player.y = solid.y - player.height
         player.vy = 0
         player.falling = false
-      } else if (walkable && player.vy > 0) {
+      } else if (walkable && player.vy > 0 && (player.y + player.height) < (walkable.y + walkable.height * .25)) {
+        // If y-velocity is higher than 0 (falling) and player collides with top of walkable block
         player.y = walkable.y - player.height
         player.vy = 0
         player.falling = false

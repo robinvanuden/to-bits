@@ -2,7 +2,7 @@ import World, {WorldLayer} from "../types/World"
 import * as path from "path"
 import * as fs from "fs"
 import TileSet, {TileSetItem} from "../types/TileSet"
-import {Tile} from "../types/Tile"
+import {Tile, TILE_SIZE} from "../types/Tile"
 import {Player} from "../types/Player"
 
 export default class WorldLoader {
@@ -19,7 +19,8 @@ export default class WorldLoader {
   public floor = (): LayerLoader => this._floor
 
   constructor(name: string) {
-    this.world = this.load(name)
+    this.world = this.loadJsonMap(name + ".json")
+    console.log("world", name, this.world.height, this.world.tileheight)
     for (const set of this.world.tilesets) {
       this.sets.push(new TileSetLoader(set.source, set.firstgid))
     }
@@ -40,25 +41,13 @@ export default class WorldLoader {
     }
   }
 
-  allTiles = () => this.floor().tiles()
-
-  load(name: string): World {
-    switch (name) {
-      case "world1":
-      default:
-        return this.loadJsonMap("world1.json")
-    }
-  }
-
   loadJsonMap = (name: string): World => JSON.parse(fs.readFileSync(path.resolve(__dirname, "../map/", name)).toString("utf-8"))
 
   randomSpawn = (): Tile | undefined => {
     const spawns = this.spawns().tiles().filter(t => t !== undefined)
     const picked = Math.ceil(Math.random() * spawns.length) - 1
-    console.log("spawns", picked)
     return spawns[picked] || spawns[0] || undefined
   }
-
 
   clearPowerUps = () => {
     for (const tile of this.powers().tiles()) {
@@ -67,10 +56,7 @@ export default class WorldLoader {
     console.log("Cleared power-ups")
   }
 
-  isPlayerInVoid = (player: Player): boolean => {
-    // console.log("inVoid", player.y,  this.world.height)
-    return (player.y + player.height) > (this.world.height * 16)
-  }
+  isPlayerInVoid = (player: Player): boolean => (player.y + player.height) > (this.world.height * TILE_SIZE)
 
 }
 
@@ -149,3 +135,7 @@ class LayerLoader {
     console.log("Loaded layer:", layer.name, this._tiles.length)
   }
 }
+
+let world1: WorldLoader | undefined = undefined
+
+export const useWorld1 = () => world1 ? world1 : (world1 = new WorldLoader('world1'))

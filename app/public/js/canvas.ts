@@ -14,9 +14,8 @@ export default class Canvas {
     this.ctx = canvas.getContext("2d") as CanvasRenderingContext2D
     this.ratio = window.devicePixelRatio || 1
 
-    this.updateWindowSize()
-
     window.addEventListener("resize", this.updateWindowSize)
+    this.updateWindowSize()
   }
 
   updateWindowSize = () => this.setDimensions(window.innerWidth - 100, window.innerHeight - 100)
@@ -32,8 +31,8 @@ export default class Canvas {
   height = () => this.__height
 
   setDimensions = (width: number, height: number) => {
-    this.__width = this.__canvas.width = width * this.ratio
-    this.__height = this.__canvas.height = height * this.ratio
+    this.__width = this.__canvas.width = this.size(width)
+    this.__height = this.__canvas.height = this.size(height)
   }
 
   clear = () => {
