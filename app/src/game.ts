@@ -8,7 +8,6 @@ export default class Game {
 
   private readonly VERSION: string = "?.?.?"
 
-  private DELTA: number = 0
   private TICKS: number = 60
   private UUID_SEED: string = ""
   private readonly world1: WorldLoader
@@ -55,7 +54,6 @@ export default class Game {
     if (!player) {
       // New player
       const SPAWN_TILE = this.world().randomSpawn()
-      console.log(SPAWN_TILE)
       if (!SPAWN_TILE) {
         return false
       }
@@ -67,9 +65,10 @@ export default class Game {
   }
 
   private checkPlayerPosition = (delta: number) => {
-    const solids = this.world().walls().tiles()
+    const solids = this.world().floor().solids()
     this.spawnPowerUp()
-    const tiles_with_power_ups = this.world().floor().tiles()
+    const tiles_with_power_ups = this.world().powers().tiles()
+    const blocksWalkable = this.world().floor().semis()
     for (const player of this.players().alive()) {
       for (const boomerang of player.boomerangs) {
         boomerang.x += boomerang.vx
@@ -85,6 +84,7 @@ export default class Game {
           player.breakFireball(fireball)
         }
       }
+      player.vy += player.gravity * delta
 
       if (player.move.l) {
         player.x -= player.sw
@@ -94,13 +94,24 @@ export default class Game {
         player.x += player.sw
         if (solids.find(t => t.isColliding(player))) player.x -= player.sw
       }
-      if (player.move.u) {
-        player.y -= player.sw
-        if (solids.find(t => t.isColliding(player))) player.y += player.sw
+      if (player.move.u && player.canJump() && !solids.find(t => t.isColliding(player))) {
+        player.vy -= player.sj
+        player.falling = true
       }
-      if (player.move.d) {
-        player.y += player.sw
-        if (solids.find(t => t.isColliding(player))) player.y -= player.sw
+      player.x += player.vx
+      player.y += player.vy
+
+
+      const solid = solids.find(t => t.isColliding(player) && !t.isAboutWalking(player))
+      const walkable = blocksWalkable.find(t => t.isAboutWalking(player))
+      if (solid && player.vy > 0) {
+        player.y = solid.y - player.height
+        player.vy = 0
+        player.falling = false
+      } else if (walkable && player.vy > 0) {
+        player.y = walkable.y - player.height
+        player.vy = 0
+        player.falling = false
       }
 
       for (const other of this.players().others(player)) {
@@ -126,6 +137,9 @@ export default class Game {
             power_tile.power_up = undefined
           }
         }
+      }
+      if (player.died === undefined && this.world().isPlayerInVoid(player)) {
+        player.kill()
       }
     }
   }
@@ -159,7 +173,6 @@ export default class Game {
   }
 
   private tick = (delta: number) => {
-    this.DELTA = delta
     this.checkPlayerPosition(delta)
     this.checkRespawnPlayers()
     this.checkDisconnectedPlayers()

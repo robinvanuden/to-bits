@@ -1,5 +1,6 @@
 import PowerUp, {PowerUpModel} from "./PowerUp"
 import {Player} from "./Player"
+import {TileSetProperty} from "./TileSet"
 
 export class Tile {
   id: number
@@ -12,8 +13,9 @@ export class Tile {
   width: number
   layer: string
   power_up: PowerUp | undefined
+  properties: TileSetProperty[] | undefined
 
-  constructor(id: number, x: number, y: number, type: string, version: string, tiledversion: string, height: number, width: number, layer: string) {
+  constructor(id: number, x: number, y: number, type: string, version: string, tiledversion: string, height: number, width: number, layer: string, properties: TileSetProperty[] | undefined) {
     this.id = id
     this.x = x
     this.y = y
@@ -24,6 +26,7 @@ export class Tile {
     this.width = width
     this.layer = layer
     this.power_up = undefined
+    this.properties = properties
   }
 
   public isColliding = (p: Player): boolean =>
@@ -50,11 +53,11 @@ export class Tile {
     w: tile.width,
     h: tile.height,
     t: tile.id,
-    i: tile.layer !== "walls" ? "dirt" : "grass",
+    i: "dirt",
     d: 0,
     sp: tile.layer === "spawn",
     wa: tile.layer === "floor",
-    so: tile.layer === "walls",
+    so: false,
     pu: PowerUp.toMaybeModel(tile.power_up)
   })
 }

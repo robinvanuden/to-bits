@@ -4,6 +4,7 @@ import Boomerang, {BoomerangModel} from "./boomerang"
 import {v4} from "uuid"
 import Fireball, {FireballModel} from "./fireball"
 import {Tile} from "./Tile"
+import {GRAVITY} from "../constants"
 
 const randomName = () => uniqueNamesGenerator({length: 1, dictionaries: [names]})
 
@@ -31,6 +32,9 @@ export class Player {
   height: number // height
   x: number // x-coord
   y: number // y-coord
+  vx: number // x velocity
+  vy: number // y velocity
+  gravity: number // gravity
   falling: boolean
   look: Direction // directions looking
   move: Direction // directions pressed
@@ -50,6 +54,9 @@ export class Player {
     this.height = PLAYER_HEIGHT
     this.x = spawn.x
     this.y = spawn.y
+    this.vx = 0
+    this.vy = 0
+    this.gravity = GRAVITY
     this.falling = false
     this.sw = SPEED_WALK
     this.sj = SPEED_JUMP
@@ -69,8 +76,11 @@ export class Player {
     this.fireballs = []
     this.power_ups = []
   }
+
+  canJump = (): boolean => !this.falling && this.vy >= 0 && this.vy < 1
+
   // +1 checks 1 row of pixels below player
-  hasPowerUp = (power_up: PowerType): boolean => this.power_ups.filter(p => p.type === power_up).length > 0
+  hasPowerUp = (type: PowerType): boolean => this.power_ups.filter(p => p.type === type).length > 0
 
   addPowerUp = (power_up: PowerUp): boolean => {
     if (this.power_ups.length >= MAX_POWER_UP) {
@@ -90,6 +100,7 @@ export class Player {
     this.died = undefined
     this.x = spawn.x
     this.y = spawn.y
+    this.gravity = GRAVITY
     this.look = {u: false, d: false, l: false, r: true}
     this.fireballs = []
     this.boomerangs = []
@@ -97,6 +108,9 @@ export class Player {
 
   kill = () => {
     this.died = Date.now()
+    this.vx = 0
+    this.vy = 0
+    this.gravity = 0
     this.move = {u: false, d: false, l: false, r: false}
     this.power_ups = []
   }
@@ -136,6 +150,8 @@ export class Player {
     h: p.height,
     x: p.x,
     y: p.y,
+    vx: p.vx,
+    vy: p.vy,
     d: p.died,
     dc: p.disconnected,
     n: p.name,
@@ -164,6 +180,8 @@ export interface PlayerM {
   h: number // height
   x: number // x-coord
   y: number // y-coord
+  vx: number // x velocity
+  vy: number // y velocity
   d: number | undefined // died
   dc: number | undefined // disconnected
   l: Direction
