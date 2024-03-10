@@ -48,6 +48,11 @@ The Map update.
     - [ ] Events for projectiles
     - [ ] Events for player movement
 
+### Fixed
+
+- [ ] Fixed losing the cookie ID after refreshing resulting in permanent Conflict of duplicate
+  characters.
+
 ## 0.3
 
 Character personalization/randomness update.

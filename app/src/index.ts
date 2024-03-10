@@ -2,7 +2,8 @@ import {createServer} from "http"
 import express from "express"
 import cookieParser from "cookie-parser"
 import PlayerSocket from "./socket/PlayerSocket"
-import image_router from "./controller/ImageController"
+import imageController from "./controller/ImageController"
+import textureController from "./controller/TextureController"
 import pack from "../package.json"
 import Game from "./game"
 import PlayerRepository from "./repository/PlayerRepository"
@@ -59,7 +60,8 @@ app.get("/", (req, res) => {
   res.sendFile(path.resolve(__dirname, "../dist/main.html"))
 })
 
-app.use(image_router(players))
+app.use(imageController(players))
+app.use(textureController())
 console.log("Starting ToBits: v" + VERSION)
 
 new PlayerSocket(game, server, VERSION_CODE)

@@ -77,8 +77,8 @@ import Canvas from "./canvas"
     data.setPlayers(players)
     for (const player of players) {
       for (let i = 0; i < 2; i++) {
-        images.addImage("image/" + player.uid + "r" + i)
-        images.addImage("image/" + player.uid + "l" + i)
+        images.addImage("image/" + player.uid + "r" + i + ".png")
+        images.addImage("image/" + player.uid + "l" + i + ".png")
       }
     }
   })

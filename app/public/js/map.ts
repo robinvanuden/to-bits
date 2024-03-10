@@ -36,22 +36,10 @@ export default class Map {
     }
     for (const tile of this.data.map()) {
       this.ctx.fillStyle = tile.c || "#000"
-      let bx = 0, by = 0
-      switch (tile.i) {
-        case "wood":
-          bx = 48
-          break
-        case "grass":
-          bx = 32
-          break
-        case "dirt":
-          bx = 16
-          break
-      }
       this.ctx.drawImage(
-        this.images.addImage("img/tiles"),
-        bx,
-        by,
+        this.images.addImage(tile.i),
+        0,
+        0,
         16,
         16,
         this.canvas.size(tile.x) - cx,
@@ -94,14 +82,6 @@ export default class Map {
       const player_h = this.canvas.size(player.h)
       const player_x = this.canvas.size(player.x)
       const player_y = this.canvas.size(player.y)
-      this.ctx.fillStyle = player.c
-
-      this.ctx.fillRect(
-        this.canvas.size(player.x) - cx,
-        this.canvas.size(player.y) - cy,
-        this.canvas.size(player.w),
-        this.canvas.size(player.h)
-      )
 
       const name_x = player_x - cx + player_w * .5
       const name_y = player_y - cy - this.canvas.size(6)
@@ -125,9 +105,9 @@ export default class Map {
       }
       let image_name = ""
       if (player.a >= 10) {
-        image_name = "image/" + player.uid + (player.l.r ? "r" : "l") + 1
+        image_name = "image/" + player.uid + (player.l.r ? "r" : "l") + 1 + ".png"
       } else {
-        image_name = "image/" + player.uid + (player.l.r ? "r" : "l") + 0
+        image_name = "image/" + player.uid + (player.l.r ? "r" : "l") + 0 + ".png"
       }
       const image = this.images.addImage(image_name)
       this.ctx.drawImage(

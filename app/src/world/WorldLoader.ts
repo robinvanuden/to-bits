@@ -74,14 +74,20 @@ class TileSetLoader {
     this._name = path.basename(name)
 
     let id = 0
-    for (let c = 0; c < Math.round(this._set.imagewidth / this._set.tilewidth); c++) {
-      for (let r = 0; r < Math.round(this._set.imageheight / this._set.tileheight); r++) {
+    for (let r = 0; r < Math.round(this._set.imageheight / this._set.tileheight); r++) {
+      for (let c = 0; c < Math.round(this._set.imagewidth / this._set.tilewidth); c++) {
         this._last_id = id
         this._tiles.push({
           id: id,
           tile_id: index + id,
           width: this._set.tilewidth,
           height: this._set.tileheight,
+          name: this._set.name,
+          source: this._set.image,
+          offset_x: c * this._set.tilewidth,
+          offset_y: r * this._set.tileheight,
+          tilewidth: this._set.tilewidth,
+          tileheight: this._set.tileheight,
           type: this._set.type,
           version: this._set.version,
           tiledversion: this._set.tiledversion,

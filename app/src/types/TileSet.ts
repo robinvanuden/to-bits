@@ -27,6 +27,12 @@ export interface TileSetItem {
   id: number
   tile_id: number
   type: string
+  name: string
+  source: string
+  offset_x: number
+  offset_y: number
+  tileheight: number
+  tilewidth: number
   version: string
   tiledversion: string
   height: number

@@ -10,6 +10,12 @@ export default class Tile {
   id: number
   x: number
   y: number
+  name: string
+  source: string
+  offset_x: number
+  offset_y: number
+  tileheight: number
+  tilewidth: number
   type: string
   version: string
   tiledversion: string
@@ -23,6 +29,12 @@ export default class Tile {
     this.id = id
     this.x = x * TILE_SIZE
     this.y = y * TILE_SIZE
+    this.name = item.name
+    this.source = item.source
+    this.offset_x = item.offset_x
+    this.offset_y = item.offset_y
+    this.tilewidth = item.tilewidth
+    this.tileheight = item.tileheight
     this.type = item.type
     this.version = item.version
     this.tiledversion = item.tiledversion
@@ -53,13 +65,19 @@ export default class Tile {
     if (!this.hasPowerUp()) this.power_up = new PowerUp(this)
   }
 
+  private generateAssetUrl = () => {
+    const body = {layer: this.layer, tile_id: this.id}
+    const hash = Buffer.from(JSON.stringify(body), "utf-8").toString("base64url")
+    return "/texture/" + hash + ".webp"
+  }
+
   static toModel = (tile: Tile): TileModel => ({
     x: tile.x,
     y: tile.y,
     w: tile.width,
     h: tile.height,
     t: tile.id,
-    i: tile.isSemiSolid() ? "wood" : "dirt",
+    i: tile.generateAssetUrl(),
     d: 0,
     sp: tile.layer === "spawn",
     wa: tile.isSemiSolid(),
