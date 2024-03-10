@@ -13,32 +13,48 @@ const randomColor = () => `hsl(${Math.round(360 * Math.random())}, 74%, 58%)`
 
 const randomMask = () => Math.round(Math.random() * 3) + 1
 
-const PLAYER_WIDTH = 39
-const PLAYER_HEIGHT = 48
-const SPEED_WALK = 4
+const PLAYER_WIDTH = 52
+const PLAYER_HEIGHT = 64
+const SPEED_WALK = 6
 const SPEED_JUMP = 7.7
 const MAX_POWER_UP = 5
 
 export default class Player {
-  id: string // ID
+  // ID
+  id: string
   socket_id: string
-  disconnected: number | undefined // is disconnected
+  // is disconnected
+  disconnected: number | undefined
   died: number | undefined
-  color: string // color
-  mask: number // mask
-  name: string // name
-  sw: number // speed walking
-  sj: number // speed falling
-  width: number // width
-  height: number // height
-  x: number // x-coord
-  y: number // y-coord
-  vx: number // x velocity
-  vy: number // y velocity
-  gravity: number // gravity
-  falling: boolean
-  look: Direction // directions looking
-  move: Direction // directions pressed
+  // color
+  color: string
+  // mask
+  mask: number
+  // name
+  name: string
+  // speed walking
+  sw: number
+  // speed falling
+  sj: number
+  // width
+  width: number
+  // height
+  height: number
+  // x-coord
+  x: number
+  // y-coord
+  y: number
+  // x velocity
+  vx: number
+  // y velocity
+  vy: number
+  // gravity
+  gravity: number
+  grounded: boolean
+  // directions looking
+  look: Direction
+  // directions pressed
+  move: Direction
   power_ups: PowerUp[] = []
   boomerangs: Boomerang[] = []
   fireballs: Fireball[] = []
@@ -58,7 +74,7 @@ export default class Player {
     this.vx = 0
     this.vy = 0
     this.gravity = GRAVITY
-    this.falling = false
+    this.grounded = false
     this.sw = SPEED_WALK
     this.sj = SPEED_JUMP
     this.look = {
@@ -78,7 +94,7 @@ export default class Player {
     this.power_ups = []
   }
 
-  canJump = (): boolean => !this.falling && this.vy >= 0 && this.vy < 1
+  canJump = (): boolean => this.grounded && this.vy >= 0 && this.vy < 1
 
   // +1 checks 1 row of pixels below player
   hasPowerUp = (type: PowerType): boolean => this.power_ups.filter(p => p.type === type).length > 0

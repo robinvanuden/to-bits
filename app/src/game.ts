@@ -96,23 +96,29 @@ export default class Game {
       }
       if (player.move.u && player.canJump() && !solids.find(t => t.isColliding(player))) {
         player.vy -= player.sj
-        player.falling = true
+        player.grounded = false
       }
       player.x += player.vx
       player.y += player.vy
 
 
-      const solid = solids.find(t => t.isColliding(player) && t.isAboutWalking(player))
+      const solid_walkable = solids.find(t => t.isColliding(player) && t.isAboutWalking(player))
+      const solid = solids.find(t => t.isColliding(player))
       const walkable = blocksWalkable.find(t => t.isAboutWalking(player))
-      if (solid && player.vy > 0) {
-        player.y = solid.y - player.height
+      if (solid_walkable && player.vy > 0) {
+        player.y = solid_walkable.y - player.height
         player.vy = 0
-        player.falling = false
-      } else if (walkable && player.vy > 0 && (player.y + player.height) < (walkable.y + walkable.height * .25)) {
+        player.grounded = true
+      } else if (solid && player.vy <= 0) {
+        player.y = solid.y + solid.height
+        player.vy = 0
+        player.grounded = false
+      }
+      if (walkable && player.vy > 0 && (player.y + player.height) < (walkable.y + walkable.height * .25)) {
         // If y-velocity is higher than 0 (falling) and player collides with top of walkable block
         player.y = walkable.y - player.height
         player.vy = 0
-        player.falling = false
+        player.grounded = true
       }
 
       for (const other of this.players().others(player)) {

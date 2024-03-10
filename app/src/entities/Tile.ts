@@ -4,7 +4,7 @@ import Player from "./Player"
 import {WorldLayer} from "../types/World"
 import {TileModel} from "../types/TileModel"
 
-export const TILE_SIZE = 48
+export const TILE_SIZE = 64
 
 export default class Tile {
   id: number

@@ -31,12 +31,12 @@ The Map update.
 
 ### Added
 
-- [ ] Using TILED JSON files for the map data.
-- [ ] More map textures.
-    - [ ] Stone textures
-    - [ ] Connected textures
-    - [ ] Bridges
-- [ ] Repository for the map data with better control of the tiles.
+- [x] Using TILED JSON files for the map data.
+- [x] More map textures.
+  - [x] Stone textures
+  - [x] Connected textures
+  - [x] Bridges
+- [x] Repository for the map data with better control of the tiles.
 
 ### Changed
 

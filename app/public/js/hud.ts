@@ -88,6 +88,8 @@ export default class Hud {
       debug_texts.push("name: " + you.n)
       debug_texts.push("x: " + you.x)
       debug_texts.push("y: " + you.y)
+      debug_texts.push("vx: " + you.vx)
+      debug_texts.push("vy: " + you.vy)
       debug_texts.push("alive: " + you.d !== undefined ? "true" : "false")
 
       // Moved directions
