@@ -1,6 +1,7 @@
 import {v4} from "uuid"
-import {Player} from "./Player"
-import {Tile} from "./Tile"
+import Player from "./Player"
+import Tile from "./Tile"
+import {PowerUpModel} from "../types/PowerUpModel"
 
 export enum PowerType {BOOMERANG, BOMB, FIREBALL}
 
@@ -73,11 +74,3 @@ export default class PowerUp {
   }
 }
 
-export interface PowerUpModel {
-  id: string
-  w: number
-  h: number
-  x: number
-  y: number
-  t: string
-}

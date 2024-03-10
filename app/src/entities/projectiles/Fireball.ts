@@ -1,5 +1,5 @@
-import {Player} from "./Player"
-import {Tile} from "./Tile"
+import Player from "../Player"
+import Tile from "../Tile"
 
 const FIREBALL_SIZE = 12
 const FIREBALL_THROW = 7

@@ -2,8 +2,8 @@ import World, {WorldLayer} from "../types/World"
 import * as path from "path"
 import * as fs from "fs"
 import TileSet, {TileSetItem} from "../types/TileSet"
-import {Tile, TILE_SIZE} from "../types/Tile"
-import {Player} from "../types/Player"
+import Tile, {TILE_SIZE} from "../entities/Tile"
+import Player from "../entities/Player"
 
 export default class WorldLoader {
 

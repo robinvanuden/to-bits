@@ -1,5 +1,6 @@
-import {Player} from "./Player"
-import {Tile} from "./Tile"
+import Player from "../Player"
+import Tile from "../Tile"
+import {BoomerangModel} from "../../types/BoomerangModel"
 
 const BOOMERANG_SIZE = 12
 const BOOMERANG_THROW = 6
@@ -59,16 +60,4 @@ export default class Boomerang {
     vx: boomerang.vx,
     vy: boomerang.vy,
   })
-}
-
-export interface BoomerangModel {
-  id: string
-  p: string
-  c: string
-  x: number
-  y: number
-  vx: number
-  vy: number
-  w: number
-  h: number
 }

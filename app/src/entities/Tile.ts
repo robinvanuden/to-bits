@@ -1,11 +1,12 @@
-import PowerUp, {PowerUpModel} from "./PowerUp"
-import {Player} from "./Player"
-import {PROP_SEMI_SOLID, TileSetItem, TileSetProperty} from "./TileSet"
-import {WorldLayer} from "./World"
+import PowerUp from "./PowerUp"
+import {PROP_SEMI_SOLID, TileSetItem, TileSetProperty} from "../types/TileSet"
+import Player from "./Player"
+import {WorldLayer} from "../types/World"
+import {TileModel} from "../types/TileModel"
 
 export const TILE_SIZE = 48
 
-export class Tile {
+export default class Tile {
   id: number
   x: number
   y: number
@@ -65,25 +66,4 @@ export class Tile {
     so: !tile.isSemiSolid(),
     pu: PowerUp.toMaybeModel(tile.power_up)
   })
-}
-
-export interface TileModel {
-  x: number
-  y: number
-  // width
-  w: number
-  // height
-  h: number
-  // type
-  t: number
-  i: string | undefined
-  // damage
-  d: number
-  // spawn
-  sp: boolean
-  // walkable
-  wa: boolean
-  // solid
-  so: boolean
-  pu: PowerUpModel | undefined
 }

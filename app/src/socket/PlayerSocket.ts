@@ -1,11 +1,11 @@
 import {Server, Socket} from "socket.io"
-import {Player} from "../types/Player"
-import PowerUp from "../types/PowerUp"
+import Player from "../entities/Player"
+import PowerUp from "../entities/PowerUp"
 import Game from "../game"
 
 import cookie from "cookie"
 import {COOKIE_PLAYER_ID} from "../constants"
-import {Tile} from "../types/Tile"
+import Tile from "../entities/Tile"
 
 export default class PlayerSocket {
 

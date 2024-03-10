@@ -1,5 +1,5 @@
-import {Player} from "../types/Player"
-import {Tile} from "../types/Tile"
+import Player from "../entities/Player"
+import Tile from "../entities/Tile"
 
 export default class PlayerRepository {
 

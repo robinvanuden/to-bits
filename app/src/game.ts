@@ -1,8 +1,8 @@
 import PlayerRepository from "./repository/PlayerRepository"
-import PowerUp, {PowerType} from "./types/PowerUp"
+import PowerUp, {PowerType} from "./entities/PowerUp"
 import {v4, v5} from "uuid"
 import WorldLoader, {useWorld1} from "./world/WorldLoader"
-import {Tile} from "./types/Tile"
+import Tile from "./entities/Tile"
 
 export default class Game {
 

@@ -1,10 +1,11 @@
 import {names, uniqueNamesGenerator} from "unique-names-generator"
-import PowerUp, {PowerType, PowerUpModel} from "./PowerUp"
-import Boomerang, {BoomerangModel} from "./boomerang"
+import PowerUp, {PowerType} from "./PowerUp"
+import Boomerang from "./projectiles/Boomerang"
 import {v4} from "uuid"
-import Fireball, {FireballModel} from "./fireball"
-import {Tile} from "./Tile"
+import Fireball from "./projectiles/Fireball"
+import Tile from "./Tile"
 import {GRAVITY} from "../constants"
+import {Direction, PlayerModel} from "../types/PlayerModel"
 
 const randomName = () => uniqueNamesGenerator({length: 1, dictionaries: [names]})
 
@@ -18,7 +19,7 @@ const SPEED_WALK = 4
 const SPEED_JUMP = 7.7
 const MAX_POWER_UP = 5
 
-export class Player {
+export default class Player {
   id: string // ID
   socket_id: string
   disconnected: number | undefined // is disconnected
@@ -143,7 +144,7 @@ export class Player {
     this.fireballs = this.fireballs.filter(b => b.id !== fireball.id)
   }
 
-  static toModel = (p: Player): PlayerM => ({
+  static toModel = (p: Player): PlayerModel => ({
     i: p.socket_id,
     uid: p.id,
     w: p.width,
@@ -162,31 +163,4 @@ export class Player {
     br: p.boomerangs.map(Boomerang.toModel),
     fb: p.fireballs.map(Fireball.toModel)
   })
-}
-
-export interface Direction {
-  u: boolean // up
-  d: boolean // down
-  l: boolean // left
-  r: boolean // right
-}
-
-export interface PlayerM {
-  i: string,
-  uid: string
-  n: string // name
-  c: string // color
-  w: number // width
-  h: number // height
-  x: number // x-coord
-  y: number // y-coord
-  vx: number // x velocity
-  vy: number // y velocity
-  d: number | undefined // died
-  dc: number | undefined // disconnected
-  l: Direction
-  m: Direction
-  pu: PowerUpModel[]
-  br: BoomerangModel[]
-  fb: FireballModel[]
 }
