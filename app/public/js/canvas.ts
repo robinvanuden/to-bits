@@ -31,8 +31,8 @@ export default class Canvas {
   height = () => this.__height
 
   setDimensions = (width: number, height: number) => {
-    this.__width = this.__canvas.width = width
-    this.__height = this.__canvas.height = height
+    this.__width = this.__canvas.width = this.size(width)
+    this.__height = this.__canvas.height = this.size(height)
 
     this.ctx.textRendering = "geometricPrecision"
     this.ctx.fontKerning = "normal"

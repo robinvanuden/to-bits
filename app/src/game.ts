@@ -152,7 +152,7 @@ export default class Game {
   }
 
   private spawnPowerUp = () => {
-    if (Math.round(Math.random() * 800) !== 1) {
+    if (Math.round(Math.random() * 80) !== 1) {
       return
     }
     const airs = this.world().floor().tiles()

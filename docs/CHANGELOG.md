@@ -37,6 +37,7 @@ The Map update.
   - [x] Connected textures
   - [x] Bridges
 - [x] Repository for the map data with better control of the tiles.
+- [ ] Added layers to render the map
 
 ### Changed
 
@@ -50,8 +51,9 @@ The Map update.
 
 ### Fixed
 
-- [ ] Fixed losing the cookie ID after refreshing resulting in permanent Conflict of duplicate
-  characters.
+- [ ] Fixed losing the cookie ID after refreshing
+  - This results in permanent Conflict error or duplicate characters.
+- [ ] Fixed letting the character moonwalk when pushing 2 directions at once.
 
 ## 0.3
 

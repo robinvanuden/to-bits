@@ -6,7 +6,7 @@ export default class Data {
 
   private ID: string = ""
   private VERSION: string = ""
-  private MAP: TileModel[] = []
+  private MAP: TileModel[][] = []
   private POWER_UPS: PowerUpModel[] = []
   private PLAYERS: PlayerModel[] = []
 
@@ -18,7 +18,7 @@ export default class Data {
 
   version = () => this.VERSION
 
-  setMap = (map: TileModel[]) => this.MAP = map
+  setMap = (map: TileModel[][]) => this.MAP = map
 
   map = () => this.MAP
 

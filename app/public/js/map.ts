@@ -18,9 +18,9 @@ export default class Map {
 
   you = () => this.data.players().find(p => p.i === this.data.id()) || undefined
 
-  tileWidth = () => this.data.map()[0]?.w || 0
-  mapWidth = () => (this.data.map().map(tile => tile.x).sort((a, b) => b - a)[0] || 0) + this.tileWidth()
-  mapHeight = () => (this.data.map().map(tile => tile.y).sort((a, b) => b - a)[0] || 0) + this.tileWidth()
+  tileWidth = () => this.data.map()[0][0]?.w || 0
+  mapWidth = () => (this.data.map()[0].map(tile => tile.x).sort((a, b) => b - a)[0] || 0) + this.tileWidth()
+  mapHeight = () => (this.data.map()[0].map(tile => tile.y).sort((a, b) => b - a)[0] || 0) + this.tileWidth()
 
   tick = () => {
     let cx: number
@@ -34,19 +34,21 @@ export default class Map {
       cx = Math.round((this.canvas.size(this.mapWidth() * .5)) - this.canvas.width() * .5)
       cy = Math.round((this.canvas.size(this.mapHeight() * .5)) - this.canvas.height() * .5)
     }
-    for (const tile of this.data.map()) {
-      this.ctx.fillStyle = tile.c || "#000"
-      this.ctx.drawImage(
-        this.images.addImage(tile.i),
-        0,
-        0,
-        16,
-        16,
-        this.canvas.size(tile.x) - cx,
-        this.canvas.size(tile.y) - cy,
-        this.canvas.size(tile.w),
-        this.canvas.size(tile.h)
-      )
+    for (const layer of this.data.map()) {
+      for (const tile of layer) {
+        this.ctx.fillStyle = tile.c || "#000"
+        if (tile.i) this.ctx.drawImage(
+          this.images.addImage(tile.i),
+          0,
+          0,
+          16,
+          16,
+          this.canvas.size(tile.x) - cx,
+          this.canvas.size(tile.y) - cy,
+          this.canvas.size(tile.w),
+          this.canvas.size(tile.h)
+        )
+      }
     }
 
     for (const power of this.data.power_ups()) {
@@ -96,7 +98,7 @@ export default class Map {
 
       let sx = player.l.r ? 1 : 2
       if ((!player.m.u && !player.m.d) && (player.m.r || player.m.l)) {
-        player.a = player.a + 1
+        player.a += 1
       } else {
         player.a = 0
       }
@@ -104,7 +106,7 @@ export default class Map {
         player.a = 0
       }
       let image_name = ""
-      if (player.a >= 10) {
+      if (player.vy !== 0 || player.a >= 10) {
         image_name = "image/" + player.uid + (player.l.r ? "r" : "l") + 1 + ".png"
       } else {
         image_name = "image/" + player.uid + (player.l.r ? "r" : "l") + 0 + ".png"

@@ -1,0 +1,15 @@
+{
+  "columns": 1,
+  "image": "..\/..\/assets\/map\/undefined.jpg",
+  "imageheight": 16,
+  "imagewidth": 16,
+  "margin": 0,
+  "name": "undefined",
+  "spacing": 0,
+  "tilecount": 1,
+  "tiledversion": "1.10.2",
+  "tileheight": 16,
+  "tilewidth": 16,
+  "type": "tileset",
+  "version": "1.10"
+}

@@ -56,8 +56,12 @@ export default function () {
     if (layer.length <= 0 || tile_id.length <= 0) {
       return res.sendStatus(400)
     }
+    console.log(layer, tile_id)
 
-    const tile = world1.floor().tiles().find(t => t.id === tile_id)
+    let tile = world1.floor().tiles().find(t => t.id === tile_id)
+    if (!tile) {
+      tile = world1.powers().tiles().find(t => t.id === tile_id)
+    }
     if (!tile) {
       return res.sendStatus(404)
     }

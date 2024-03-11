@@ -24,7 +24,6 @@ export default class WorldLoader {
     for (const set of this.world.tilesets) {
       this.sets.push(new TileSetLoader(set.source, set.firstgid))
     }
-    console.log(this.world.layers.map(l => l.name))
     for (const layer of this.world.layers) {
       switch (layer.name) {
         case "floor":
@@ -57,6 +56,8 @@ export default class WorldLoader {
   }
 
   isPlayerInVoid = (player: Player): boolean => (player.y + player.height) > (this.world.height * TILE_SIZE)
+
+  layers = (): Tile[][] => [this.floor().tiles(), this.powers().tiles()]
 
 }
 
