@@ -1,12 +1,10 @@
 FROM node:20-alpine
 
-RUN npm install -g npm@latest
+WORKDIR /app/
 
 COPY app .
 
-WORKDIR /app/
-
-RUN npm i -g npm
+RUN npm i -g npm@latest
 
 RUN npm i
 
