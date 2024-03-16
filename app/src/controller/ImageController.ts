@@ -47,7 +47,6 @@ export default function (players: PlayerRepository) {
     }
     const direction = (hash.substring(hash.length - 2, hash.length - 1) || "r") === "r" ? "r" : "l"
     const walk = (hash.substring(hash.length - 1, hash.length) || "0") === "0" ? 0 : 1
-    console.log("image character", uuid, direction)
     const left = direction.toLowerCase() === "l"
     const char = await generateCharacter(player.color, player.mask, walk)
     const char_final = sharp(await char.toBuffer()).flop(left)
@@ -57,7 +56,6 @@ export default function (players: PlayerRepository) {
 
   image_router.get("/favicon.ico", async (req, res) => {
     const uuid = req.cookies[COOKIE_PLAYER_ID] || ""
-    console.log("favicon", uuid)
     const player = players.getById(uuid)
     const mask = player?.mask || 1
     const color = player?.color || "hsl(0, 55%, 55%)"

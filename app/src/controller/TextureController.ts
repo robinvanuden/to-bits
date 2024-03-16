@@ -56,8 +56,6 @@ export default function () {
     if (layer.length <= 0 || tile_id.length <= 0) {
       return res.sendStatus(400)
     }
-    console.log(layer, tile_id)
-
     let tile = world1.floor().tiles().find(t => t.id === tile_id)
     if (!tile) {
       tile = world1.powers().tiles().find(t => t.id === tile_id)
@@ -68,7 +66,6 @@ export default function () {
 
     const source_path = path.resolve(__dirname, "wow", tile.source)
     const image = generateTexture(source_path, tile.offset_x, tile.offset_y, tile.tilewidth, tile.tileheight)
-    console.log(source_path)
 
     res.contentType("image/webp")
     return res.end(await image.toBuffer(), "utf-8")

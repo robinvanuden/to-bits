@@ -21,7 +21,6 @@ export default class WorldLoader {
 
   constructor(name: string) {
     this.world = this.loadJsonMap(name + ".json")
-    console.log("world", name, this.world.height, this.world.tileheight)
     for (const set of this.world.tilesets) {
       this.sets.push(new TileSetLoader(set.source, set.firstgid))
     }
@@ -35,7 +34,6 @@ export default class WorldLoader {
           break
         case "spawns":
           this._spawns = new LayerLoader(layer, this.sets)
-          console.log("possible spawns", this._spawns.tiles().length)
           break
       }
     }
@@ -97,19 +95,9 @@ class TileSetLoader {
         id++
       }
     }
-    if (this._tiles.length > 0) console.log(
-      "Loaded tile set",
-      this.name(),
-      this._set.imagewidth + "x" + this._set.imageheight,
-      this._tiles.length,
-      "f=" + this.firstId(),
-      "l=" + this.lastId()
-    )
   }
 
   public firstId = () => this._first_id
-
-  public lastId = () => this._last_id
 
   public name = () => this._name
 
