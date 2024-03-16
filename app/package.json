@@ -6,9 +6,6 @@
     "email": "hello@robinvanuden.com",
     "url": "https://www.robinvanuden.com"
   },
-  "engines": {
-    "node": "20"
-  },
   "private": true,
   "scripts": {
     "clean": "rm -r dist & rm -r .parcel-cache || echo 'nope'",
@@ -17,7 +14,8 @@
     "dev": "npm run dev:client & npm run dev:server",
     "build:client": "npm run clean && parcel build public/main.html",
     "start:server": "ts-node src/index.ts",
-    "start": "parcel build public/main.html & ts-node src/index.ts"
+    "start:clean": "npm run clean && npm run start",
+    "start": "parcel build public/main.html && ts-node src/index.ts"
   },
   "dependencies": {
     "color": "^4.2",
