@@ -19,8 +19,8 @@ export default class Map {
   you = () => this.data.players().find(p => p.i === this.data.id()) || undefined
 
   tileWidth = () => this.data.map()[0][0]?.w || 0
-  mapWidth = () => (this.data.map()[0].map(tile => tile.x).sort((a, b) => b - a)[0] || 0) + this.tileWidth()
-  mapHeight = () => (this.data.map()[0].map(tile => tile.y).sort((a, b) => b - a)[0] || 0) + this.tileWidth()
+  mapWidth = () => (this.data.map().map(l => l.ls[0].x).sort((a, b) => b - a)[0] || 0) + this.tileWidth()
+  mapHeight = () => (this.data.map().map(l => l.ls[0].y).sort((a, b) => b - a)[0] || 0) + this.tileWidth()
 
   tick = () => {
     let cx: number
@@ -30,46 +30,60 @@ export default class Map {
     if (playerToFocus && playerToFocus.d == undefined) {
       cx = Math.round((this.canvas.size(playerToFocus.x) + this.canvas.size(playerToFocus.w) * .5) - this.canvas.width() * .5)
       cy = Math.round((this.canvas.size(playerToFocus.y) + this.canvas.size(playerToFocus.h) * .5) - this.canvas.height() * .5)
+      this.canvas.setBackgroundHue(playerToFocus.y, 4000)
     } else {
       cx = Math.round((this.canvas.size(this.mapWidth() * .5)) - this.canvas.width() * .5)
       cy = Math.round((this.canvas.size(this.mapHeight() * .5)) - this.canvas.height() * .5)
+      this.canvas.setBackgroundHue(8, 4000)
     }
     for (const layer of this.data.map()) {
-      for (const tile of layer) {
+      for (const tile of layer.ls) {
         this.ctx.fillStyle = tile.c || "#000"
-        if (tile.i) this.ctx.drawImage(
-          this.images.addImage(tile.i),
-          0,
-          0,
-          16,
-          16,
-          this.canvas.size(tile.x) - cx,
-          this.canvas.size(tile.y) - cy,
-          this.canvas.size(tile.w),
-          this.canvas.size(tile.h)
-        )
-      }
-    }
-
-    for (const power of this.data.power_ups()) {
-      if (power) {
-        switch (power.t) {
-          case "BOMB":
-            this.ctx.fillStyle = "#1d1d1e"
-            break
-          case "RANG":
-            this.ctx.fillStyle = "#6c492e"
-            break
-          case "FIRE":
-            this.ctx.fillStyle = "#e87619"
-            break
+        if (tile.i) {
+          if (!tile.pu && layer.n === "floor") {
+            this.ctx.drawImage(
+              this.images.addImage(tile.i),
+              0,
+              0,
+              16,
+              16,
+              this.canvas.size(tile.x) - cx,
+              this.canvas.size(tile.y) - cy,
+              this.canvas.size(tile.w),
+              this.canvas.size(tile.h)
+            )
+          } else if (tile.pu && layer.n === "powers") {
+            console.log()
+            this.ctx.drawImage(
+              this.images.addImage(tile.i),
+              0,
+              0,
+              16,
+              16,
+              this.canvas.size(tile.x) - cx,
+              this.canvas.size(tile.y) - cy,
+              this.canvas.size(tile.w),
+              this.canvas.size(tile.h)
+            )
+            switch (tile.pu.t) {
+              case "BOMB":
+                this.ctx.fillStyle = "#1d1d1e"
+                break
+              case "RANG":
+                this.ctx.fillStyle = "#6c492e"
+                break
+              case "FIRE":
+                this.ctx.fillStyle = "#e87619"
+                break
+            }
+            this.ctx.fillRect(
+              this.canvas.size(tile.pu.x) - cx,
+              this.canvas.size(tile.pu.y) - cy,
+              this.canvas.size(tile.pu.w),
+              this.canvas.size(tile.pu.h)
+            )
+          }
         }
-        this.ctx.fillRect(
-          this.canvas.size(power.x) - cx,
-          this.canvas.size(power.y) - cy,
-          this.canvas.size(power.w),
-          this.canvas.size(power.h)
-        )
       }
     }
 

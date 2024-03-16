@@ -1,13 +1,11 @@
-import TileModel from "./model/TileModel"
-import PowerUpModel from "./model/PowerUpModel"
+import {TileLayerModel} from "./model/TileModel"
 import PlayerModel from "./model/PlayerModel"
 
 export default class Data {
 
   private ID: string = ""
   private VERSION: string = ""
-  private MAP: TileModel[][] = []
-  private POWER_UPS: PowerUpModel[] = []
+  private MAP: TileLayerModel[] = []
   private PLAYERS: PlayerModel[] = []
 
   setID = (id: string) => this.ID = id
@@ -18,7 +16,7 @@ export default class Data {
 
   version = () => this.VERSION
 
-  setMap = (map: TileModel[][]) => this.MAP = map
+  setMap = (map: TileLayerModel[]) => this.MAP = map
 
   map = () => this.MAP
 
@@ -34,10 +32,4 @@ export default class Data {
   }
 
   players = () => this.PLAYERS
-
-  setPowerUps = (powers: PowerUpModel[]) => this.POWER_UPS = powers
-
-  power_ups = () => this.POWER_UPS
-
-
 }

@@ -1,11 +1,9 @@
 import {Server, Socket} from "socket.io"
 import Player from "../entities/Player"
-import PowerUp from "../entities/PowerUp"
 import Game from "../game"
 
 import cookie from "cookie"
 import {COOKIE_PLAYER_ID} from "../constants"
-import Tile from "../entities/Tile"
 
 export default class PlayerSocket {
 
@@ -32,8 +30,6 @@ export default class PlayerSocket {
         client.emit("nope", true)
         return
       }
-
-      client.emit("map", this.game.world().layers().map(a => a.map(Tile.toModel)))
 
       client.on("move.left", (bool: boolean) => this.onMovement(uuid, "move.left", bool))
       client.on("move.right", (bool: boolean) => this.onMovement(uuid, "move.right", bool))
@@ -113,7 +109,6 @@ export default class PlayerSocket {
     // Emit players
     this.io.emit("players", this.game?.players().list().map(Player.toModel) ?? [])
 
-    // Emit power ups
-    this.io.emit("power_ups", this.game?.world().powers().tiles().filter(t => t.power_up).flatMap(t => PowerUp.toMaybeModel(t.power_up)))
+    this.io.emit("map", this.game.world().layers())
   }
 }

@@ -60,10 +60,7 @@ export default class PowerUp {
   }
 
   static toMaybeModel = (power: PowerUp | undefined): PowerUpModel | undefined => {
-    if (!power) {
-      return undefined
-    }
-    return {
+    return !power ? undefined : {
       id: power.id,
       w: power.width,
       h: power.height,

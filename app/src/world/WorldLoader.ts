@@ -4,6 +4,7 @@ import * as fs from "fs"
 import TileSet, {TileSetItem} from "../types/TileSet"
 import Tile, {TILE_SIZE} from "../entities/Tile"
 import Player from "../entities/Player"
+import {TileLayerModel} from "../types/TileModel"
 
 export default class WorldLoader {
 
@@ -57,8 +58,7 @@ export default class WorldLoader {
 
   isPlayerInVoid = (player: Player): boolean => (player.y + player.height) > (this.world.height * TILE_SIZE)
 
-  layers = (): Tile[][] => [this.floor().tiles(), this.powers().tiles()]
-
+  layers = (): TileLayerModel[] => [this.floor().toModel(), this.powers().toModel()]
 }
 
 class TileSetLoader {
@@ -121,15 +121,19 @@ class TileSetLoader {
 
 class LayerLoader {
 
+  private readonly _name: string = ""
   private _tiles: Tile[] = []
 
   public tiles = (): Tile[] => this._tiles || []
+
+  public name = () => this._name
 
   public solids = (): Tile[] => this.tiles().filter(t => !t.isSemiSolid())
 
   public semis = (): Tile[] => this.tiles().filter(t => t.isSemiSolid())
 
   constructor(layer: WorldLayer, sets: TileSetLoader[]) {
+    this._name = layer.name
     let c = 0
     for (let y = 0; y < layer.height; y++) {
       for (let x = 0; x < layer.width; x++) {
@@ -141,6 +145,11 @@ class LayerLoader {
     }
     console.log("Loaded layer:", layer.name, this._tiles.length)
   }
+
+  public toModel = (): TileLayerModel => ({
+    n: this.name(),
+    ls: this.tiles().map(Tile.toModel)
+  })
 }
 
 let world1: WorldLoader | undefined = undefined

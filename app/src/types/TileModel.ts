@@ -1,5 +1,10 @@
 import {PowerUpModel} from "./PowerUpModel"
 
+export interface TileLayerModel {
+  n: string,
+  ls: TileModel[]
+}
+
 export interface TileModel {
   x: number
   y: number

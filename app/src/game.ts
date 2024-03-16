@@ -1,5 +1,5 @@
 import PlayerRepository from "./repository/PlayerRepository"
-import PowerUp, {PowerType} from "./entities/PowerUp"
+import {PowerType} from "./entities/PowerUp"
 import {v4, v5} from "uuid"
 import WorldLoader, {useWorld1} from "./world/WorldLoader"
 import Tile from "./entities/Tile"
@@ -39,8 +39,6 @@ export default class Game {
   setPlayersRepository = (players: PlayerRepository) => this.playerRepository = players
 
   world = (): WorldLoader => this.world1
-
-  power_ups = () => this.world().powers().tiles().filter(t => t.power_up != undefined).map(t => t.power_up) as PowerUp[]
 
   addPlayer = (uuid: string, socket_id: string): boolean => {
     const continue_player = this.players().getConnected(uuid)
@@ -152,10 +150,10 @@ export default class Game {
   }
 
   private spawnPowerUp = () => {
-    if (Math.round(Math.random() * 80) !== 1) {
+    if (Math.round(Math.random() * 500) !== 1) {
       return
     }
-    const airs = this.world().floor().tiles()
+    const airs = this.world().powers().tiles()
     const index = Math.round(Math.random() * (airs.length - 1))
     const tile: Tile | undefined = airs[index] || undefined
     if (!tile) {
