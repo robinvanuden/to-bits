@@ -6,6 +6,8 @@ COPY app .
 
 WORKDIR /app/
 
-RUN npm install
+RUN npm i -g npm
+
+RUN npm i
 
 CMD ["npm", "run", "start"]

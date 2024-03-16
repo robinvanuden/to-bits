@@ -1,3 +1,4 @@
+// @ts-ignore
 import {io} from "socket.io-client"
 import Map from "./map"
 import Images from "./images"
