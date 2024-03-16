@@ -4,14 +4,18 @@
 
 The HUD update. More coming soon!
 
-- Player text lines (join, death, etc)
-
 ### Added
 
-- [ ] Event separation
+- [ ] Backend event separation
   - [ ] Events for joining or disconnecting players.
   - [ ] Events for projectiles
   - [ ] Events for player movement
+- [ ] Event messages on screen (join, death, etc)
+
+### Changed
+
+- [ ] Update only the movement of players but not all the player data.
+- [ ] Update only tiles that are affected to change, not the entire layer
 
 ## 0.5
 
@@ -25,11 +29,39 @@ The Item update. More coming soon!
     - [ ] The players name
     - [ ] Inventory items
     - [ ] All players
+- [ ] More textures
+  - [ ] Bow
+    - [ ] Item
+    - [ ] Player holding
+    - [ ] Projectile texture for the arrow
+  - [ ] Fireball
+    - [ ] Item
+    - [ ] Player holding
+    - [ ] Projectile texture
+  - [ ] Bomb
+    - [ ] Item
+    - [ ] Player holding
+    - [ ] Projectile texture
+  - [ ] Boomerang
+    - [ ] Item
+    - [ ] Player holding
+    - [ ] Projectile texture for the arrow
+  - [ ] Sword
+    - [ ] Item
+    - [ ] Player holding
+    - [ ] Projectile texture for the arrow
+- [ ] Projectile class for items.
+- [ ] Added lobbies instead of a fixed world.
+- [ ] Added melee logic to punch other players
 
 ### Changed
 
 - [ ] Moved player-items to their own repository.
-- [ ] Update only the movement of players but not all the player data.
+- [ ] Moved player and projectile loop methods to a separate file
+- [ ] The background of the player name-tags is now totally black.
+- [ ] Player color picking now checks existing player colors
+  - Before some players had the same color which could be confusing
+- [ ] Moved the world to the lobby
 
 ## 0.4
 
@@ -50,7 +82,6 @@ The Map update.
 ### Changed
 
 - [x] Moved tile-items to their own repository.
-- [ ] The background of the player name-tags is now totally black.
 
 ### Fixed
 
