@@ -47,7 +47,10 @@ export default class PlayerSocket {
         }
         console.log('User disconnected', uuid)
         const player = this.game.players().getById(uuid)
-        if (player) player.disconnected = Date.now()
+        if (player) {
+          player.disconnected = Date.now()
+          player.move = {u: false, d: false, l: false, r: false}
+        }
       })
 
       this.game.start(this.emitProjectiles)

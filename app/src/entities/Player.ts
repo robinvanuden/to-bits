@@ -15,7 +15,7 @@ const randomMask = () => Math.round(Math.random() * 3) + 1
 
 const PLAYER_WIDTH = 13
 const PLAYER_HEIGHT = 16
-const SPEED_WALK = 1.5
+const SPEED_WALK = 2
 const SPEED_JUMP = 4
 const MAX_POWER_UP = 5
 

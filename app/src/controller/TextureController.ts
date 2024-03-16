@@ -29,7 +29,7 @@ const generateTexture = (source_path: string, x: number, y: number, width: numbe
 export default function () {
   const router = Router()
 
-  router.get("/texture/set/:hash.webp", async (req, res) => {
+  router.get("/texture/set/:hash.:ext", async (req, res) => {
     const hash = req?.params?.hash || ""
     if (hash.length <= 0) {
       return res.sendStatus(400)
@@ -42,8 +42,7 @@ export default function () {
     if (!decrypted) {
       return res.sendStatus(400)
     }
-    const seed = decrypted?.seed || ""
-    const source = decrypted?.source || ""
+    const [source, seed] = decrypted || ["", ""]
     if (source.length <= 0 || seed.length <= 0) {
       return res.sendStatus(400)
     }
@@ -56,11 +55,10 @@ export default function () {
     }
 
     const source_path = path.resolve(__dirname, "wow", set.source())
-    console.log(source_path)
     if (!fs.existsSync(source_path)) {
       return res.sendStatus(404)
     }
-    res.contentType("image/webp")
+    res.contentType("image/" + path.extname(source_path))
     return res.sendFile(source_path)
   })
 

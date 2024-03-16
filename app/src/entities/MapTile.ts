@@ -67,9 +67,9 @@ export default class MapTile {
   }
 
   private generateTextureUrl = () => {
-    const body = {source: path.basename(this.source), seed: this.seed}
+    const body = [path.basename(this.source), this.seed]
     const hash = Buffer.from(JSON.stringify(body), "utf-8").toString("base64url")
-    return "/texture/set/" + hash + ".webp"
+    return "/texture/set/" + hash + path.extname(this.source)
   }
 
   static toModel = (tile: MapTile): MapTileModel => ({

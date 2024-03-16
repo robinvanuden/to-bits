@@ -54,7 +54,7 @@ app.get("/", (req, res) => {
     path: "/",
     sameSite: "strict",
     maxAge: 60_000 * 12,
-    secure: req.secure
+    secure: req.secure || (req.headers.origin || "").startsWith("https")
   })
   console.log(COOKIE_PLAYER_ID, uuid)
   res.sendFile(path.resolve(__dirname, "../dist/main.html"))
