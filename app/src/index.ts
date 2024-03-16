@@ -41,7 +41,7 @@ app.get("/", (req, res) => {
   if (!player) {
     // Possible old cookie, generate new one
     uuid = game.generate_uuid()
-    console.log("Generated uuid for an old player (outdated cookie)", uuid)
+    console.log("Generated uuid for an old player (outdated cookie)")
   }
   if (player && !player.disconnected) {
     // console.log("Invalid session", uuid)
@@ -53,9 +53,10 @@ app.get("/", (req, res) => {
     httpOnly: true,
     path: "/",
     sameSite: "strict",
-    maxAge: 30_000,
+    maxAge: 60_000 * 12,
     secure: req.secure
   })
+  console.log(COOKIE_PLAYER_ID, uuid)
   res.sendFile(path.resolve(__dirname, "../dist/main.html"))
 })
 

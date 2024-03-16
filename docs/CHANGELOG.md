@@ -6,6 +6,13 @@ The HUD update. More coming soon!
 
 - Player text lines (join, death, etc)
 
+### Added
+
+- [ ] Event separation
+  - [ ] Events for joining or disconnecting players.
+  - [ ] Events for projectiles
+  - [ ] Events for player movement
+
 ## 0.5
 
 The Item update. More coming soon!
@@ -22,6 +29,7 @@ The Item update. More coming soon!
 ### Changed
 
 - [ ] Moved player-items to their own repository.
+- [ ] Update only the movement of players but not all the player data.
 
 ## 0.4
 
@@ -43,15 +51,10 @@ The Map update.
 
 - [x] Moved tile-items to their own repository.
 - [ ] The background of the player name-tags is now totally black.
-- [ ] Update only the movement of players but not all the player data.
-- [ ] Event separation
-    - [ ] Events for joining or disconnecting players.
-    - [ ] Events for projectiles
-    - [ ] Events for player movement
 
 ### Fixed
 
-- [ ] Fixed losing the cookie ID after refreshing
+- [x] Fixed losing the cookie ID after refreshing
   - This results in permanent Conflict error or duplicate characters.
 - [ ] Fixed letting the character moonwalk when pushing 2 directions at once.
 
