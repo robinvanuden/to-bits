@@ -2,8 +2,8 @@ import Player from "../Player"
 import Tile from "../Tile"
 import {BoomerangModel} from "../../types/BoomerangModel"
 
-const BOOMERANG_SIZE = 12
-const BOOMERANG_THROW = 6
+const BOOMERANG_SIZE = 24
+const BOOMERANG_THROW = 13
 
 export default class Boomerang {
   id: string = ""

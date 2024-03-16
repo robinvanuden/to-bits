@@ -68,8 +68,8 @@ import Canvas from "./canvas"
 
   socket.on("nope", () => hud.setNope(true))
 
-  socket.on("map", map_data => {
-    data.setMap(map_data)
+  socket.on("map_layer", map_data => {
+    data.setMapLayer(map_data)
     hud.setLoading(false)
   })
 
@@ -82,8 +82,6 @@ import Canvas from "./canvas"
       }
     }
   })
-
-  socket.on("power_ups", data.setPowerUps)
 
   const keyEvent = (ev: KeyboardEvent, pressed: boolean) => {
     const you = map.you()

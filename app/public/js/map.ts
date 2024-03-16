@@ -53,7 +53,6 @@ export default class Map {
               this.canvas.size(tile.h)
             )
           } else if (tile.pu && layer.n === "powers") {
-            console.log()
             this.ctx.drawImage(
               this.images.addImage(tile.i),
               0,

@@ -1,8 +1,8 @@
 import Player from "../Player"
 import Tile from "../Tile"
 
-const FIREBALL_SIZE = 12
-const FIREBALL_THROW = 7
+const FIREBALL_SIZE = 24
+const FIREBALL_THROW = 18
 
 export default class Fireball {
   id: string = ""

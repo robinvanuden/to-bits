@@ -31,6 +31,8 @@ export default class PlayerSocket {
         return
       }
 
+      client.emit("map_layer", this.game.world().floor().toModel())
+
       client.on("move.left", (bool: boolean) => this.onMovement(uuid, "move.left", bool))
       client.on("move.right", (bool: boolean) => this.onMovement(uuid, "move.right", bool))
       client.on("move.up", (bool: boolean) => this.onMovement(uuid, "move.up", bool))
@@ -109,6 +111,6 @@ export default class PlayerSocket {
     // Emit players
     this.io.emit("players", this.game?.players().list().map(Player.toModel) ?? [])
 
-    this.io.emit("map", this.game.world().layers())
+    this.io.emit("map_layer", this.game.world().powers().toModel())
   }
 }
