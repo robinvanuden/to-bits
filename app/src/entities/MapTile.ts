@@ -3,12 +3,14 @@ import {PROP_SEMI_SOLID, Tile, TileSetProperty} from "../types/TileSet"
 import Player from "./Player"
 import {WorldLayer} from "../types/World"
 import MapTileModel from "../types/MapTileModel"
+import path from "path"
 
 export default class MapTile {
   id: number
   x: number
   y: number
   name: string
+  seed: string
   source: string
   offset_x: number
   offset_y: number
@@ -23,8 +25,9 @@ export default class MapTile {
   power_up: PowerUp | undefined
   properties: TileSetProperty[]
 
-  constructor(id: number, x: number, y: number, layer: WorldLayer, item: Tile) {
+  constructor(id: number, x: number, y: number, seed: string, layer: WorldLayer, item: Tile) {
     this.id = id
+    this.seed = seed
     this.x = x * item.tilewidth
     this.y = y * item.tileheight
     this.name = item.name
@@ -63,10 +66,10 @@ export default class MapTile {
     if (!this.hasPowerUp()) this.power_up = new PowerUp(this)
   }
 
-  private generateAssetUrl = () => {
-    const body = {layer: this.layer, tile_id: this.id}
+  private generateTextureUrl = () => {
+    const body = {source: path.basename(this.source), seed: this.seed}
     const hash = Buffer.from(JSON.stringify(body), "utf-8").toString("base64url")
-    return "/texture/" + hash + ".webp"
+    return "/texture/set/" + hash + ".webp"
   }
 
   static toModel = (tile: MapTile): MapTileModel => ({
@@ -77,7 +80,7 @@ export default class MapTile {
     w: tile.width,
     h: tile.height,
     t: tile.id,
-    i: tile.generateAssetUrl(),
+    i: tile.generateTextureUrl(),
     d: 0,
     sp: tile.layer === "spawn",
     wa: tile.isSemiSolid(),

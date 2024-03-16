@@ -4,11 +4,23 @@ import fs from "fs"
 
 export default class TileSetLoader {
 
+  private readonly _name: string
   private readonly _first_id: number
   private _set: TileSet
   private _tiles: Tile[] = []
 
+  public name = () => this._name
+
+  public source = () => this._set.image
+
+  public firstId = () => this._first_id
+
+  private loadJsonTileSet = (name: string): TileSet => JSON.parse(fs.readFileSync(path.resolve(__dirname, "../map/", name)).toString("utf-8"))
+
+  public getTileById = (id: number) => this._tiles.find(t => t.tile_id === id)
+
   constructor(name: string, index: number) {
+    this._name = name
     this._first_id = index
     this._set = this.loadJsonTileSet(name)
 
@@ -35,11 +47,4 @@ export default class TileSetLoader {
       }
     }
   }
-
-  public firstId = () => this._first_id
-
-  loadJsonTileSet = (name: string): TileSet => JSON.parse(fs.readFileSync(path.resolve(__dirname, "../map/", name)).toString("utf-8"))
-
-  getTileById = (id: number) => this._tiles.find(t => t.tile_id === id)
-
 }

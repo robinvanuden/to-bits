@@ -43,8 +43,8 @@ export default class Map {
           if (!tile.pu && layer.n === "floor") {
             this.ctx.drawImage(
               this.images.addImage(tile.i),
-              0,
-              0,
+              tile.ox,
+              tile.oy,
               16,
               16,
               this.canvas.tile(tile.x) - cx,
@@ -55,8 +55,8 @@ export default class Map {
           } else if (tile.pu && layer.n === "powers") {
             this.ctx.drawImage(
               this.images.addImage(tile.i),
-              0,
-              0,
+              tile.ox,
+              tile.oy,
               16,
               16,
               this.canvas.tile(tile.x) - cx,

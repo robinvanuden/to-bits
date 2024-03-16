@@ -5,21 +5,40 @@ import MapTile from "../entities/MapTile"
 import Player from "../entities/Player"
 import TileSetLoader from "./TileSetLoader"
 import LayerLoader from "./LayerLoader"
+import {v4} from "uuid"
 
 export default class WorldLoader {
 
   private world: World
   private sets: TileSetLoader[] = []
 
+  private readonly _seed!: string
   private readonly _spawns!: LayerLoader
   private readonly _powers!: LayerLoader
   private readonly _floor!: LayerLoader
 
-  public spawns = (): LayerLoader => this._spawns
-  public powers = (): LayerLoader => this._powers
-  public floor = (): LayerLoader => this._floor
+  public seed = () => this._seed
+  public spawns = () => this._spawns
+  public powers = () => this._powers
+  public floor = () => this._floor
+
+  public findSetByName = (name: string) => this.sets.find(s => {
+    return path.basename(name).replace(path.extname(name), "") === path.basename(s.source()).replace(path.extname(s.source()), "")
+  }) || undefined
+
+  public findLayerByName = (name: string) => {
+    switch (name) {
+      case "floor":
+        return this.floor()
+      case "powers":
+        return this.powers()
+      case "spawns":
+        return this.spawns()
+    }
+  }
 
   constructor(name: string) {
+    this._seed = v4()
     this.world = this.loadJsonMap(name + ".json")
     for (const set of this.world.tilesets) {
       this.sets.push(new TileSetLoader(set.source, set.firstgid))
@@ -27,13 +46,13 @@ export default class WorldLoader {
     for (const layer of this.world.layers) {
       switch (layer.name) {
         case "floor":
-          this._floor = new LayerLoader(layer, this.sets)
+          this._floor = new LayerLoader(layer, this.sets, this.seed())
           break
         case "powers":
-          this._powers = new LayerLoader(layer, this.sets)
+          this._powers = new LayerLoader(layer, this.sets, this.seed())
           break
         case "spawns":
-          this._spawns = new LayerLoader(layer, this.sets)
+          this._spawns = new LayerLoader(layer, this.sets, this.seed())
           break
       }
     }

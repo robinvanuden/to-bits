@@ -10,20 +10,22 @@ export default class LayerLoader {
 
   public tiles = (): MapTile[] => this._map_tiles || []
 
+  public layer = () => this._layer
+
   public name = () => this._layer.name
 
   public solids = (): MapTile[] => this.tiles().filter(t => !t.isSemiSolid())
 
   public semis = (): MapTile[] => this.tiles().filter(t => t.isSemiSolid())
 
-  constructor(layer: WorldLayer, sets: TileSetLoader[]) {
+  constructor(layer: WorldLayer, sets: TileSetLoader[], seed: string) {
     this._layer = layer
     let c = 0
     for (let y = 0; y < layer.height; y++) {
       for (let x = 0; x < layer.width; x++) {
         const id = layer.data[c]
         const item = sets.find(s => id >= s.firstId() && s.getTileById(id))?.getTileById(id)
-        if (item) this._map_tiles.push(new MapTile(id, x, y, layer, item))
+        if (item) this._map_tiles.push(new MapTile(id, x, y, seed, layer, item))
         c++
       }
     }
