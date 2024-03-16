@@ -2,7 +2,7 @@ import PlayerRepository from "./repository/PlayerRepository"
 import {PowerType} from "./entities/PowerUp"
 import {v4, v5} from "uuid"
 import WorldLoader, {useWorld1} from "./world/WorldLoader"
-import Tile from "./entities/Tile"
+import MapTile from "./entities/MapTile"
 
 export default class Game {
 
@@ -155,7 +155,7 @@ export default class Game {
     }
     const airs = this.world().powers().tiles()
     const index = Math.round(Math.random() * (airs.length - 1))
-    const tile: Tile | undefined = airs[index] || undefined
+    const tile: MapTile | undefined = airs[index] || undefined
     if (!tile) {
       return
     }

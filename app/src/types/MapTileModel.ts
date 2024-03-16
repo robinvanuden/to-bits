@@ -2,12 +2,14 @@ import {PowerUpModel} from "./PowerUpModel"
 
 export interface TileLayerModel {
   n: string,
-  ls: TileModel[]
+  ls: MapTileModel[]
 }
 
-export interface TileModel {
+export default interface MapTileModel {
   x: number
   y: number
+  ox: number
+  oy: number
   // width
   w: number
   // height

@@ -7,6 +7,8 @@ export interface TileLayerModel {
 export default interface TileModel {
   x: number
   y: number
+  ox: number
+  oy: number
   w: number // width
   h: number // height
   t: number // type

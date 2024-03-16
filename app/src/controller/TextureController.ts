@@ -71,5 +71,34 @@ export default function () {
     return res.end(await image.toBuffer(), "utf-8")
   })
 
+  router.get("/texture/set/:hash.webp", async (req, res) => {
+    const hash = req?.params?.hash || ""
+    if (hash.length <= 0) {
+      return res.sendStatus(400)
+    }
+    const decrypted_raw = Buffer.from(hash, "base64url").toString("utf-8")
+    if (decrypted_raw.length <= 0) {
+      return res.sendStatus(400)
+    }
+    const decrypted = JSON.parse(decrypted_raw)
+    if (!decrypted) {
+      return res.sendStatus(400)
+    }
+    const layer_name = decrypted?.layer || ""
+
+    if (layer_name.length <= 0) {
+      return res.sendStatus(400)
+    }
+    const layer_floor = world1.floor()
+    const layer_powers = world1.powers()
+    const layer = layer_name === layer_floor.name() ? layer_floor : layer_powers
+
+    // const source_path = path.resolve(__dirname, "wow", layer.)
+    // const image = generateTexture(source_path, tile.offset_x, tile.offset_y, tile.tilewidth, tile.tileheight)
+
+    res.contentType("image/webp")
+  })
+
+
   return router
 }

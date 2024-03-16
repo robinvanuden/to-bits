@@ -28,12 +28,12 @@ export default class Map {
 
     const playerToFocus = this.you()
     if (playerToFocus && playerToFocus.d == undefined) {
-      cx = Math.round((this.canvas.size(playerToFocus.x) + this.canvas.size(playerToFocus.w) * .5) - this.canvas.width() * .5)
-      cy = Math.round((this.canvas.size(playerToFocus.y) + this.canvas.size(playerToFocus.h) * .5) - this.canvas.height() * .5)
+      cx = Math.round((this.canvas.tile(playerToFocus.x) + this.canvas.tile(playerToFocus.w) * .5) - this.canvas.width() * .5)
+      cy = Math.round((this.canvas.tile(playerToFocus.y) + this.canvas.tile(playerToFocus.h) * .5) - this.canvas.height() * .5)
       this.canvas.setBackgroundHue(playerToFocus.y, 4000)
     } else {
-      cx = Math.round((this.canvas.size(this.mapWidth() * .5)) - this.canvas.width() * .5)
-      cy = Math.round((this.canvas.size(this.mapHeight() * .5)) - this.canvas.height() * .5)
+      cx = Math.round((this.canvas.tile(this.mapWidth() * .5)) - this.canvas.width() * .5)
+      cy = Math.round((this.canvas.tile(this.mapHeight() * .5)) - this.canvas.height() * .5)
       this.canvas.setBackgroundHue(8, 4000)
     }
     for (const layer of this.data.map()) {
@@ -47,10 +47,10 @@ export default class Map {
               0,
               16,
               16,
-              this.canvas.size(tile.x) - cx,
-              this.canvas.size(tile.y) - cy,
-              this.canvas.size(tile.w),
-              this.canvas.size(tile.h)
+              this.canvas.tile(tile.x) - cx,
+              this.canvas.tile(tile.y) - cy,
+              this.canvas.tile(tile.w),
+              this.canvas.tile(tile.h)
             )
           } else if (tile.pu && layer.n === "powers") {
             this.ctx.drawImage(
@@ -59,10 +59,10 @@ export default class Map {
               0,
               16,
               16,
-              this.canvas.size(tile.x) - cx,
-              this.canvas.size(tile.y) - cy,
-              this.canvas.size(tile.w),
-              this.canvas.size(tile.h)
+              this.canvas.tile(tile.x) - cx,
+              this.canvas.tile(tile.y) - cy,
+              this.canvas.tile(tile.w),
+              this.canvas.tile(tile.h)
             )
             switch (tile.pu.t) {
               case "BOMB":
@@ -76,10 +76,10 @@ export default class Map {
                 break
             }
             this.ctx.fillRect(
-              this.canvas.size(tile.pu.x) - cx,
-              this.canvas.size(tile.pu.y) - cy,
-              this.canvas.size(tile.pu.w),
-              this.canvas.size(tile.pu.h)
+              this.canvas.tile(tile.pu.x) - cx,
+              this.canvas.tile(tile.pu.y) - cy,
+              this.canvas.tile(tile.pu.w),
+              this.canvas.tile(tile.pu.h)
             )
           }
         }
@@ -93,10 +93,10 @@ export default class Map {
 
       this.ctx.globalAlpha = player.dc != undefined ? 0.5 : 1
 
-      const player_w = this.canvas.size(player.w)
-      const player_h = this.canvas.size(player.h)
-      const player_x = this.canvas.size(player.x)
-      const player_y = this.canvas.size(player.y)
+      const player_w = this.canvas.tile(player.w)
+      const player_h = this.canvas.tile(player.h)
+      const player_x = this.canvas.tile(player.x)
+      const player_y = this.canvas.tile(player.y)
 
       const name_x = player_x - cx + player_w * .5
       const name_y = player_y - cy - this.canvas.size(12)
@@ -137,29 +137,30 @@ export default class Map {
         player_h
       )
 
+      this.ctx.lineWidth = this.canvas.size(8)
       for (const boomerang of player.br) {
         this.ctx.fillStyle = boomerang.c
         this.ctx.fillRect(
-          this.canvas.size(boomerang.x) - cx,
-          this.canvas.size(boomerang.y) - cy,
-          this.canvas.size(boomerang.w),
-          this.canvas.size(boomerang.h)
+          this.canvas.tile(boomerang.x) - cx,
+          this.canvas.tile(boomerang.y) - cy,
+          this.canvas.tile(boomerang.w),
+          this.canvas.tile(boomerang.h)
         )
       }
       for (const fireball of player.fb) {
         this.ctx.fillStyle = "#000"
         this.ctx.fillRect(
-          this.canvas.size(fireball.x) - cx,
-          this.canvas.size(fireball.y) - cy,
-          this.canvas.size(fireball.w),
-          this.canvas.size(fireball.h)
+          this.canvas.tile(fireball.x) - cx,
+          this.canvas.tile(fireball.y) - cy,
+          this.canvas.tile(fireball.w),
+          this.canvas.tile(fireball.h)
         )
         this.ctx.fillStyle = "#e0511c"
         this.ctx.fillRect(
-          this.canvas.size(fireball.x + 2) - cx,
-          this.canvas.size(fireball.y + 2) - cy,
-          this.canvas.size(fireball.w - 4),
-          this.canvas.size(fireball.h - 4)
+          this.canvas.tile(fireball.x + 1) - cx,
+          this.canvas.tile(fireball.y + 1) - cy,
+          this.canvas.tile(fireball.w - 2),
+          this.canvas.tile(fireball.h - 2)
         )
       }
     }

@@ -1,8 +1,8 @@
 import Player from "../Player"
-import Tile from "../Tile"
+import MapTile from "../MapTile"
 
-const FIREBALL_SIZE = 24
-const FIREBALL_THROW = 18
+const FIREBALL_SIZE = 6
+const FIREBALL_THROW = 4.5
 
 export default class Fireball {
   id: string = ""
@@ -31,7 +31,7 @@ export default class Fireball {
     this.thrown = Date.now()
   }
 
-  isBroke = (t: Tile): boolean => this.x < t.x + t.width
+  isBroke = (t: MapTile): boolean => this.x < t.x + t.width
     && this.x + this.width > t.x
     && this.y < t.y + t.height
     && this.y + this.height > t.y

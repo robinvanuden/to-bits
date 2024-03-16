@@ -24,6 +24,8 @@ export default class Canvas {
 
   size = (n: number) => n * this.ratio
 
+  tile = (n: number) => this.size(n) * 4
+
   rem = (n: number) => this.size(Math.round(FONT_SIZE * n))
 
   width = () => this.__width

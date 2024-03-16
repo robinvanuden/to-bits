@@ -23,7 +23,7 @@ export interface TileSetProperty {
   value: any
 }
 
-export interface TileSetItem {
+export interface Tile {
   id: number
   tile_id: number
   type: string

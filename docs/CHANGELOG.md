@@ -37,11 +37,11 @@ The Map update.
   - [x] Connected textures
   - [x] Bridges
 - [x] Repository for the map data with better control of the tiles.
-- [ ] Added layers to render the map
+- [x] Added layers to render the map
 
 ### Changed
 
-- [ ] Moved tile-items to their own repository.
+- [x] Moved tile-items to their own repository.
 - [ ] The background of the player name-tags is now totally black.
 - [ ] Update only the movement of players but not all the player data.
 - [ ] Event separation

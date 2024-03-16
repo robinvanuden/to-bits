@@ -3,7 +3,7 @@ import PowerUp, {PowerType} from "./PowerUp"
 import Boomerang from "./projectiles/Boomerang"
 import {v4} from "uuid"
 import Fireball from "./projectiles/Fireball"
-import Tile from "./Tile"
+import MapTile from "./MapTile"
 import {GRAVITY} from "../constants"
 import {Direction, PlayerModel} from "../types/PlayerModel"
 
@@ -13,10 +13,10 @@ const randomColor = () => `hsl(${Math.round(360 * Math.random())}, 74%, 58%)`
 
 const randomMask = () => Math.round(Math.random() * 3) + 1
 
-const PLAYER_WIDTH = 52
-const PLAYER_HEIGHT = 64
-const SPEED_WALK = 6
-const SPEED_JUMP = 7.7
+const PLAYER_WIDTH = 13
+const PLAYER_HEIGHT = 16
+const SPEED_WALK = 1.5
+const SPEED_JUMP = 4
 const MAX_POWER_UP = 5
 
 export default class Player {
@@ -59,7 +59,7 @@ export default class Player {
   boomerangs: Boomerang[] = []
   fireballs: Fireball[] = []
 
-  constructor(id: string, socket: string, spawn: Tile) {
+  constructor(id: string, socket: string, spawn: MapTile) {
     this.id = id
     this.socket_id = socket
     this.disconnected = undefined
@@ -113,7 +113,7 @@ export default class Player {
     this.move = {u: false, d: false, l: false, r: false}
   }
 
-  respawn = (spawn: Tile) => {
+  respawn = (spawn: MapTile) => {
     this.died = undefined
     this.x = spawn.x
     this.y = spawn.y

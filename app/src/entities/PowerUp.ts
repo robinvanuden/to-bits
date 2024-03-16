@@ -1,12 +1,12 @@
 import {v4} from "uuid"
 import Player from "./Player"
-import Tile from "./Tile"
+import MapTile from "./MapTile"
 import {PowerUpModel} from "../types/PowerUpModel"
 
 export enum PowerType {BOOMERANG, BOMB, FIREBALL}
 
-const POWER_WIDTH = 24
-const POWER_HEIGHT = 24
+const POWER_WIDTH = 6
+const POWER_HEIGHT = 6
 
 export default class PowerUp {
 
@@ -17,7 +17,7 @@ export default class PowerUp {
   x: number
   y: number
 
-  constructor(tile: Tile) {
+  constructor(tile: MapTile) {
     this.id = v4()
     this.type = PowerUp.randomType()
     this.x = tile.x + Math.round((tile.width * .5) - (POWER_WIDTH * .5))

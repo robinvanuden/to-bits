@@ -1,5 +1,5 @@
 import Player from "../entities/Player"
-import Tile from "../entities/Tile"
+import MapTile from "../entities/MapTile"
 
 export default class PlayerRepository {
 
@@ -15,7 +15,7 @@ export default class PlayerRepository {
 
   respawns = () => this.players.filter(p => p.died != undefined && p.disconnected == undefined && (p.died + 5000) < Date.now())
 
-  create = (spawn: Tile, id: string, socket: string) => this.players.push(new Player(id, socket, spawn))
+  create = (spawn: MapTile, id: string, socket: string) => this.players.push(new Player(id, socket, spawn))
 
   remove = (player: Player) => this.players = this.players.filter(p => p.id !== player.id)
 

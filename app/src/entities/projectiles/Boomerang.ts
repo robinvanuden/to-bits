@@ -1,9 +1,9 @@
 import Player from "../Player"
-import Tile from "../Tile"
+import MapTile from "../MapTile"
 import {BoomerangModel} from "../../types/BoomerangModel"
 
-const BOOMERANG_SIZE = 24
-const BOOMERANG_THROW = 13
+const BOOMERANG_SIZE = 6
+const BOOMERANG_THROW = 3.25
 
 export default class Boomerang {
   id: string = ""
@@ -32,7 +32,7 @@ export default class Boomerang {
     this.thrown = Date.now()
   }
 
-  isBroke = (t: Tile): boolean => this.x < t.x + t.width
+  isBroke = (t: MapTile): boolean => this.x < t.x + t.width
     && this.x + this.width > t.x
     && this.y < t.y + t.height
     && this.y + this.height > t.y
