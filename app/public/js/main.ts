@@ -27,7 +27,6 @@ import Canvas from "./canvas"
     secure: secure,
     reconnection: true,
     timeout: 10000,
-    reconnectionAttempts: 5,
     forceNew: true
   })
 

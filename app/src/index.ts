@@ -22,7 +22,6 @@ const players = new PlayerRepository()
 game.setPlayersRepository(players)
 
 app.use(cookieParser())
-app.use("/img", express.static("public/img"))
 app.use("/", express.static("dist"))
 
 app.get("/", (req, res) => {
