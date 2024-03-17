@@ -6,16 +6,22 @@ The HUD update. More coming soon!
 
 ### Added
 
+- [ ] Interface elements for the player.
+  - [ ] The players name
+  - [ ] Inventory items
+  - [ ] All players
 - [ ] Backend event separation
   - [ ] Events for joining or disconnecting players.
   - [ ] Events for projectiles
   - [ ] Events for player movement
 - [ ] Event messages on screen (join, death, etc)
+- [ ] Added lobbies instead of a fixed world.
 
 ### Changed
 
 - [ ] Update only the movement of players but not all the player data.
 - [ ] Update only tiles that are affected to change, not the entire layer
+- [ ] Moved the world-loader to the lobby
 
 ## 0.5
 
@@ -25,10 +31,6 @@ The Item update. More coming soon!
 
 ### Added
 
-- [ ] Interface elements for the player.
-    - [ ] The players name
-    - [ ] Inventory items
-    - [ ] All players
 - [ ] More textures
   - [ ] Bow
     - [ ] Item
@@ -51,7 +53,6 @@ The Item update. More coming soon!
     - [ ] Player holding
     - [ ] Projectile texture for the arrow
 - [ ] Projectile class for items.
-- [ ] Added lobbies instead of a fixed world.
 - [ ] Added melee logic to punch other players
 
 ### Changed
@@ -61,7 +62,7 @@ The Item update. More coming soon!
 - [ ] The background of the player name-tags is now totally black.
 - [ ] Player color picking now checks existing player colors
   - Before some players had the same color which could be confusing
-- [ ] Moved the world to the lobby
+- [ ] Animated the items that spawn on the map
 
 ## 0.4
 
@@ -87,7 +88,7 @@ The Map update.
 
 - [x] Fixed losing the cookie ID after refreshing
   - This results in permanent Conflict error or duplicate characters.
-- [ ] Fixed letting the character moonwalk when pushing 2 directions at once.
+- [x] Fixed letting the character moonwalk when pushing 2 directions at once.
 
 ## 0.3
 
