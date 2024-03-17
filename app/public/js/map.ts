@@ -138,30 +138,43 @@ export default class Map {
       )
 
       this.ctx.lineWidth = this.canvas.size(8)
-      for (const boomerang of player.br) {
-        this.ctx.fillStyle = boomerang.c
-        this.ctx.fillRect(
-          this.canvas.tile(boomerang.x) - cx,
-          this.canvas.tile(boomerang.y) - cy,
-          this.canvas.tile(boomerang.w),
-          this.canvas.tile(boomerang.h)
-        )
-      }
-      for (const fireball of player.fb) {
-        this.ctx.fillStyle = "#000"
-        this.ctx.fillRect(
-          this.canvas.tile(fireball.x) - cx,
-          this.canvas.tile(fireball.y) - cy,
-          this.canvas.tile(fireball.w),
-          this.canvas.tile(fireball.h)
-        )
-        this.ctx.fillStyle = "#e0511c"
-        this.ctx.fillRect(
-          this.canvas.tile(fireball.x + 1) - cx,
-          this.canvas.tile(fireball.y + 1) - cy,
-          this.canvas.tile(fireball.w - 2),
-          this.canvas.tile(fireball.h - 2)
-        )
+      for (const projectile of player.pr) {
+        this.ctx.fillStyle = projectile.c
+        switch (projectile.t) {
+          case "RANG":
+            this.ctx.fillRect(
+              this.canvas.tile(projectile.x) - cx,
+              this.canvas.tile(projectile.y) - cy,
+              this.canvas.tile(projectile.w),
+              this.canvas.tile(projectile.h)
+            )
+            break
+          case "BOMB":
+            this.ctx.fillStyle = "#000"
+            this.ctx.fillRect(
+              this.canvas.tile(projectile.x) - cx,
+              this.canvas.tile(projectile.y) - cy,
+              this.canvas.tile(projectile.w),
+              this.canvas.tile(projectile.h)
+            )
+            break
+          case "FIRE":
+            this.ctx.fillStyle = "#000"
+            this.ctx.fillRect(
+              this.canvas.tile(projectile.x) - cx,
+              this.canvas.tile(projectile.y) - cy,
+              this.canvas.tile(projectile.w),
+              this.canvas.tile(projectile.h)
+            )
+            this.ctx.fillStyle = "#e0511c"
+            this.ctx.fillRect(
+              this.canvas.tile(projectile.x + 1) - cx,
+              this.canvas.tile(projectile.y + 1) - cy,
+              this.canvas.tile(projectile.w - 2),
+              this.canvas.tile(projectile.h - 2)
+            )
+            break
+        }
       }
     }
   }

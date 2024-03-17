@@ -1,11 +1,16 @@
 import {names, uniqueNamesGenerator} from "unique-names-generator"
 import PowerUp, {PowerType} from "./PowerUp"
-import Boomerang from "./projectiles/Boomerang"
-import {v4} from "uuid"
-import Fireball from "./projectiles/Fireball"
 import MapTile from "./MapTile"
-import {GRAVITY} from "../constants"
+import {
+  GRAVITY,
+  PLAYER_HEIGHT,
+  PLAYER_MAX_POWER_UP,
+  PLAYER_SPEED_JUMP,
+  PLAYER_SPEED_WALK,
+  PLAYER_WIDTH
+} from "../constants"
 import {Direction, PlayerModel} from "../types/PlayerModel"
+import Projectile from "./Projectile"
 
 const randomName = () => uniqueNamesGenerator({length: 1, dictionaries: [names]})
 
@@ -13,11 +18,6 @@ const randomColor = () => `hsl(${Math.round(360 * Math.random())}, 74%, 58%)`
 
 const randomMask = () => Math.round(Math.random() * 3) + 1
 
-const PLAYER_WIDTH = 13
-const PLAYER_HEIGHT = 16
-const SPEED_WALK = 2
-const SPEED_JUMP = 4
-const MAX_POWER_UP = 5
 
 export default class Player {
   // ID
@@ -56,8 +56,7 @@ export default class Player {
   // directions pressed
   move: Direction
   power_ups: PowerUp[] = []
-  boomerangs: Boomerang[] = []
-  fireballs: Fireball[] = []
+  projectiles: Projectile[] = []
 
   constructor(id: string, socket: string, spawn: MapTile) {
     this.id = id
@@ -75,8 +74,8 @@ export default class Player {
     this.vy = 0
     this.gravity = GRAVITY
     this.grounded = false
-    this.sw = SPEED_WALK
-    this.sj = SPEED_JUMP
+    this.sw = PLAYER_SPEED_WALK
+    this.sj = PLAYER_SPEED_JUMP
     this.look = {
       u: false,
       d: false,
@@ -89,8 +88,7 @@ export default class Player {
       l: false,
       r: false
     }
-    this.boomerangs = []
-    this.fireballs = []
+    this.projectiles = []
     this.power_ups = []
   }
 
@@ -100,7 +98,7 @@ export default class Player {
   hasPowerUp = (type: PowerType): boolean => this.power_ups.filter(p => p.type === type).length > 0
 
   addPowerUp = (power_up: PowerUp): boolean => {
-    if (this.power_ups.length >= MAX_POWER_UP) {
+    if (this.power_ups.length >= PLAYER_MAX_POWER_UP) {
       return false
     }
     this.power_ups.push(power_up)
@@ -119,8 +117,6 @@ export default class Player {
     this.y = spawn.y
     this.gravity = GRAVITY
     this.look = {u: false, d: false, l: false, r: true}
-    this.fireballs = []
-    this.boomerangs = []
   }
 
   kill = () => {
@@ -129,7 +125,9 @@ export default class Player {
     this.vy = 0
     this.gravity = 0
     this.move = {u: false, d: false, l: false, r: false}
+    // Clear items
     this.power_ups = []
+    this.projectiles = []
   }
 
   getFirstPowerUp = () => this.power_ups[0] || null
@@ -142,22 +140,12 @@ export default class Player {
     this.power_ups = this.power_ups.filter(p => p.id !== power_up.id)
   }
 
-  throwBoomerang = (degrees: number) => {
-    const radians = (degrees * Math.PI) / 180
-    this.boomerangs.push(new Boomerang(v4(), this, radians))
+  throwProjectile = (degrees: number, type: PowerType) => {
+    this.projectiles.push(Projectile.create(this, type, degrees))
   }
 
-  breakBoomerang = (boomerang: Boomerang) => {
-    this.boomerangs = this.boomerangs.filter(b => b.id !== boomerang.id)
-  }
-
-  throwFireball = (degrees: number) => {
-    const radians = (degrees * Math.PI) / 180
-    this.fireballs.push(new Fireball(v4(), this, radians))
-  }
-
-  breakFireball = (fireball: Fireball) => {
-    this.fireballs = this.fireballs.filter(b => b.id !== fireball.id)
+  breakProjectile = (projectile: Projectile) => {
+    this.projectiles = this.projectiles.filter(p => p.id !== projectile.id)
   }
 
   static toModel = (p: Player): PlayerModel => ({
@@ -175,8 +163,7 @@ export default class Player {
     c: p.color,
     l: p.look,
     m: p.move,
-    pu: p.power_ups.map(PowerUp.toModel),
-    br: p.boomerangs.map(Boomerang.toModel),
-    fb: p.fireballs.map(Fireball.toModel)
+    pr: p.projectiles.map(Projectile.toModel),
+    pu: p.power_ups.map(PowerUp.toModel)
   })
 }

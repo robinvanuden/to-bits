@@ -1,5 +1,4 @@
 import PlayerRepository from "./repository/PlayerRepository"
-import {PowerType} from "./entities/PowerUp"
 import {v4, v5} from "uuid"
 import WorldLoader, {useWorld1} from "./world/WorldLoader"
 import MapTile from "./entities/MapTile"
@@ -68,18 +67,11 @@ export default class Game {
     const tiles_with_power_ups = this.world().powers().tiles()
     const blocksWalkable = this.world().floor().semis()
     for (const player of this.players().alive()) {
-      for (const boomerang of player.boomerangs) {
-        boomerang.x += boomerang.vx
-        boomerang.y += boomerang.vy
-        if (solids.find(boomerang.isBroke) || boomerang.isOut()) {
-          player.breakBoomerang(boomerang)
-        }
-      }
-      for (const fireball of player.fireballs) {
-        fireball.x += fireball.vx
-        fireball.y += fireball.vy
-        if (solids.find(fireball.isBroke) || fireball.isOut()) {
-          player.breakFireball(fireball)
+      for (const projectile of player.projectiles) {
+        projectile.x += projectile.vx
+        projectile.y += projectile.vy
+        if (solids.find(projectile.isBroke) || projectile.isOut()) {
+          player.breakProjectile(projectile)
         }
       }
       player.vy += player.gravity * delta
@@ -120,19 +112,13 @@ export default class Game {
       }
 
       for (const other of this.players().others(player)) {
-        for (const boomerang of other.boomerangs) {
-          if (boomerang.isCaught(player)) {
-            player.breakBoomerang(boomerang)
+        for (const projectile of other.projectiles) {
+          if (projectile.isCaught(player)) {
+            player.breakProjectile(projectile)
           }
-          if (boomerang.isHit(player)) {
+          if (projectile.isHit(player)) {
             player.kill()
-            other.breakBoomerang(boomerang)
-          }
-        }
-        for (const fireball of other.fireballs) {
-          if (fireball.isHit(player)) {
-            player.kill()
-            other.breakFireball(fireball)
+            other.breakProjectile(projectile)
           }
         }
       }
@@ -218,10 +204,6 @@ export default class Game {
       return
     }
     player.usePowerUp(powerUp.type)
-    if (powerUp.type === PowerType.BOOMERANG) {
-      player.throwBoomerang(degrees)
-    } else if (powerUp.type === PowerType.FIREBALL) {
-      player.throwFireball(degrees)
-    }
+    player.throwProjectile(degrees, powerUp.type)
   }
 }

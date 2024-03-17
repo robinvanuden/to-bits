@@ -1,6 +1,5 @@
-import {BoomerangModel} from "./BoomerangModel"
-import {FireballModel} from "../entities/projectiles/Fireball"
 import {PowerUpModel} from "./PowerUpModel"
+import {ProjectileModel} from "../entities/Projectile"
 
 
 export interface Direction {
@@ -26,6 +25,5 @@ export interface PlayerModel {
   l: Direction
   m: Direction
   pu: PowerUpModel[]
-  br: BoomerangModel[]
-  fb: FireballModel[]
+  pr: ProjectileModel[]
 }

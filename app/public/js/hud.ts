@@ -111,29 +111,17 @@ export default class Hud {
       } else {
         debug_texts.push("powers: -")
       }
-      if (you.br.length > 0) {
-        debug_texts.push("boomerangs:")
-        for (const boomerang of you.br) {
-          debug_texts.push("-boomerang:")
-          debug_texts.push("--x: " + boomerang.x)
-          debug_texts.push("--y: " + boomerang.y)
-          debug_texts.push("--vx: " + boomerang.vx)
-          debug_texts.push("--vy: " + boomerang.vy)
+      if (you.pr.length > 0) {
+        debug_texts.push("projectiles:")
+        for (const projectile of you.pr) {
+          debug_texts.push("-" + projectile.t + ":")
+          debug_texts.push("--x: " + projectile.x)
+          debug_texts.push("--y: " + projectile.y)
+          debug_texts.push("--vx: " + projectile.vx)
+          debug_texts.push("--vy: " + projectile.vy)
         }
       } else {
-        debug_texts.push("boomerang: -")
-      }
-      if (you.fb.length > 0) {
-        debug_texts.push("fireballs:")
-        for (const fireball of you.fb) {
-          debug_texts.push("-fireball:")
-          debug_texts.push("--x: " + fireball.x)
-          debug_texts.push("--y: " + fireball.y)
-          debug_texts.push("--vx: " + fireball.vx)
-          debug_texts.push("--vy: " + fireball.vy)
-        }
-      } else {
-        debug_texts.push("fireball: -")
+        debug_texts.push("projectiles: -")
       }
     }
 
