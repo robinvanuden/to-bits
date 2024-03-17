@@ -75,7 +75,7 @@ export default class PlayerSocket {
     this.game.throwItem(uuid, degrees)
   }
 
-  onMovement = (uuid: string, direction: string, bool: boolean) => {
+  onMovement = (uuid: string, direction: string, button_down: boolean) => {
     if (!this.game) {
       return
     }
@@ -85,27 +85,35 @@ export default class PlayerSocket {
     }
     switch (direction) {
       case "move.left":
-        player.move.l = bool
-        if (bool && !player.look.l) {
-          player.look = {u: false, d: false, l: true, r: false}
+        player.move.l = button_down
+        if (button_down && !player.look.l) {
+          player.look.l = true
+          player.look.r = false
+        } else if (!button_down && player.move.r) {
+          player.look.l = false
+          player.look.r = true
         }
         break
       case "move.right":
-        player.move.r = bool
-        if (bool && !player.look.r) {
-          player.look = {u: false, d: false, l: false, r: true}
+        player.move.r = button_down
+        if (button_down && !player.look.r) {
+          player.look.r = true
+          player.look.l = false
+        } else if (!button_down && player.move.l) {
+          player.look.r = false
+          player.look.l = true
         }
         break
       case "move.up":
-        player.move.u = bool
-        player.look.u = bool
+        player.move.u = button_down
+        player.look.u = button_down
         break
       case "move.down":
-        player.move.d = bool
-        player.look.d = bool
+        player.move.d = button_down
+        player.look.d = button_down
         break
       case "move.jump":
-        player.move.u = bool
+        player.move.u = button_down
         break
     }
   }
