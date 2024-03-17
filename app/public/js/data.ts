@@ -1,12 +1,14 @@
 import {TileLayerModel} from "./model/TileModel"
 import PlayerModel from "./model/PlayerModel"
+import ProjectileModel from "./model/ProjectileModel"
 
 export default class Data {
 
   private ID: string = ""
   private VERSION: string = ""
   private _map: TileLayerModel[] = []
-  private PLAYERS: PlayerModel[] = []
+  private _players: PlayerModel[] = []
+  private _projectiles: ProjectileModel[] = []
 
   setID = (id: string) => this.ID = id
 
@@ -27,14 +29,18 @@ export default class Data {
 
   setPlayers = (players: PlayerModel[]) => {
     const uuids = players.map(p => p.i)
-    this.PLAYERS = this.PLAYERS.filter(p => uuids.includes(p.i))
+    this._players = this._players.filter(p => uuids.includes(p.i))
     for (const p in players) {
       const player = players[p]
-      const PLAYER = this.PLAYERS[p] || null
+      const PLAYER = this._players[p] || null
       player.a = PLAYER?.a || 0
-      this.PLAYERS[p] = player
+      this._players[p] = player
     }
   }
 
-  players = () => this.PLAYERS
+  players = () => this._players
+
+  setProjectiles = (projectiles: ProjectileModel[]) => this._projectiles = projectiles
+
+  projectiles = () => this._projectiles
 }

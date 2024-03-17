@@ -1,6 +1,7 @@
-export default interface BoomerangModel {
+export default interface ProjectileModel {
   id: string
   p: string
+  t: string
   c: string
   x: number
   y: number

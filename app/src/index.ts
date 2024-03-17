@@ -9,6 +9,7 @@ import Game from "./game"
 import PlayerRepository from "./repository/PlayerRepository"
 import {COOKIE_PLAYER_ID} from "./constants"
 import path from "path"
+import ProjectileRepository from "./repository/ProjectileRepository"
 
 const app = express()
 const server = createServer(app)
@@ -19,7 +20,9 @@ const VERSION_CODE: number = Date.now()
 const game: Game | undefined = new Game(VERSION)
 
 const players = new PlayerRepository()
+const projectiles = new ProjectileRepository()
 game.setPlayersRepository(players)
+game.setProjectileRepository(projectiles)
 
 app.use(cookieParser())
 app.use("/", express.static("dist"))

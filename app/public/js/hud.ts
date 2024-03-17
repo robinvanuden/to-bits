@@ -111,18 +111,6 @@ export default class Hud {
       } else {
         debug_texts.push("powers: -")
       }
-      if (you.pr.length > 0) {
-        debug_texts.push("projectiles:")
-        for (const projectile of you.pr) {
-          debug_texts.push("-" + projectile.t + ":")
-          debug_texts.push("--x: " + projectile.x)
-          debug_texts.push("--y: " + projectile.y)
-          debug_texts.push("--vx: " + projectile.vx)
-          debug_texts.push("--vy: " + projectile.vy)
-        }
-      } else {
-        debug_texts.push("projectiles: -")
-      }
     }
 
     let i = 0

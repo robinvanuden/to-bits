@@ -2,6 +2,8 @@ import PlayerRepository from "./repository/PlayerRepository"
 import {v4, v5} from "uuid"
 import WorldLoader, {useWorld1} from "./world/WorldLoader"
 import MapTile from "./entities/MapTile"
+import ProjectileRepository from "./repository/ProjectileRepository"
+import {PowerType} from "./entities/PowerUp"
 
 export default class Game {
 
@@ -12,6 +14,7 @@ export default class Game {
   private readonly world1: WorldLoader
 
   private playerRepository!: PlayerRepository
+  private projectileRepository!: ProjectileRepository
 
   private running: boolean = false
   private updated: number = Date.now()
@@ -36,6 +39,10 @@ export default class Game {
   players = () => this.playerRepository
 
   setPlayersRepository = (players: PlayerRepository) => this.playerRepository = players
+
+  projectiles = () => this.projectileRepository
+
+  setProjectileRepository = (projectiles: ProjectileRepository) => this.projectileRepository = projectiles
 
   world = (): WorldLoader => this.world1
 
@@ -67,11 +74,21 @@ export default class Game {
     const tiles_with_power_ups = this.world().powers().tiles()
     const blocksWalkable = this.world().floor().semis()
     for (const player of this.players().alive()) {
-      for (const projectile of player.projectiles) {
+
+      for (const projectile of this.projectiles().list()) {
         projectile.x += projectile.vx
         projectile.y += projectile.vy
+
+        if (projectile.type === PowerType.BOOMERANG && projectile.isCaught(player)) {
+          this.projectiles().remove(projectile)
+        }
+        if (projectile.isHit(player)) {
+          player.kill()
+          this.projectiles().removeByPlayer(player)
+          this.projectiles().remove(projectile)
+        }
         if (solids.find(projectile.isBroke) || projectile.isOut()) {
-          player.breakProjectile(projectile)
+          this.projectiles().remove(projectile)
         }
       }
       player.vy += player.gravity * delta
@@ -110,18 +127,6 @@ export default class Game {
         player.vy = 0
         player.grounded = true
       }
-
-      for (const other of this.players().others(player)) {
-        for (const projectile of other.projectiles) {
-          if (projectile.isCaught(player)) {
-            player.breakProjectile(projectile)
-          }
-          if (projectile.isHit(player)) {
-            player.kill()
-            other.breakProjectile(projectile)
-          }
-        }
-      }
       for (const power_tile of tiles_with_power_ups) {
         if (power_tile.power_up && power_tile.power_up.isTouching(player)) {
           if (player.addPowerUp(power_tile.power_up)) {
@@ -131,6 +136,7 @@ export default class Game {
       }
       if (player.died === undefined && this.world().isPlayerInVoid(player)) {
         player.kill()
+        this.projectiles().removeByPlayer(player)
       }
     }
   }
@@ -204,6 +210,17 @@ export default class Game {
       return
     }
     player.usePowerUp(powerUp.type)
-    player.throwProjectile(degrees, powerUp.type)
+    switch (powerUp.type) {
+      case PowerType.BOOMERANG:
+        this.projectiles().throwBoomerang(player, degrees)
+        break
+      case PowerType.BOMB:
+        this.projectiles().placeBomb(player)
+        break
+      case PowerType.FIREBALL:
+        this.projectiles().throwFireball(player, degrees)
+        break
+
+    }
   }
 }

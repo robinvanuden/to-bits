@@ -9,8 +9,7 @@ import {
   PLAYER_SPEED_WALK,
   PLAYER_WIDTH
 } from "../constants"
-import {Direction, PlayerModel} from "../types/PlayerModel"
-import Projectile from "./Projectile"
+import PlayerModel, {Direction} from "../types/PlayerModel"
 
 const randomName = () => uniqueNamesGenerator({length: 1, dictionaries: [names]})
 
@@ -56,7 +55,6 @@ export default class Player {
   // directions pressed
   move: Direction
   power_ups: PowerUp[] = []
-  projectiles: Projectile[] = []
 
   constructor(id: string, socket: string, spawn: MapTile) {
     this.id = id
@@ -88,7 +86,6 @@ export default class Player {
       l: false,
       r: false
     }
-    this.projectiles = []
     this.power_ups = []
   }
 
@@ -127,7 +124,6 @@ export default class Player {
     this.move = {u: false, d: false, l: false, r: false}
     // Clear items
     this.power_ups = []
-    this.projectiles = []
   }
 
   getFirstPowerUp = () => this.power_ups[0] || null
@@ -138,14 +134,6 @@ export default class Player {
       return
     }
     this.power_ups = this.power_ups.filter(p => p.id !== power_up.id)
-  }
-
-  throwProjectile = (degrees: number, type: PowerType) => {
-    this.projectiles.push(Projectile.create(this, type, degrees))
-  }
-
-  breakProjectile = (projectile: Projectile) => {
-    this.projectiles = this.projectiles.filter(p => p.id !== projectile.id)
   }
 
   static toModel = (p: Player): PlayerModel => ({
@@ -163,7 +151,6 @@ export default class Player {
     c: p.color,
     l: p.look,
     m: p.move,
-    pr: p.projectiles.map(Projectile.toModel),
     pu: p.power_ups.map(PowerUp.toModel)
   })
 }

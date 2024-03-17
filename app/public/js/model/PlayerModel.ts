@@ -1,5 +1,4 @@
 import PowerUpModel from "./PowerUpModel"
-import ProjectileModel from "./ProjectileModel"
 
 export default interface PlayerModel {
   i: string // id
@@ -17,7 +16,6 @@ export default interface PlayerModel {
   l: Direction // looking
   m: Direction // moving
   pu: PowerUpModel[]
-  pr: ProjectileModel[]
   a: number // animation
 }
 

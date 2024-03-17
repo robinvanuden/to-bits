@@ -1,6 +1,4 @@
 import {PowerUpModel} from "./PowerUpModel"
-import {ProjectileModel} from "../entities/Projectile"
-
 
 export interface Direction {
   u: boolean // up
@@ -9,7 +7,7 @@ export interface Direction {
   r: boolean // right
 }
 
-export interface PlayerModel {
+export default interface PlayerModel {
   i: string,
   uid: string
   n: string // name
@@ -25,5 +23,4 @@ export interface PlayerModel {
   l: Direction
   m: Direction
   pu: PowerUpModel[]
-  pr: ProjectileModel[]
 }

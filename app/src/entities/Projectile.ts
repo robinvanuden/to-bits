@@ -10,6 +10,7 @@ import {
   FIREBALL_SIZE,
   FIREBALL_SPEED
 } from "../constants"
+import ProjectileModel from "../types/ProjectileModel"
 
 export default class Projectile {
   id: string = ""
@@ -92,15 +93,3 @@ export default class Projectile {
   }
 }
 
-export interface ProjectileModel {
-  id: string
-  p: string
-  t: string
-  c: string
-  x: number
-  y: number
-  vx: number
-  vy: number
-  w: number
-  h: number
-}

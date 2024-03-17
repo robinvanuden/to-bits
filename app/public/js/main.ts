@@ -75,12 +75,19 @@ import Canvas from "./canvas"
 
   socket.on("players", players => {
     data.setPlayers(players)
+
+    // Load textures of players
     for (const player of players) {
       for (let i = 0; i < 2; i++) {
         images.addImage("image/" + player.uid + "r" + i + ".png")
         images.addImage("image/" + player.uid + "l" + i + ".png")
       }
     }
+  })
+
+  socket.on("projectiles", projectiles => {
+    data.setProjectiles(projectiles)
+    // TODO: Add texture load
   })
 
   const keyEvent = (ev: KeyboardEvent, pressed: boolean) => {
