@@ -46,6 +46,8 @@ export default class MapTile {
     this.properties = item.properties || []
   }
 
+  // TODO: Move logic to the player and projectile
+  // "The player moves, not the tile"
   isColliding = (p: Player): boolean =>
     this.x < p.x + p.width &&
     this.x + this.width > p.x &&

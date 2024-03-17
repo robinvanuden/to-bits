@@ -4,41 +4,56 @@ import PowerUp, {PowerType} from "./PowerUp"
 import {v4} from "uuid"
 import {
   BOMB_SIZE,
-  BOMB_SPEED,
   BOOMERANG_SIZE,
   BOOMERANG_SPEED,
   FIREBALL_SIZE,
-  FIREBALL_SPEED
+  FIREBALL_SPEED,
+  GRAVITY
 } from "../constants"
 import ProjectileModel from "../types/ProjectileModel"
 
 export default class Projectile {
   id: string = ""
   player: string = ""
-  width: number = 0 // width
-  height: number = 0 // height
+  width: number // width
+  height: number // height
   type: PowerType
   x: number = 0 // x-coord
   y: number = 0 // y-coord
-  vx: number = 0 // x velocity
-  vy: number = 0 // y velocity
+  vx: number // x velocity
+  vy: number // y velocity
   color: string = ""
   gravity: number = 0
   thrown: number = 0
 
-  private constructor(player: Player, type: PowerType, radians: number, size: number, speed: number) {
+  private constructor(player: Player, type: PowerType, radians: number) {
     this.id = v4()
     this.player = player.id
     this.type = type
     this.color = player.color
     this.x = player.x + player.width * .5
     this.y = player.y + player.height * .5
-    this.vx = speed * Math.cos(radians)
-    this.vy = speed * Math.sin(radians)
-    this.width = size
-    this.height = size
-    this.gravity = .4545
     this.thrown = Date.now()
+    switch (type) {
+      case PowerType.BOOMERANG:
+        this.gravity = 0
+        this.width = this.height = BOOMERANG_SIZE
+        this.vx = BOOMERANG_SPEED * Math.cos(radians)
+        this.vy = BOOMERANG_SPEED * Math.sin(radians)
+        break
+      case PowerType.BOMB:
+        this.gravity = GRAVITY
+        this.width = this.height = BOMB_SIZE
+        this.vx = 0
+        this.vy = 0
+        break
+      case PowerType.FIREBALL:
+        this.gravity = 0
+        this.width = this.height = FIREBALL_SIZE
+        this.vx = FIREBALL_SPEED * Math.cos(radians)
+        this.vy = FIREBALL_SPEED * Math.sin(radians)
+        break
+    }
   }
 
   isBroke = (t: MapTile): boolean => this.x < t.x + t.width
@@ -73,23 +88,7 @@ export default class Projectile {
 
   public static create(player: Player, type: PowerType, degrees: number) {
     const radians = (degrees * Math.PI) / 180
-    let size = 0
-    let speed = 0
-    switch (type) {
-      case PowerType.BOOMERANG:
-        size = BOOMERANG_SIZE
-        speed = BOOMERANG_SPEED
-        break
-      case PowerType.BOMB:
-        size = BOMB_SIZE
-        speed = BOMB_SPEED
-        break
-      case PowerType.FIREBALL:
-        size = FIREBALL_SIZE
-        speed = FIREBALL_SPEED
-        break
-    }
-    return new Projectile(player, type, radians, size, speed)
+    return new Projectile(player, type, radians)
   }
 }
 

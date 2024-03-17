@@ -76,6 +76,7 @@ export default class Game {
     for (const player of this.players().alive()) {
 
       for (const projectile of this.projectiles().list()) {
+        projectile.vy += projectile.gravity * delta
         projectile.x += projectile.vx
         projectile.y += projectile.vy
 
@@ -85,9 +86,9 @@ export default class Game {
         if (projectile.isHit(player)) {
           player.kill()
           this.projectiles().removeByPlayer(player)
-          this.projectiles().remove(projectile)
+          if (projectile.type !== PowerType.BOMB) this.projectiles().remove(projectile)
         }
-        if (solids.find(projectile.isBroke) || projectile.isOut()) {
+        if (projectile.type !== PowerType.BOMB && solids.find(projectile.isBroke) || projectile.isOut()) {
           this.projectiles().remove(projectile)
         }
       }
