@@ -56,27 +56,34 @@ export default class Projectile {
     }
   }
 
-  isBroke = (t: MapTile): boolean => this.x < t.x + t.width
-    && this.x + this.width > t.x
-    && this.y < t.y + t.height
-    && this.y + this.height > t.y
+  isColliding = (tile: MapTile): boolean =>
+    tile.x < this.x + this.width &&
+    tile.x + tile.width > this.x &&
+    tile.y < this.y + this.height &&
+    tile.y + tile.height > this.y
+
+  isWalkingOn = (tile: MapTile): boolean =>
+    tile.x < this.x + this.width &&
+    tile.x + tile.width > this.x &&
+    tile.y < this.y + this.height &&
+    tile.y + 1 > this.y
 
   isThrown = (p: Player): boolean => this.id === p.id && this.thrown + 250 > Date.now()
 
-  isCaught = (p: Player): boolean => this.isThrown(p) && this.id === p.id && this.isColliding(p)
+  isCaught = (p: Player): boolean => this.isThrown(p) && this.id === p.id && this.hasHit(p)
 
-  isHit = (p: Player): boolean => this.player !== p.id && this.isColliding(p)
+  isHit = (p: Player): boolean => this.player !== p.id && this.hasHit(p)
 
   isOut = () => (Date.now() - this.thrown) > 5000
 
-  private isColliding = (p: Player): boolean => {
+  private hasHit = (p: Player): boolean => {
     return this.x < p.x + p.width && this.x + this.width > p.x && this.y < p.y + p.height && this.y + this.height > p.y
   }
 
   static toModel = (p: Projectile): ProjectileModel => ({
     id: p.id,
     p: p.player,
-    t: PowerUp.typeToString(p.type),
+    t: PowerUp.toString(p.type),
     c: p.color,
     x: p.x,
     y: p.y,

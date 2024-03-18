@@ -1,9 +1,8 @@
-import PowerUp from "./PowerUp"
 import {PROP_SEMI_SOLID, Tile, TileSetProperty} from "../types/TileSet"
-import Player from "./Player"
 import {WorldLayer} from "../types/World"
 import MapTileModel from "../types/MapTileModel"
 import path from "path"
+import PowerUp from "./PowerUp"
 
 export default class MapTile {
   id: number
@@ -46,26 +45,12 @@ export default class MapTile {
     this.properties = item.properties || []
   }
 
-  // TODO: Move logic to the player and projectile
-  // "The player moves, not the tile"
-  isColliding = (p: Player): boolean =>
-    this.x < p.x + p.width &&
-    this.x + this.width > p.x &&
-    this.y < p.y + p.height &&
-    this.y + this.height > p.y
-
-  isAboutWalking = (p: Player): boolean =>
-    this.x < p.x + p.width &&
-    this.x + this.width > p.x &&
-    this.y < p.y + p.height &&
-    this.y + 1 > p.y
-
   public hasPowerUp = (): boolean => this.power_up !== undefined
 
   public isSemiSolid = (): boolean => this.properties.find(p => p.name === PROP_SEMI_SOLID && p.value) != undefined
 
   public spawnPower = () => {
-    if (!this.hasPowerUp()) this.power_up = new PowerUp(this)
+    if (!this.hasPowerUp()) this.power_up = PowerUp.random()
   }
 
   private generateTextureUrl = () => {
@@ -87,6 +72,7 @@ export default class MapTile {
     sp: tile.layer === "spawn",
     wa: tile.isSemiSolid(),
     so: !tile.isSemiSolid(),
-    pu: PowerUp.toMaybeModel(tile.power_up)
+    pu: tile.power_up ? PowerUp.toModel(tile.power_up) : undefined
   })
+
 }

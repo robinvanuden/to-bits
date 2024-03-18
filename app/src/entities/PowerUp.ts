@@ -1,43 +1,21 @@
 import {v4} from "uuid"
-import Player from "./Player"
-import MapTile from "./MapTile"
 import {PowerUpModel} from "../types/PowerUpModel"
 
 export enum PowerType {BOOMERANG, BOMB, FIREBALL}
 
-const POWER_WIDTH = 6
-const POWER_HEIGHT = 6
-
 export default class PowerUp {
 
   id: string
-  width: number = POWER_WIDTH
-  height: number = POWER_HEIGHT
   type: PowerType
-  x: number
-  y: number
 
-  constructor(tile: MapTile) {
+  private constructor(type: PowerType) {
     this.id = v4()
-    this.type = PowerUp.randomType()
-    this.x = tile.x + Math.round((tile.width * .5) - (POWER_WIDTH * .5))
-    this.y = tile.y + Math.round((tile.height * .5) - (POWER_HEIGHT * .5))
+    this.type = type
   }
 
-  isTouching = (p: Player) =>
-    this.x < p.x + p.width &&
-    this.x + this.width > p.x &&
-    this.y < p.y + p.height &&
-    this.y + this.height > p.y
+  public typeToString = () => PowerUp.toString(this.type)
 
-  static randomType = (): PowerType => {
-    const enumValues = Object.keys(PowerType)
-      .map(n => Number.parseInt(n))
-      .filter(n => !Number.isNaN(n)) as unknown as PowerType[]
-    return enumValues[Math.floor(Math.random() * enumValues.length)]
-  }
-
-  static typeToString = (type: PowerType) => {
+  public static toString = (type: PowerType) => {
     switch (type) {
       case PowerType.BOOMERANG:
         return 'RANG'
@@ -48,26 +26,16 @@ export default class PowerUp {
     }
   }
 
-  static toModel = (power: PowerUp): PowerUpModel => {
-    return {
-      id: power.id,
-      w: power.width,
-      h: power.height,
-      x: power.x,
-      y: power.y,
-      t: PowerUp.typeToString(power.type),
-    }
+  private static randomType = (): PowerType => {
+    const index = Object.keys(PowerType).map(Number).filter(Number.isInteger)
+    return Math.round(Math.random() * (index.length - 1)) as PowerType
   }
 
-  static toMaybeModel = (power: PowerUp | undefined): PowerUpModel | undefined => {
-    return !power ? undefined : {
-      id: power.id,
-      w: power.width,
-      h: power.height,
-      x: power.x,
-      y: power.y,
-      t: PowerUp.typeToString(power.type),
-    }
-  }
+  public static random = () => new PowerUp(PowerUp.randomType())
+
+  public static toModel = (power: PowerUp): PowerUpModel => ({
+    id: power.id,
+    t: power.typeToString(),
+  })
 }
 

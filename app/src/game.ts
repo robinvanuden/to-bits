@@ -1,17 +1,15 @@
 import PlayerRepository from "./repository/PlayerRepository"
 import {v4, v5} from "uuid"
 import WorldLoader, {useWorld1} from "./world/WorldLoader"
-import MapTile from "./entities/MapTile"
 import ProjectileRepository from "./repository/ProjectileRepository"
 import {PowerType} from "./entities/PowerUp"
+import {TICKS} from "./constants"
 
 export default class Game {
 
   private readonly VERSION: string = "?.?.?"
 
-  private TICKS: number = 60
   private UUID_SEED: string = ""
-  private readonly world1: WorldLoader
 
   private playerRepository!: PlayerRepository
   private projectileRepository!: ProjectileRepository
@@ -22,7 +20,6 @@ export default class Game {
   constructor(VERSION: string) {
     this.VERSION = VERSION
     this.generate_seed()
-    this.world1 = useWorld1()
   }
 
   uuid_seed = () => this.UUID_SEED
@@ -44,7 +41,7 @@ export default class Game {
 
   setProjectileRepository = (projectiles: ProjectileRepository) => this.projectileRepository = projectiles
 
-  world = (): WorldLoader => this.world1
+  world = (): WorldLoader => useWorld1()
 
   addPlayer = (uuid: string, socket_id: string): boolean => {
     const continue_player = this.players().getConnected(uuid)
@@ -57,7 +54,7 @@ export default class Game {
     const player = this.players().getById(uuid)
     if (!player) {
       // New player
-      const SPAWN_TILE = this.world().randomSpawn()
+      const SPAWN_TILE = this.world().pickRandomSpawnPoint()
       if (!SPAWN_TILE) {
         return false
       }
@@ -70,16 +67,37 @@ export default class Game {
 
   private checkPlayerPosition = (delta: number) => {
     const solids = this.world().floor().solids()
-    this.spawnPowerUp()
-    const tiles_with_power_ups = this.world().powers().tiles()
-    const blocksWalkable = this.world().floor().semis()
+    const semi_solids = this.world().floor().semis()
+    const power_up_spawns = this.world().powers().tiles()
+    this.world().spawnPowerUp()
+
+
+    for (const projectile of this.projectiles().list()) {
+      // Projectile loop
+      projectile.vy += projectile.gravity * delta
+      projectile.x += projectile.vx
+      projectile.y += projectile.vy
+
+      const solid = solids.find(t => projectile.isColliding(t))
+      const semi_solid = semi_solids.find(t => projectile.isWalkingOn(t))
+      if (projectile.type === PowerType.BOMB && solid && projectile.isWalkingOn(solid) && projectile.vy > 0) {
+        projectile.y = solid.y - projectile.height
+        projectile.vy = 0
+      }
+      if (projectile.type === PowerType.BOMB && semi_solid && projectile.vy > 0) {
+        projectile.y = semi_solid.y - projectile.height
+        projectile.vy = 0
+      } else if (projectile.type !== PowerType.BOMB && solids.find(projectile.isColliding)) {
+        this.projectiles().remove(projectile)
+      }
+      if (projectile.isOut()) {
+        this.projectiles().remove(projectile)
+      }
+    }
     for (const player of this.players().alive()) {
+      // Player loop
 
       for (const projectile of this.projectiles().list()) {
-        projectile.vy += projectile.gravity * delta
-        projectile.x += projectile.vx
-        projectile.y += projectile.vy
-
         if (projectile.type === PowerType.BOOMERANG && projectile.isCaught(player)) {
           this.projectiles().remove(projectile)
         }
@@ -88,33 +106,28 @@ export default class Game {
           this.projectiles().removeByPlayer(player)
           if (projectile.type !== PowerType.BOMB) this.projectiles().remove(projectile)
         }
-        if (projectile.type !== PowerType.BOMB && solids.find(projectile.isBroke) || projectile.isOut()) {
-          this.projectiles().remove(projectile)
-        }
       }
-      player.vy += player.gravity * delta
 
       if (player.move.l) {
         player.x -= player.sw
-        if (solids.find(t => t.isColliding(player))) player.x += player.sw
+        if (solids.find(t => player.isColliding(t))) player.x += player.sw
       }
       if (player.move.r) {
         player.x += player.sw
-        if (solids.find(t => t.isColliding(player))) player.x -= player.sw
+        if (solids.find(t => player.isColliding(t))) player.x -= player.sw
       }
-      if (player.move.u && player.canJump() && !solids.find(t => t.isColliding(player))) {
+      if (player.move.u && player.canJump() && !solids.find(t => player.isColliding(t))) {
         player.vy -= player.sj
         player.grounded = false
       }
+      player.vy += player.gravity * delta
       player.x += player.vx
       player.y += player.vy
 
 
-      const solid_walkable = solids.find(t => t.isColliding(player) && t.isAboutWalking(player))
-      const solid = solids.find(t => t.isColliding(player))
-      const walkable = blocksWalkable.find(t => t.isAboutWalking(player))
-      if (solid_walkable && player.vy > 0) {
-        player.y = solid_walkable.y - player.height
+      const solid = solids.find(t => player.isColliding(t))
+      if (solid && player.isWalkingOn(solid) && player.vy > 0) {
+        player.y = solid.y - player.height
         player.vy = 0
         player.grounded = true
       } else if (solid && player.vy <= 0) {
@@ -122,17 +135,17 @@ export default class Game {
         player.vy = 0
         player.grounded = false
       }
-      if (walkable && player.vy > 0 && (player.y + player.height) < (walkable.y + walkable.height * .25)) {
-        // If y-velocity is higher than 0 (falling) and player collides with top of walkable block
-        player.y = walkable.y - player.height
+
+      const semi_solid = semi_solids.find(t => player.isWalkingOn(t))
+      if (semi_solid && player.vy > 0 && (player.y + player.height) < (semi_solid.y + semi_solid.height * .25)) {
+        // If y-velocity is higher than 0 (falling) and player collides with top of semi_solid block
+        player.y = semi_solid.y - player.height
         player.vy = 0
         player.grounded = true
       }
-      for (const power_tile of tiles_with_power_ups) {
-        if (power_tile.power_up && power_tile.power_up.isTouching(player)) {
-          if (player.addPowerUp(power_tile.power_up)) {
-            power_tile.power_up = undefined
-          }
+      for (const power_tile of power_up_spawns) {
+        if (power_tile.power_up && player.isTouching(power_tile) && player.addPowerUp(power_tile.power_up)) {
+          power_tile.power_up = undefined
         }
       }
       if (player.died === undefined && this.world().isPlayerInVoid(player)) {
@@ -140,19 +153,6 @@ export default class Game {
         this.projectiles().removeByPlayer(player)
       }
     }
-  }
-
-  private spawnPowerUp = () => {
-    if (Math.round(Math.random() * 500) !== 1) {
-      return
-    }
-    const airs = this.world().powers().tiles()
-    const index = Math.round(Math.random() * (airs.length - 1))
-    const tile: MapTile | undefined = airs[index] || undefined
-    if (!tile) {
-      return
-    }
-    tile.spawnPower()
   }
 
   private checkDisconnectedPlayers = () => {
@@ -165,7 +165,7 @@ export default class Game {
   private checkRespawnPlayers = () => {
     for (const player of this.players().respawns()) {
       console.log("Respawn player: " + player.id)
-      const spawn = this.world().randomSpawn()
+      const spawn = this.world().pickRandomSpawnPoint()
       if (spawn) player.respawn(spawn)
     }
   }
@@ -182,7 +182,7 @@ export default class Game {
     run()
     this.updated = now
     if (!this.players().filled()) this.stop()
-    if (this.running) setTimeout(() => this.loop(run), 1000 / this.TICKS)
+    if (this.running) setTimeout(() => this.loop(run), 1000 / TICKS)
   }
 
   start = (run: () => void) => {
@@ -210,7 +210,7 @@ export default class Game {
     if (!powerUp) {
       return
     }
-    player.usePowerUp(powerUp.type)
+    player.usePowerUp(powerUp)
     switch (powerUp.type) {
       case PowerType.BOOMERANG:
         this.projectiles().throwBoomerang(player, degrees)

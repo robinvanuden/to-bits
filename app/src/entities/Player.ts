@@ -1,5 +1,5 @@
 import {names, uniqueNamesGenerator} from "unique-names-generator"
-import PowerUp, {PowerType} from "./PowerUp"
+import PowerUp from "./PowerUp"
 import MapTile from "./MapTile"
 import {
   GRAVITY,
@@ -89,10 +89,8 @@ export default class Player {
     this.power_ups = []
   }
 
-  canJump = (): boolean => this.grounded && this.vy >= 0 && this.vy < 1
-
   // +1 checks 1 row of pixels below player
-  hasPowerUp = (type: PowerType): boolean => this.power_ups.filter(p => p.type === type).length > 0
+  canJump = (): boolean => this.grounded && this.vy >= 0 && this.vy < 1
 
   addPowerUp = (power_up: PowerUp): boolean => {
     if (this.power_ups.length >= PLAYER_MAX_POWER_UP) {
@@ -126,10 +124,29 @@ export default class Player {
     this.power_ups = []
   }
 
-  getFirstPowerUp = () => this.power_ups[0] || null
+  isColliding = (tile: MapTile): boolean =>
+    tile.x < this.x + this.width &&
+    tile.x + tile.width > this.x &&
+    tile.y < this.y + this.height &&
+    tile.y + tile.height > this.y
 
-  usePowerUp = (type: PowerType) => {
-    const power_up = this.power_ups.find(p => p.type === type)
+  isWalkingOn = (tile: MapTile): boolean =>
+    tile.x < this.x + this.width &&
+    tile.x + tile.width > this.x &&
+    tile.y < this.y + this.height &&
+    tile.y + 1 > this.y
+
+  isTouching = (tile: MapTile) =>
+    tile.power_up &&
+    tile.x < this.x + this.width &&
+    tile.x + tile.width > this.x &&
+    tile.y < this.y + this.height &&
+    tile.y + tile.height > this.y
+
+  getFirstPowerUp = () => this.power_ups[0] || undefined
+
+  usePowerUp = (power: PowerUp) => {
+    const power_up = this.power_ups.find(p => p.id === power.id)
     if (!power_up) {
       return
     }

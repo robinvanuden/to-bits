@@ -76,10 +76,10 @@ export default class Map {
                 break
             }
             this.ctx.fillRect(
-              this.canvas.tile(tile.pu.x) - cx,
-              this.canvas.tile(tile.pu.y) - cy,
-              this.canvas.tile(tile.pu.w),
-              this.canvas.tile(tile.pu.h)
+              this.canvas.tile(tile.x + 5) - cx,
+              this.canvas.tile(tile.y + 5) - cy,
+              this.canvas.tile(6),
+              this.canvas.tile(6)
             )
           }
         }

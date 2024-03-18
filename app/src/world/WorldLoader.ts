@@ -60,10 +60,23 @@ export default class WorldLoader {
 
   loadJsonMap = (name: string): World => JSON.parse(fs.readFileSync(path.resolve(__dirname, "../map/", name)).toString("utf-8"))
 
-  randomSpawn = (): MapTile | undefined => {
+  pickRandomSpawnPoint = (): MapTile | undefined => {
     const spawns = this.spawns().tiles().filter(t => t !== undefined)
     const picked = Math.ceil(Math.random() * spawns.length) - 1
     return spawns[picked] || spawns[0] || undefined
+  }
+
+  public spawnPowerUp = () => {
+    if (Math.round(Math.random() * 500) !== 1) {
+      return
+    }
+    const airs = this.powers().tiles()
+    const index = Math.round(Math.random() * (airs.length - 1))
+    const tile: MapTile | undefined = airs[index] || undefined
+    if (!tile) {
+      return
+    }
+    tile.spawnPower()
   }
 
   clearPowerUps = () => {
