@@ -5,15 +5,21 @@ export enum PowerType {BOOMERANG, BOMB, FIREBALL}
 
 export default class PowerUp {
 
-  id: string
-  type: PowerType
+  private readonly _id: string
+  private readonly _type: PowerType
 
   private constructor(type: PowerType) {
-    this.id = v4()
-    this.type = type
+    this._id = v4()
+    this._type = type
   }
 
-  public typeToString = () => PowerUp.toString(this.type)
+  public type = () => this._type
+
+  public equals = (powerUp: PowerUp) => powerUp._id === this._id
+
+  public notEquals = (powerUp: PowerUp) => powerUp._id !== this._id
+
+  public typeToString = () => PowerUp.toString(this._type)
 
   public static toString = (type: PowerType) => {
     switch (type) {
@@ -34,7 +40,7 @@ export default class PowerUp {
   public static random = () => new PowerUp(PowerUp.randomType())
 
   public static toModel = (power: PowerUp): PowerUpModel => ({
-    id: power.id,
+    id: power._id,
     t: power.typeToString(),
   })
 }

@@ -71,40 +71,15 @@ export default class Game {
     const power_up_spawns = this.world().powers().tiles()
     this.world().spawnPowerUp()
 
-
-    for (const projectile of this.projectiles().list()) {
-      // Projectile loop
-      projectile.vy += projectile.gravity * delta
-      projectile.x += projectile.vx
-      projectile.y += projectile.vy
-
-      const solid = solids.find(t => projectile.isColliding(t))
-      const semi_solid = semi_solids.find(t => projectile.isWalkingOn(t))
-      if (projectile.type === PowerType.BOMB && solid && projectile.isWalkingOn(solid) && projectile.vy > 0) {
-        projectile.y = solid.y - projectile.height
-        projectile.vy = 0
-      }
-      if (projectile.type === PowerType.BOMB && semi_solid && projectile.vy > 0) {
-        projectile.y = semi_solid.y - projectile.height
-        projectile.vy = 0
-      } else if (projectile.type !== PowerType.BOMB && solids.find(projectile.isColliding)) {
-        this.projectiles().remove(projectile)
-      }
-      if (projectile.isOut()) {
-        this.projectiles().remove(projectile)
-      }
-    }
     for (const player of this.players().alive()) {
       // Player loop
 
       for (const projectile of this.projectiles().list()) {
-        if (projectile.type === PowerType.BOOMERANG && projectile.isCaught(player)) {
+        if (projectile.remove(player)) {
           this.projectiles().remove(projectile)
         }
-        if (projectile.isHit(player)) {
+        if (projectile.kills(player)) {
           player.kill()
-          this.projectiles().removeByPlayer(player)
-          if (projectile.type !== PowerType.BOMB) this.projectiles().remove(projectile)
         }
       }
 
@@ -151,6 +126,26 @@ export default class Game {
       if (player.died === undefined && this.world().isPlayerInVoid(player)) {
         player.kill()
         this.projectiles().removeByPlayer(player)
+      }
+    }
+
+    for (const projectile of this.projectiles().list()) {
+      // Projectile loop
+      projectile.vy += projectile.gravity * delta
+      projectile.x += projectile.vx
+      projectile.y += projectile.vy
+
+      const solid = solids.find(t => projectile.isColliding(t))
+      const semi_solid = semi_solids.find(t => projectile.isWalkingOn(t))
+      if (projectile.type === PowerType.BOMB && solid && projectile.isWalkingOn(solid) && projectile.vy > 0) {
+        projectile.y = solid.y - projectile.height
+        projectile.vy = 0
+      }
+      if (projectile.type === PowerType.BOMB && semi_solid && projectile.vy > 0) {
+        projectile.y = semi_solid.y - projectile.height
+        projectile.vy = 0
+      } else if (projectile.type !== PowerType.BOMB && solids.find(projectile.isColliding)) {
+        this.projectiles().remove(projectile)
       }
     }
   }
@@ -211,7 +206,7 @@ export default class Game {
       return
     }
     player.usePowerUp(powerUp)
-    switch (powerUp.type) {
+    switch (powerUp.type()) {
       case PowerType.BOOMERANG:
         this.projectiles().throwBoomerang(player, degrees)
         break

@@ -146,11 +146,11 @@ export default class Player {
   getFirstPowerUp = () => this.power_ups[0] || undefined
 
   usePowerUp = (power: PowerUp) => {
-    const power_up = this.power_ups.find(p => p.id === power.id)
+    const power_up = this.power_ups.find(power.equals)
     if (!power_up) {
       return
     }
-    this.power_ups = this.power_ups.filter(p => p.id !== power_up.id)
+    this.power_ups = this.power_ups.filter(power.notEquals)
   }
 
   static toModel = (p: Player): PlayerModel => ({
