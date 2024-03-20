@@ -4,7 +4,7 @@ import Game from "../game"
 
 import cookie from "cookie"
 import {COOKIE_PLAYER_ID} from "../constants"
-import Projectile from "../entities/Projectile"
+import Entity from "../entities/Entity"
 
 export default class PlayerSocket {
 
@@ -123,7 +123,7 @@ export default class PlayerSocket {
     // Emit players
     this.io.emit("players", this.game?.players().list().map(Player.toModel) ?? [])
 
-    this.io.emit("projectiles", this.game?.projectiles().list().map(Projectile.toModel) ?? [])
+    this.io.emit("projectiles", this.game?.entities().list().map(Entity.toModel) ?? [])
 
     this.io.emit("map_layer", this.game.world().powers().toModel())
   }

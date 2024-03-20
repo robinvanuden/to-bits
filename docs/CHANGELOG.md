@@ -7,13 +7,13 @@ The HUD update. More coming soon!
 ### Added
 
 - [ ] Interface elements for the player.
-  - [ ] The players name
-  - [ ] Inventory items
-  - [ ] All players
+    - [ ] The players name
+    - [ ] Inventory items
+    - [ ] All players
 - [ ] Backend event separation
-  - [ ] Events for joining or disconnecting players.
-  - [ ] Events for projectiles
-  - [ ] Events for player movement
+    - [ ] Events for joining or disconnecting players.
+    - [ ] Events for entities
+    - [ ] Events for player movement
 - [ ] Event messages on screen (join, death, etc)
 - [ ] Added lobbies instead of a fixed world.
 
@@ -32,27 +32,27 @@ The Item update. More coming soon!
 ### Added
 
 - [ ] More textures
-  - [ ] Bow
-    - [ ] Item
-    - [ ] Player holding
-    - [ ] Projectile texture for the arrow
-  - [ ] Fireball
-    - [ ] Item
-    - [ ] Player holding
-    - [ ] Projectile texture
-  - [ ] Bomb
-    - [ ] Item
-    - [ ] Player holding
-    - [ ] Projectile texture
-  - [ ] Boomerang
-    - [ ] Item
-    - [ ] Player holding
-    - [ ] Projectile texture for the arrow
-  - [ ] Sword
-    - [ ] Item
-    - [ ] Player holding
-    - [ ] Projectile texture for the arrow
-- [ ] Projectile class for items.
+    - [ ] Bow
+        - [ ] Item
+        - [ ] Player holding
+        - [ ] Entity texture for the arrow
+    - [ ] Fireball
+        - [ ] Item
+        - [ ] Player holding
+        - [ ] Entity texture
+    - [ ] Bomb
+        - [ ] Item
+        - [ ] Player holding
+        - [ ] Entity texture
+    - [ ] Boomerang
+        - [ ] Item
+        - [ ] Player holding
+        - [ ] Entity texture for the arrow
+    - [ ] Sword
+        - [ ] Item
+        - [ ] Player holding
+        - [ ] Entity texture for the arrow
+- [ ] Entity class for items.
 - [ ] Added melee logic to punch other players
 
 ### Changed
@@ -61,7 +61,7 @@ The Item update. More coming soon!
 - [ ] Moved player and projectile loop methods to a separate file
 - [ ] The background of the player name-tags is now totally black.
 - [ ] Player color picking now checks existing player colors
-  - Before some players had the same color which could be confusing
+    - Before some players had the same color which could be confusing
 - [ ] Animated the items that spawn on the map
 
 ## 0.4
@@ -74,9 +74,9 @@ The Map update.
 
 - [x] Using TILED JSON files for the map data.
 - [x] More map textures.
-  - [x] Stone textures
-  - [x] Connected textures
-  - [x] Bridges
+    - [x] Stone textures
+    - [x] Connected textures
+    - [x] Bridges
 - [x] Repository for the map data with better control of the tiles.
 - [x] Added layers to render the map
 
@@ -87,7 +87,7 @@ The Map update.
 ### Fixed
 
 - [x] Fixed losing the cookie ID after refreshing
-  - This results in permanent Conflict error or duplicate characters.
+    - This results in permanent Conflict error or duplicate characters.
 - [x] Fixed letting the character moonwalk when pushing 2 directions at once.
 
 ## 0.3

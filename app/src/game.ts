@@ -1,7 +1,7 @@
 import PlayerRepository from "./repository/PlayerRepository"
 import {v4, v5} from "uuid"
 import WorldLoader, {useWorld1} from "./world/WorldLoader"
-import ProjectileRepository from "./repository/ProjectileRepository"
+import EntityRepository from "./repository/EntityRepository"
 import {PowerType} from "./entities/PowerUp"
 import {TICKS} from "./constants"
 
@@ -12,7 +12,7 @@ export default class Game {
   private UUID_SEED: string = ""
 
   private playerRepository!: PlayerRepository
-  private projectileRepository!: ProjectileRepository
+  private entityRepository!: EntityRepository
 
   private running: boolean = false
   private updated: number = Date.now()
@@ -37,9 +37,9 @@ export default class Game {
 
   setPlayersRepository = (players: PlayerRepository) => this.playerRepository = players
 
-  projectiles = () => this.projectileRepository
+  entities = () => this.entityRepository
 
-  setProjectileRepository = (projectiles: ProjectileRepository) => this.projectileRepository = projectiles
+  setEntityRepository = (entities: EntityRepository) => this.entityRepository = entities
 
   world = (): WorldLoader => useWorld1()
 
@@ -73,10 +73,9 @@ export default class Game {
 
     for (const player of this.players().alive()) {
       // Player loop
-
-      for (const projectile of this.projectiles().list()) {
+      for (const projectile of this.entities().list()) {
         if (projectile.remove(player)) {
-          this.projectiles().remove(projectile)
+          this.entities().remove(projectile)
         }
         if (projectile.kills(player)) {
           player.kill()
@@ -125,27 +124,28 @@ export default class Game {
       }
       if (player.died === undefined && this.world().isPlayerInVoid(player)) {
         player.kill()
-        this.projectiles().removeByPlayer(player)
       }
     }
 
-    for (const projectile of this.projectiles().list()) {
-      // Projectile loop
-      projectile.vy += projectile.gravity * delta
-      projectile.x += projectile.vx
-      projectile.y += projectile.vy
+    for (const entity of this.entities().list()) {
+      // Entity loop
+      entity.vy += entity.gravity * delta
+      entity.x += entity.vx
+      entity.y += entity.vy
 
-      const solid = solids.find(t => projectile.isColliding(t))
-      const semi_solid = semi_solids.find(t => projectile.isWalkingOn(t))
-      if (projectile.type === PowerType.BOMB && solid && projectile.isWalkingOn(solid) && projectile.vy > 0) {
-        projectile.y = solid.y - projectile.height
-        projectile.vy = 0
+      const solid = solids.find(t => entity.isColliding(t))
+      const semi_solid = semi_solids.find(t => entity.isWalkingOn(t))
+      if (entity.type === PowerType.BOMB && solid && entity.isWalkingOn(solid) && entity.vy > 0) {
+        entity.y = solid.y - entity.height
+        entity.vx = 0
+        entity.vy = 0
       }
-      if (projectile.type === PowerType.BOMB && semi_solid && projectile.vy > 0) {
-        projectile.y = semi_solid.y - projectile.height
-        projectile.vy = 0
-      } else if (projectile.type !== PowerType.BOMB && solids.find(projectile.isColliding)) {
-        this.projectiles().remove(projectile)
+      if (entity.type === PowerType.BOMB && semi_solid && entity.vy > 0) {
+        entity.y = semi_solid.y - entity.height
+        entity.vx = 0
+        entity.vy = 0
+      } else if (entity.type !== PowerType.BOMB && solids.find(entity.isColliding)) {
+        this.entities().remove(entity)
       }
     }
   }
@@ -208,13 +208,13 @@ export default class Game {
     player.usePowerUp(powerUp)
     switch (powerUp.type()) {
       case PowerType.BOOMERANG:
-        this.projectiles().throwBoomerang(player, degrees)
+        this.entities().throwBoomerang(player, degrees)
         break
       case PowerType.BOMB:
-        this.projectiles().placeBomb(player)
+        this.entities().placeBomb(player)
         break
       case PowerType.FIREBALL:
-        this.projectiles().throwFireball(player, degrees)
+        this.entities().throwFireball(player, degrees)
         break
 
     }

@@ -4,6 +4,7 @@ import PowerUp, {PowerType} from "./PowerUp"
 import {v4} from "uuid"
 import {
   BOMB_SIZE,
+  BOMB_SPEED,
   BOOMERANG_SIZE,
   BOOMERANG_SPEED,
   FIREBALL_SIZE,
@@ -12,21 +13,25 @@ import {
 } from "../constants"
 import ProjectileModel from "../types/ProjectileModel"
 
-export default class Projectile {
+export default class Entity {
   id: string = ""
   player: string = ""
-  width: number // width
-  height: number // height
+
   type: PowerType
   color: string = ""
+
+  width: number // width
+  height: number // height
   x: number = 0 // x-coord
   y: number = 0 // y-coord
   vx: number // x velocity
   vy: number // y velocity
+
   gravity: number = 0
   spawned: number = 0
-  throwable: boolean
-  explosive: boolean
+
+  isProjectile: boolean
+  isExplosive: boolean
 
   private constructor(player: Player, type: PowerType, radians: number) {
     this.id = v4()
@@ -39,24 +44,24 @@ export default class Projectile {
     switch (type) {
       case PowerType.BOOMERANG:
         this.gravity = GRAVITY * .2
-        this.throwable = true
-        this.explosive = false
+        this.isProjectile = true
+        this.isExplosive = false
         this.width = this.height = BOOMERANG_SIZE
         this.vx = BOOMERANG_SPEED * Math.cos(radians)
         this.vy = BOOMERANG_SPEED * Math.sin(radians)
         break
       case PowerType.BOMB:
         this.gravity = GRAVITY
-        this.explosive = true
-        this.throwable = false
+        this.isExplosive = true
+        this.isProjectile = false
         this.width = this.height = BOMB_SIZE
-        this.vx = 0
-        this.vy = 0
+        this.vx = BOMB_SPEED * Math.cos(radians)
+        this.vy = BOMB_SPEED * Math.sin(radians)
         break
       case PowerType.FIREBALL:
         this.gravity = GRAVITY * .2
-        this.explosive = false
-        this.throwable = true
+        this.isExplosive = false
+        this.isProjectile = true
         this.width = this.height = FIREBALL_SIZE
         this.vx = FIREBALL_SPEED * Math.cos(radians)
         this.vy = FIREBALL_SPEED * Math.sin(radians)
@@ -66,7 +71,7 @@ export default class Projectile {
 
   public static create(player: Player, type: PowerType, degrees: number) {
     const radians = (degrees * Math.PI) / 180
-    return new Projectile(player, type, radians)
+    return new Entity(player, type, radians)
   }
 
   private isHit = (p: Player): boolean =>
@@ -110,7 +115,7 @@ export default class Projectile {
     }
   }
 
-  static toModel = (p: Projectile): ProjectileModel => ({
+  static toModel = (p: Entity): ProjectileModel => ({
     id: p.id,
     p: p.player,
     t: PowerUp.toString(p.type),

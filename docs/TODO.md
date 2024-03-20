@@ -25,12 +25,12 @@
 - [ ]  Reduce message size to front end
 - [ ]  Sprite manager / Character
 - [x]  Sprite creator with tint.
-   - [x]  Walking animation
+    - [x]  Walking animation
 - [ ] More map textures.
 - [ ] Point system
-   - Coin = 1 point
-   - Kill = 10 points
-   - Death = -1 point
+    - Coin = 1 point
+    - Kill = 10 points
+    - Death = -1 point
 - [ ]  Disconnect & kill messages.
 - [ ] Lobby system (Not just join to play)
 
