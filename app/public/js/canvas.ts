@@ -3,52 +3,52 @@ const FONT_SIZE = 20
 
 export default class Canvas {
 
-  private readonly __canvas: HTMLCanvasElement
-  readonly ctx: CanvasRenderingContext2D
-  readonly ratio: number
-  private __width: number = 0
-  private __height: number = 0
+	private readonly __canvas: HTMLCanvasElement
+	readonly ctx: CanvasRenderingContext2D
+	readonly ratio: number
+	private __width: number = 0
+	private __height: number = 0
 
-  constructor(canvas: HTMLCanvasElement) {
-    this.__canvas = canvas
-    this.ctx = canvas.getContext("2d") as CanvasRenderingContext2D
-    this.ratio = window.devicePixelRatio || 1
+	constructor(canvas: HTMLCanvasElement) {
+		this.__canvas = canvas
+		this.ctx = canvas.getContext("2d") as CanvasRenderingContext2D
+		this.ratio = window.devicePixelRatio || 1
 
-    window.addEventListener("resize", this.updateWindowSize)
-    this.updateWindowSize()
-  }
+		window.addEventListener("resize", this.updateWindowSize)
+		this.updateWindowSize()
+	}
 
-  updateWindowSize = () => this.setDimensions(window.innerWidth, window.innerHeight)
+	updateWindowSize = () => this.setDimensions(window.innerWidth, window.innerHeight)
 
-  font = (size: number, family: string = FONT_TEXT) => `${this.rem(size)}px ${family}`
+	font = (size: number, family: string = FONT_TEXT) => `${this.rem(size)}px ${family}`
 
-  size = (n: number) => n * this.ratio
+	size = (n: number) => n * this.ratio
 
-  tile = (n: number) => this.size(n) * 4
+	tile = (n: number) => this.size(n) * 4
 
-  rem = (n: number) => this.size(Math.round(FONT_SIZE * n))
+	rem = (n: number) => this.size(Math.round(FONT_SIZE * n))
 
-  width = () => this.__width
+	width = () => this.__width
 
-  height = () => this.__height
+	height = () => this.__height
 
-  setDimensions = (width: number, height: number) => {
-    this.__width = this.__canvas.width = this.size(width)
-    this.__height = this.__canvas.height = this.size(height)
+	setDimensions = (width: number, height: number) => {
+		this.__width = this.__canvas.width = this.size(width)
+		this.__height = this.__canvas.height = this.size(height)
 
-    this.ctx.textRendering = "geometricPrecision"
-    this.ctx.fontKerning = "normal"
-    this.ctx.imageSmoothingEnabled = false
-    this.ctx.imageSmoothingQuality = "low"
-    this.ctx.fontStretch = "normal"
-  }
+		this.ctx.textRendering = "geometricPrecision"
+		this.ctx.fontKerning = "normal"
+		this.ctx.imageSmoothingEnabled = false
+		this.ctx.imageSmoothingQuality = "low"
+		this.ctx.fontStretch = "normal"
+	}
 
-  clear = () => {
-    this.ctx.clearRect(0, 0, this.__width, this.__width)
-  }
+	clear = () => {
+		this.ctx.clearRect(0, 0, this.__width, this.__width)
+	}
 
-  setBackgroundHue(heightPlayer: number, heightMap: number) {
-    const heu = Math.min(80 - (heightPlayer / heightMap * 80), 80)
-    this.__canvas.style.backgroundColor = `hsl(137 50% ${heu}%)`
-  }
+	setBackgroundHue(heightPlayer: number, heightMap: number) {
+		const heu = Math.min(80 - (heightPlayer / heightMap * 80), 80)
+		this.__canvas.style.backgroundColor = `hsl(137 50% ${heu}%)`
+	}
 }

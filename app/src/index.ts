@@ -28,39 +28,39 @@ app.use(cookieParser())
 app.use("/", express.static("dist"))
 
 app.get("/", (req, res) => {
-  let uuid: string = req.cookies[COOKIE_PLAYER_ID] || ""
-  console.log("incoming uuid", uuid, uuid.length)
-  if (uuid.length === 0) {
-    // No cookie yet
-    uuid = game.generate_uuid()
-    // console.log("Generated uuid for new player_id", uuid)
-  }
-  if (uuid.length !== 36) {
-    // Invalid cookie format
-    res.sendStatus(401)
-    return
-  }
-  const player = players.getById(uuid)
-  if (!player) {
-    // Possible old cookie, generate new one
-    uuid = game.generate_uuid()
-    console.log("Generated uuid for an old player_id (outdated cookie)")
-  }
-  if (player && !player.disconnected) {
-    // console.log("Invalid session", uuid)
-    res.sendStatus(409)
-    return
-  }
+	let uuid: string = req.cookies[COOKIE_PLAYER_ID] || ""
+	console.log("incoming uuid", uuid, uuid.length)
+	if (uuid.length === 0) {
+		// No cookie yet
+		uuid = game.generate_uuid()
+		// console.log("Generated uuid for new player_id", uuid)
+	}
+	if (uuid.length !== 36) {
+		// Invalid cookie format
+		res.sendStatus(401)
+		return
+	}
+	const player = players.getById(uuid)
+	if (!player) {
+		// Possible old cookie, generate new one
+		uuid = game.generate_uuid()
+		console.log("Generated uuid for an old player_id (outdated cookie)")
+	}
+	if (player && !player.disconnected) {
+		// console.log("Invalid session", uuid)
+		res.sendStatus(409)
+		return
+	}
 
-  res.cookie(COOKIE_PLAYER_ID, uuid, {
-    httpOnly: true,
-    path: "/",
-    sameSite: "strict",
-    maxAge: 60_000 * 12,
-    secure: req.secure || (req.headers.origin || "").startsWith("https")
-  })
-  console.log(COOKIE_PLAYER_ID, uuid)
-  res.sendFile(path.resolve(__dirname, "../dist/main.html"))
+	res.cookie(COOKIE_PLAYER_ID, uuid, {
+		httpOnly: true,
+		path: "/",
+		sameSite: "strict",
+		maxAge: 60_000 * 12,
+		secure: req.secure || (req.headers.origin || "").startsWith("https")
+	})
+	console.log(COOKIE_PLAYER_ID, uuid)
+	res.sendFile(path.resolve(__dirname, "../dist/main.html"))
 })
 
 app.use(imageController(players))
