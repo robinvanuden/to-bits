@@ -1,7 +1,8 @@
 {
   "columns": 4,
+  "fillmode": "preserve-aspect-fit",
   "image": "..\/..\/assets\/map\/wood.png",
-  "imageheight": 16,
+  "imageheight": 8,
   "imagewidth": 64,
   "margin": 0,
   "name": "wood",
@@ -15,7 +16,7 @@
   "spacing": 0,
   "tilecount": 4,
   "tiledversion": "1.10.2",
-  "tileheight": 16,
+  "tileheight": 8,
   "tilewidth": 16,
   "type": "tileset",
   "version": "1.10"

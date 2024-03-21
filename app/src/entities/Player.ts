@@ -133,8 +133,8 @@ export default class Player {
   isWalkingOn = (tile: MapTile): boolean =>
     tile.x < this.x + this.width &&
     tile.x + tile.width > this.x &&
-    tile.y < this.y + this.height &&
-    tile.y + 1 > this.y
+    tile.y - 1 < this.y + this.height &&
+    tile.y + tile.height > this.y + (this.height - 1)
 
   isTouching = (tile: MapTile) =>
     tile.power_up &&

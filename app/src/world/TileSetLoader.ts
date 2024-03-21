@@ -23,7 +23,7 @@ export default class TileSetLoader {
     this._name = name
     this._first_id = index
     this._set = this.loadJsonTileSet(name)
-
+    console.log(this._set)
     let id = 0
     for (let r = 0; r < Math.round(this._set.imageheight / this._set.tileheight); r++) {
       for (let c = 0; c < Math.round(this._set.imagewidth / this._set.tilewidth); c++) {

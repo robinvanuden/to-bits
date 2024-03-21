@@ -100,7 +100,11 @@ export default class Game {
 
 
       const solid = solids.find(t => player.isColliding(t))
-      if (solid && player.isWalkingOn(solid) && player.vy > 0) {
+      if (solid && player.vy > 0 && player.isWalkingOn(solid)) {
+        player.y = solid.y - player.height
+        player.vy = 0
+        player.grounded = true
+      } else if (solid && player.vy > 0) {
         player.y = solid.y - player.height
         player.vy = 0
         player.grounded = true
@@ -110,13 +114,18 @@ export default class Game {
         player.grounded = false
       }
 
+      if (player.move.d) {
+        player.vy += player.gravity * delta * 2
+      }
+
       const semi_solid = semi_solids.find(t => player.isWalkingOn(t))
-      if (semi_solid && player.vy > 0 && (player.y + player.height) < (semi_solid.y + semi_solid.height * .25)) {
-        // If y-velocity is higher than 0 (falling) and player collides with top of semi_solid block
+      if (!player.move.d && semi_solid && player.vy > 0) {
+        // If y-velocity is higher than 0 (falling)
         player.y = semi_solid.y - player.height
         player.vy = 0
         player.grounded = true
       }
+
       for (const power_tile of power_up_spawns) {
         if (power_tile.power_up && player.isTouching(power_tile) && player.addPowerUp(power_tile.power_up)) {
           power_tile.power_up = undefined
@@ -135,12 +144,12 @@ export default class Game {
 
       const solid = solids.find(t => entity.isColliding(t))
       const semi_solid = semi_solids.find(t => entity.isWalkingOn(t))
-      if (!entity.isProjectile && solid && entity.isWalkingOn(solid) && entity.vy > 0) {
+      if (solid && !entity.isProjectile && entity.vy > 0 && entity.isWalkingOn(solid)) {
         entity.y = solid.y - entity.height
         entity.vx = 0
         entity.vy = 0
       }
-      if (entity.isExplosive && semi_solid && entity.vy > 0) {
+      if (semi_solid && entity.isExplosive && entity.vy > 0) {
         entity.y = semi_solid.y - entity.height
         entity.vx = 0
         entity.vy = 0

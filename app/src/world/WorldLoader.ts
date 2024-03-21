@@ -40,19 +40,20 @@ export default class WorldLoader {
   constructor(name: string) {
     this._seed = v4()
     this.world = this.loadJsonMap(name + ".json")
+    console.log(this.world)
     for (const set of this.world.tilesets) {
       this.sets.push(new TileSetLoader(set.source, set.firstgid))
     }
     for (const layer of this.world.layers) {
       switch (layer.name) {
         case "floor":
-          this._floor = new LayerLoader(layer, this.sets, this.seed())
+          this._floor = new LayerLoader(this.world, layer, this.sets, this.seed())
           break
         case "powers":
-          this._powers = new LayerLoader(layer, this.sets, this.seed())
+          this._powers = new LayerLoader(this.world, layer, this.sets, this.seed())
           break
         case "spawns":
-          this._spawns = new LayerLoader(layer, this.sets, this.seed())
+          this._spawns = new LayerLoader(this.world, layer, this.sets, this.seed())
           break
       }
     }
@@ -67,7 +68,7 @@ export default class WorldLoader {
   }
 
   public spawnPowerUp = () => {
-    if (Math.round(Math.random() * 500) === 1) {
+    if (Math.round(Math.random() * 500) !== 1) {
       return
     }
     const airs = this.powers().tiles()

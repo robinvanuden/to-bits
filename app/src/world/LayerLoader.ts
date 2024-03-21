@@ -1,5 +1,5 @@
 import MapTile from "../entities/MapTile"
-import {WorldLayer} from "../types/World"
+import World, {WorldLayer} from "../types/World"
 import TileSetLoader from "./TileSetLoader"
 import {TileLayerModel} from "../types/MapTileModel"
 
@@ -18,14 +18,18 @@ export default class LayerLoader {
 
   public semis = (): MapTile[] => this.tiles().filter(t => t.isSemiSolid())
 
-  constructor(layer: WorldLayer, sets: TileSetLoader[], seed: string) {
+  constructor(world: World, layer: WorldLayer, sets: TileSetLoader[], seed: string) {
     this._layer = layer
     let c = 0
-    for (let y = 0; y < layer.height; y++) {
-      for (let x = 0; x < layer.width; x++) {
+    for (let y = 0; y < world.height; y++) {
+      for (let x = 0; x < world.width; x++) {
+        const tile_x = x * world.tilewidth
+        const tile_y = y * world.tileheight
         const id = layer.data[c]
         const item = sets.find(s => id >= s.firstId() && s.getTileById(id))?.getTileById(id)
-        if (item) this._map_tiles.push(new MapTile(id, x, y, seed, layer, item))
+        if (item) {
+          this._map_tiles.push(new MapTile(id, tile_x, tile_y, seed, layer, item))
+        }
         c++
       }
     }

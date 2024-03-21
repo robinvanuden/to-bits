@@ -27,8 +27,8 @@ export default class MapTile {
   constructor(id: number, x: number, y: number, seed: string, layer: WorldLayer, item: Tile) {
     this.id = id
     this.seed = seed
-    this.x = x * item.tilewidth
-    this.y = y * item.tileheight
+    this.x = x
+    this.y = y
     this.name = item.name
     this.source = item.source
     this.offset_x = item.offset_x
