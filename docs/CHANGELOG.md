@@ -43,7 +43,7 @@ The Item update.
 
 ### Added
 
-- [ ] Entity class for entities other than players.
+- [x] Entity class for entities other than players.
 - [ ] Added lobbies instead of a fixed world.
 - [ ] Added melee logic to punch other players
 - [ ] Added damage attribute to players (no instant kills)
