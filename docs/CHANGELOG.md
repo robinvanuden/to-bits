@@ -10,22 +10,8 @@ The player update!
 
 ### Added
 
-- [ ] Interface elements for the player_id.
-    - [ ] The players name
-    - [ ] Inventory items
-    - [ ] All players
 - [ ] Backend event separation
     - [ ] Events for joining or disconnecting players.
-    - [ ] Events for entities
-  - [ ] Events for player_id movement
-- [ ] Event messages on screen (join, death, etc)
-- [ ] Added lobbies instead of a fixed world.
-
-### Changed
-
-- [ ] Update only the movement of players but not all the player_id data.
-- [ ] Update only tiles that are affected to change, not the entire layer
-- [ ] Moved the world-loader to the lobby
     - [ ] Events for projectiles
     - [ ] Events for player movement
 - [ ] Event messages on screen (join, death, etc)
@@ -49,6 +35,7 @@ The player update!
 - [ ] Update only tiles that are affected to change, not the entire map layer
 - [ ] Events are more separated. Only push small updates
     - Players join/leave
+-
 
 ## 0.5
 
@@ -56,38 +43,6 @@ The Item update.
 
 ### Added
 
-- [ ] More textures
-    - [ ] Bow
-        - [ ] Item
-        - [ ] Player holding
-        - [ ] Entity texture for the arrow
-    - [ ] Fireball
-        - [ ] Item
-        - [ ] Player holding
-        - [ ] Entity texture
-    - [ ] Bomb
-        - [ ] Item
-        - [ ] Player holding
-        - [ ] Entity texture
-    - [ ] Boomerang
-        - [ ] Item
-        - [ ] Player holding
-        - [ ] Entity texture for the arrow
-    - [ ] Sword
-        - [ ] Item
-        - [ ] Player holding
-        - [ ] Entity texture for the arrow
-- [ ] Entity class for items.
-- [ ] Added melee logic to punch other players
-
-### Changed
-
-- [ ] Moved player_id-items to their own repository.
-- [ ] Moved player_id and projectile loop methods to a separate file
-- [ ] The background of the player_id name-tags is now totally black.
-- [ ] Player color picking now checks existing player_id colors
-    - Before some players had the same color which could be confusing
-- [ ] Animated the items that spawn on the map
 - [ ] Entity class for entities other than players.
 - [ ] Added lobbies instead of a fixed world.
 - [ ] Added melee logic to punch other players
@@ -177,7 +132,7 @@ The Map update.
 
 - [x] Fixed losing the cookie ID after refreshing
     - This results in permanent Conflict error or duplicate characters.
-- [x] Fixed letting the character moonwalk when pushing 2 directions at once.
+- [ ] Fixed letting the character moonwalk when pushing 2 directions at once.
 
 ## 0.3
 
@@ -205,5 +160,5 @@ Character personalization/randomness update.
 - [x] Character image loading-glitch at first load, blinking character when changing direction.
 - [x] 2 people can't join from the same IP.
     - [x] Better IP blocking using cookies to verify players.
-- [x] After disconnecting, the player_id's ghost will be visible for certain players.
+- [x] After disconnecting, the player's ghost will be visible for certain players.
     - [x] Players are only added to the render list but not removed.
