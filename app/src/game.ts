@@ -114,8 +114,8 @@ export default class Game {
         player.grounded = false
       }
 
-      if (player.move.d) {
-        player.vy += player.gravity * delta * 2
+      if (player.move.d && semi_solids.find(t => player.isWalkingOn(t))) {
+        player.vy += player.gravity * delta
       }
 
       const semi_solid = semi_solids.find(t => player.isWalkingOn(t))
@@ -127,11 +127,11 @@ export default class Game {
       }
 
       for (const power_tile of power_up_spawns) {
-        if (power_tile.power_up && player.isTouching(power_tile) && player.addPowerUp(power_tile.power_up)) {
+        if (player.isTouching(power_tile) && player.addPowerUp(power_tile.power_up)) {
           power_tile.power_up = undefined
         }
       }
-      if (player.died === undefined && this.world().isPlayerInVoid(player)) {
+      if (this.world().isPlayerInVoid(player)) {
         player.kill()
       }
     }

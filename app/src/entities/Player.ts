@@ -92,8 +92,8 @@ export default class Player {
 	// +1 checks 1 row of pixels below player_id
 	canJump = (): boolean => this.grounded && this.vy >= 0 && this.vy < 1
 
-	addPowerUp = (power_up: PowerUp): boolean => {
-		if (this.power_ups.length >= PLAYER_MAX_POWER_UP) {
+	addPowerUp = (power_up: PowerUp | undefined): boolean => {
+		if (!power_up || this.power_ups.length >= PLAYER_MAX_POWER_UP) {
 			return false
 		}
 		this.power_ups.push(power_up)

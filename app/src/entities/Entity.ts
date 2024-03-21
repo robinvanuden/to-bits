@@ -3,6 +3,8 @@ import MapTile from "./MapTile"
 import PowerUp, {PowerType} from "./PowerUp"
 import {v4} from "uuid"
 import {
+	BOMB_EXPLOSION_SIZE,
+	BOMB_GRAVITY,
 	BOMB_SIZE,
 	BOMB_SPEED,
 	BOOMERANG_GRAVITY,
@@ -10,8 +12,7 @@ import {
 	BOOMERANG_SPEED,
 	FIREBALL_GRAVITY,
 	FIREBALL_SIZE,
-	FIREBALL_SPEED,
-	PLAYER_GRAVITY
+	FIREBALL_SPEED
 } from "../constants"
 import ProjectileModel from "../types/ProjectileModel"
 
@@ -20,17 +21,24 @@ export default class Entity {
 	private readonly player_id: string = ""
 
 	public readonly type: PowerType
-	color: string = ""
 
 	width: number // width
 	height: number // height
+
 	x: number = 0 // x-coord
 	y: number = 0 // y-coord
+
 	vx: number // x velocity
 	vy: number // y velocity
 
+	ew: number // width explosion
+	eh: number // height explosion
+	ex = () => this.x - Math.round((BOMB_EXPLOSION_SIZE - BOMB_SIZE) * .5)
+	ey = () => this.y - Math.round((BOMB_EXPLOSION_SIZE - BOMB_SIZE) * .5)
+
 	public readonly gravity: number = 0
 	public readonly spawned: number = 0
+	public readonly timeRemove: number = 20000
 
 	public readonly isProjectile: boolean
 	public readonly isExplosive: boolean
@@ -40,7 +48,6 @@ export default class Entity {
 		this.id = v4()
 		this.player_id = player.id
 		this.type = type
-		this.color = player.color
 		this.x = player.x + player.width * .5
 		this.y = player.y + player.height * .5
 		this.spawned = Date.now()
@@ -50,16 +57,18 @@ export default class Entity {
 			this.isProjectile = true
 			this.isExplosive = false
 			this.isCatchable = true
-			this.width = this.height = BOOMERANG_SIZE
+			this.width = this.height = this.ew = this.eh = BOOMERANG_SIZE
 			this.vx = BOOMERANG_SPEED * Math.cos(radians)
 			this.vy = BOOMERANG_SPEED * Math.sin(radians)
 			break
 		case PowerType.BOMB:
-			this.gravity = PLAYER_GRAVITY
+			this.gravity = BOMB_GRAVITY
 			this.isExplosive = true
 			this.isProjectile = false
 			this.isCatchable = false
+			this.timeRemove = 5000
 			this.width = this.height = BOMB_SIZE
+			this.ew = this.eh = BOMB_EXPLOSION_SIZE
 			this.vx = BOMB_SPEED * Math.cos(radians)
 			this.vy = BOMB_SPEED * Math.sin(radians)
 			break
@@ -68,7 +77,7 @@ export default class Entity {
 			this.isExplosive = false
 			this.isProjectile = true
 			this.isCatchable = false
-			this.width = this.height = FIREBALL_SIZE
+			this.width = this.height = this.ew = this.eh = FIREBALL_SIZE
 			this.vx = FIREBALL_SPEED * Math.cos(radians)
 			this.vy = FIREBALL_SPEED * Math.sin(radians)
 			break
@@ -88,6 +97,12 @@ export default class Entity {
 		this.y < p.y + p.height
 		&& this.y + this.height > p.y
 
+	private isExplosionHit = (p: Player): boolean =>
+		this.ex() < p.x + p.width &&
+		this.ex() + this.ew > p.x &&
+		this.ey() < p.y + p.height
+		&& this.ey() + this.eh > p.y
+
 	isColliding = (tile: MapTile): boolean =>
 		tile.x < this.x + this.width &&
 		tile.x + tile.width > this.x &&
@@ -104,7 +119,7 @@ export default class Entity {
 
 	private hasLifetime = (milliseconds: number) => (Date.now() - this.spawned) > milliseconds
 
-	public isOut = () => this.hasLifetime(5000)
+	public isOut = () => this.hasLifetime(this.timeRemove)
 
 	public remove = (player: Player): boolean => {
 		if (!this.hasLifetime(250)) {
@@ -123,7 +138,7 @@ export default class Entity {
 	}
 	public kills = (player: Player): boolean => {
 		if (this.isExplosive) {
-			return this.hasLifetime(2000) && this.isHit(player)
+			return this.hasLifetime(4000) && this.isExplosionHit(player)
 		} else {
 			return !this.isOwner(player) && this.isHit(player)
 		}
@@ -133,13 +148,17 @@ export default class Entity {
 		id: p.id,
 		p: p.player_id,
 		t: PowerUp.toString(p.type),
-		c: p.color,
+		s: p.spawned,
 		x: p.x,
 		y: p.y,
 		w: p.width,
 		h: p.height,
 		vx: p.vx,
 		vy: p.vy,
+		ex: p.ex(),
+		ey: p.ey(),
+		ew: p.ew,
+		eh: p.eh,
 	})
 }
 

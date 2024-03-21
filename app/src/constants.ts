@@ -11,6 +11,7 @@ export const FIREBALL_SIZE = 6
 export const FIREBALL_SPEED = 4.5
 export const FIREBALL_GRAVITY = GRAVITY * .2
 
+export const BOMB_EXPLOSION_SIZE = 48
 export const BOMB_SIZE = 8
 export const BOMB_SPEED = .3
 export const BOMB_GRAVITY = GRAVITY

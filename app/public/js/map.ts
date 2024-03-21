@@ -36,6 +36,48 @@ export default class Map {
 			cy = Math.round((this.canvas.tile(this.mapHeight() * .5)) - this.canvas.height() * .5)
 			this.canvas.setBackgroundHue(8, 4000)
 		}
+
+		this.ctx.lineWidth = this.canvas.size(8)
+		for (const projectile of this.data.projectiles()) {
+			switch (projectile.t) {
+			case "RANG":
+				this.ctx.fillStyle = "#503d27"
+				this.ctx.fillRect(
+					this.canvas.tile(projectile.x) - cx,
+					this.canvas.tile(projectile.y) - cy,
+					this.canvas.tile(projectile.w),
+					this.canvas.tile(projectile.h)
+				)
+				break
+			case "BOMB":
+				this.ctx.fillStyle = "#000"
+				this.ctx.fillRect(
+					this.canvas.tile(projectile.x) - cx,
+					this.canvas.tile(projectile.y) - cy,
+					this.canvas.tile(projectile.w),
+					this.canvas.tile(projectile.h)
+				)
+				if ((Date.now() - projectile.s) > 4000) {
+					this.ctx.fillStyle = "#FFF"
+					this.ctx.fillRect(
+						this.canvas.tile(projectile.ex) - cx,
+						this.canvas.tile(projectile.ey) - cy,
+						this.canvas.tile(projectile.ew),
+						this.canvas.tile(projectile.eh)
+					)
+				}
+				break
+			case "FIRE":
+				this.ctx.fillStyle = "#e0511c"
+				this.ctx.fillRect(
+					this.canvas.tile(projectile.x) - cx,
+					this.canvas.tile(projectile.y) - cy,
+					this.canvas.tile(projectile.w),
+					this.canvas.tile(projectile.h)
+				)
+				break
+			}
+		}
 		for (const layer of this.data.map()) {
 			for (const tile of layer.ls) {
 				this.ctx.fillStyle = tile.c || "#000"
@@ -136,46 +178,6 @@ export default class Map {
 				player_w,
 				player_h
 			)
-		}
-
-		this.ctx.lineWidth = this.canvas.size(8)
-		for (const projectile of this.data.projectiles()) {
-			this.ctx.fillStyle = projectile.c
-			switch (projectile.t) {
-			case "RANG":
-				this.ctx.fillRect(
-					this.canvas.tile(projectile.x) - cx,
-					this.canvas.tile(projectile.y) - cy,
-					this.canvas.tile(projectile.w),
-					this.canvas.tile(projectile.h)
-				)
-				break
-			case "BOMB":
-				this.ctx.fillStyle = "#000"
-				this.ctx.fillRect(
-					this.canvas.tile(projectile.x) - cx,
-					this.canvas.tile(projectile.y) - cy,
-					this.canvas.tile(projectile.w),
-					this.canvas.tile(projectile.h)
-				)
-				break
-			case "FIRE":
-				this.ctx.fillStyle = "#000"
-				this.ctx.fillRect(
-					this.canvas.tile(projectile.x) - cx,
-					this.canvas.tile(projectile.y) - cy,
-					this.canvas.tile(projectile.w),
-					this.canvas.tile(projectile.h)
-				)
-				this.ctx.fillStyle = "#e0511c"
-				this.ctx.fillRect(
-					this.canvas.tile(projectile.x + 1) - cx,
-					this.canvas.tile(projectile.y + 1) - cy,
-					this.canvas.tile(projectile.w - 2),
-					this.canvas.tile(projectile.h - 2)
-				)
-				break
-			}
 		}
 	}
 }
