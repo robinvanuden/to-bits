@@ -1,58 +1,102 @@
 # To-Bits ChangeLog
 
-## 0.6
+## 0.7
 
 The HUD update. More coming soon!
+
+## 0.6
+
+The player update!
 
 ### Added
 
 - [ ] Backend event separation
-  - [ ] Events for joining or disconnecting players.
-  - [ ] Events for projectiles
-  - [ ] Events for player movement
+    - [ ] Events for joining or disconnecting players.
+    - [ ] Events for projectiles
+    - [ ] Events for player movement
 - [ ] Event messages on screen (join, death, etc)
+- [ ] Background textures for the map
+- [ ] Cave map blocks
+    - [ ] Stone
+    - [ ] Mossy stone
+    - [ ] Crystals
+- [ ] Lighting sources
+    - [ ] Torches
+    - [ ] Crystals
+    - [ ] Lava
+- [ ] Dashing movement for player by double-pressing a direction
+- [ ] Double jumps
+- [ ] Knight feather helicopter
+- [ ] Player can stoop when holding down
 
 ### Changed
 
 - [ ] Update only the movement of players but not all the player data.
-- [ ] Update only tiles that are affected to change, not the entire layer
+- [ ] Update only tiles that are affected to change, not the entire map layer
+- [ ] Events are more separated. Only push small updates
+    - Players join/leave
+-
 
 ## 0.5
 
-The Item update. More coming soon!
-
-- More items spawns, textures, etc.
+The Item update.
 
 ### Added
 
+- [ ] Entity class for entities other than players.
+- [ ] Added lobbies instead of a fixed world.
+- [ ] Added melee logic to punch other players
+- [ ] Added damage attribute to players (no instant kills)
 - [ ] Interface elements for the player.
     - [ ] The players name
     - [ ] Inventory items
     - [ ] All players
-- [ ] More textures
-  - [ ] Bow
-    - [ ] Item
-    - [ ] Player holding
-    - [ ] Projectile texture for the arrow
-  - [ ] Fireball
-    - [ ] Item
-    - [ ] Player holding
-    - [ ] Projectile texture
-  - [ ] Bomb
-    - [ ] Item
-    - [ ] Player holding
-    - [ ] Projectile texture
-  - [ ] Boomerang
-    - [ ] Item
-    - [ ] Player holding
-    - [ ] Projectile texture for the arrow
-  - [ ] Sword
-    - [ ] Item
-    - [ ] Player holding
-    - [ ] Projectile texture for the arrow
-- [ ] Projectile class for items.
-- [ ] Added lobbies instead of a fixed world.
-- [ ] Added melee logic to punch other players
+- [ ] More powers:
+    - [ ] Bow
+        - [ ] Item texture
+        - [ ] Player holding
+        - [ ] Projectile texture for the arrow
+        - [ ] Logic to shoot an arrow
+    - [ ] Fireball
+        - [ ] Item texture
+        - [ ] Player holding
+        - [ ] Projectile texture
+        - [ ] Logic to shoot a fireball
+    - [ ] Bomb
+        - [ ] Item texture
+        - [ ] Player holding
+        - [ ] Projectile texture
+        - [ ] Logic to drop a bomb and it explodes
+    - [ ] Boomerang
+        - [ ] Item texture
+        - [ ] Player holding
+        - [ ] Projectile texture
+        - [ ] Logic to throw a rotating boomerang and it comes back
+    - [ ] Sword
+        - [ ] Item texture
+        - [ ] Player holding
+        - [ ] Projectile texture
+        - [ ] Logic to damage a player
+    - [ ] Lightsaber
+        - [ ] Item texture
+        - [ ] Player holding
+        - [ ] Projectile texture
+        - [ ] Logic to damage a player
+    - [ ] Magic Wand
+        - [ ] Item texture
+        - [ ] Player holding
+        - [ ] Projectile texture for the magic bolt
+        - [ ] Logic to shoot a bolt that follows the mouse
+    - [ ] Mjolnir
+        - [ ] Item texture
+        - [ ] Player holding
+        - [ ] Projectile texture for the thunderbolt
+        - [ ] Logic to shoot a thunderbolt on the mouse
+    - [ ] Shield
+        - [ ] Item texture
+        - [ ] Player holding
+        - [ ] Projectile texture
+        - [ ] Logic to shield a player from damage
 
 ### Changed
 
@@ -60,8 +104,9 @@ The Item update. More coming soon!
 - [ ] Moved player and projectile loop methods to a separate file
 - [ ] The background of the player name-tags is now totally black.
 - [ ] Player color picking now checks existing player colors
-  - Before some players had the same color which could be confusing
+    - Before some players had the same color which could be confusing
 - [ ] Moved the world to the lobby
+- [ ] Players can now drop down semi-solid blocks.
 
 ## 0.4
 
@@ -73,9 +118,9 @@ The Map update.
 
 - [x] Using TILED JSON files for the map data.
 - [x] More map textures.
-  - [x] Stone textures
-  - [x] Connected textures
-  - [x] Bridges
+    - [x] Stone textures
+    - [x] Connected textures
+    - [x] Bridges
 - [x] Repository for the map data with better control of the tiles.
 - [x] Added layers to render the map
 
@@ -86,7 +131,7 @@ The Map update.
 ### Fixed
 
 - [x] Fixed losing the cookie ID after refreshing
-  - This results in permanent Conflict error or duplicate characters.
+    - This results in permanent Conflict error or duplicate characters.
 - [ ] Fixed letting the character moonwalk when pushing 2 directions at once.
 
 ## 0.3
