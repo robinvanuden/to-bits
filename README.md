@@ -27,7 +27,8 @@ you rely on your agility and close-quarter combat skills? The choice is yours, a
 is your canvas.
 
 **Race Against Time:**
-The clock is ticking, and victory goes to the player with the highest kill count when time expires.
+The clock is ticking, and victory goes to the player_id with the highest kill count when time
+expires.
 Keep an eye on the countdown timer as you engage in intense firefights, strategize with your chosen
 weapons, and outsmart your opponents. It's not just about surviving; it's about dominating the arena
 within the allotted time frame.

@@ -33,7 +33,7 @@ app.get("/", (req, res) => {
   if (uuid.length === 0) {
     // No cookie yet
     uuid = game.generate_uuid()
-    // console.log("Generated uuid for new player", uuid)
+    // console.log("Generated uuid for new player_id", uuid)
   }
   if (uuid.length !== 36) {
     // Invalid cookie format
@@ -44,7 +44,7 @@ app.get("/", (req, res) => {
   if (!player) {
     // Possible old cookie, generate new one
     uuid = game.generate_uuid()
-    console.log("Generated uuid for an old player (outdated cookie)")
+    console.log("Generated uuid for an old player_id (outdated cookie)")
   }
   if (player && !player.disconnected) {
     // console.log("Invalid session", uuid)

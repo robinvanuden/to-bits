@@ -21,6 +21,6 @@ export default class EntityRepository {
   }
 
   public remove = (entity: Entity) => {
-    this.entities = this.entities.filter(p => p.id !== entity.id)
+    this.entities = this.entities.filter(e => !entity.equals(e))
   }
 }

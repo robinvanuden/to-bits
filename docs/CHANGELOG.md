@@ -6,20 +6,20 @@ The HUD update. More coming soon!
 
 ### Added
 
-- [ ] Interface elements for the player.
+- [ ] Interface elements for the player_id.
     - [ ] The players name
     - [ ] Inventory items
     - [ ] All players
 - [ ] Backend event separation
     - [ ] Events for joining or disconnecting players.
     - [ ] Events for entities
-    - [ ] Events for player movement
+  - [ ] Events for player_id movement
 - [ ] Event messages on screen (join, death, etc)
 - [ ] Added lobbies instead of a fixed world.
 
 ### Changed
 
-- [ ] Update only the movement of players but not all the player data.
+- [ ] Update only the movement of players but not all the player_id data.
 - [ ] Update only tiles that are affected to change, not the entire layer
 - [ ] Moved the world-loader to the lobby
 
@@ -57,10 +57,10 @@ The Item update. More coming soon!
 
 ### Changed
 
-- [ ] Moved player-items to their own repository.
-- [ ] Moved player and projectile loop methods to a separate file
-- [ ] The background of the player name-tags is now totally black.
-- [ ] Player color picking now checks existing player colors
+- [ ] Moved player_id-items to their own repository.
+- [ ] Moved player_id and projectile loop methods to a separate file
+- [ ] The background of the player_id name-tags is now totally black.
+- [ ] Player color picking now checks existing player_id colors
     - Before some players had the same color which could be confusing
 - [ ] Animated the items that spawn on the map
 
@@ -116,5 +116,5 @@ Character personalization/randomness update.
 - [x] Character image loading-glitch at first load, blinking character when changing direction.
 - [x] 2 people can't join from the same IP.
     - [x] Better IP blocking using cookies to verify players.
-- [x] After disconnecting, the player's ghost will be visible for certain players.
+- [x] After disconnecting, the player_id's ghost will be visible for certain players.
     - [x] Players are only added to the render list but not removed.

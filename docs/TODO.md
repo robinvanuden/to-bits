@@ -42,7 +42,7 @@
 - [ ]  Meteor crash random on the map
 - [ ]  Items to change gravity and speed
 - [ ]  Leaderboard
-- [ ]  Generate sprites for player based on type and color
+- [ ]  Generate sprites for player_id based on type and color
 - [ ]  Add a castle (stone blocks)
 - [ ]  Teams (pirates vs knights)
 - [ ]  Random objects that spawn on the map
@@ -52,6 +52,6 @@
 
 ## Archive
 
-- [ ]  ~~Add shadow to player~~
+- [ ]  ~~Add shadow to player_id~~
 - [ ]  ~~Move boomerangs to separate controller and repository~~
 - [ ]  ~~Write about Timer when thrown boomerang to start returning~~

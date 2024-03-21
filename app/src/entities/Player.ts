@@ -2,7 +2,7 @@ import {names, uniqueNamesGenerator} from "unique-names-generator"
 import PowerUp from "./PowerUp"
 import MapTile from "./MapTile"
 import {
-  GRAVITY,
+  PLAYER_GRAVITY,
   PLAYER_HEIGHT,
   PLAYER_MAX_POWER_UP,
   PLAYER_SPEED_JUMP,
@@ -70,7 +70,7 @@ export default class Player {
     this.y = spawn.y
     this.vx = 0
     this.vy = 0
-    this.gravity = GRAVITY
+    this.gravity = PLAYER_GRAVITY
     this.grounded = false
     this.sw = PLAYER_SPEED_WALK
     this.sj = PLAYER_SPEED_JUMP
@@ -89,7 +89,7 @@ export default class Player {
     this.power_ups = []
   }
 
-  // +1 checks 1 row of pixels below player
+  // +1 checks 1 row of pixels below player_id
   canJump = (): boolean => this.grounded && this.vy >= 0 && this.vy < 1
 
   addPowerUp = (power_up: PowerUp): boolean => {
@@ -110,7 +110,7 @@ export default class Player {
     this.died = undefined
     this.x = spawn.x
     this.y = spawn.y
-    this.gravity = GRAVITY
+    this.gravity = PLAYER_GRAVITY
     this.look = {u: false, d: false, l: false, r: true}
   }
 

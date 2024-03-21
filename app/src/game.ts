@@ -53,7 +53,7 @@ export default class Game {
     }
     const player = this.players().getById(uuid)
     if (!player) {
-      // New player
+      // New player_id
       const SPAWN_TILE = this.world().pickRandomSpawnPoint()
       if (!SPAWN_TILE) {
         return false
@@ -73,11 +73,11 @@ export default class Game {
 
     for (const player of this.players().alive()) {
       // Player loop
-      for (const projectile of this.entities().list()) {
-        if (projectile.remove(player)) {
-          this.entities().remove(projectile)
+      for (const entity of this.entities().list()) {
+        if (entity.remove(player)) {
+          this.entities().remove(entity)
         }
-        if (projectile.kills(player)) {
+        if (entity.kills(player)) {
           player.kill()
         }
       }
@@ -135,16 +135,16 @@ export default class Game {
 
       const solid = solids.find(t => entity.isColliding(t))
       const semi_solid = semi_solids.find(t => entity.isWalkingOn(t))
-      if (entity.type === PowerType.BOMB && solid && entity.isWalkingOn(solid) && entity.vy > 0) {
+      if (!entity.isProjectile && solid && entity.isWalkingOn(solid) && entity.vy > 0) {
         entity.y = solid.y - entity.height
         entity.vx = 0
         entity.vy = 0
       }
-      if (entity.type === PowerType.BOMB && semi_solid && entity.vy > 0) {
+      if (entity.isExplosive && semi_solid && entity.vy > 0) {
         entity.y = semi_solid.y - entity.height
         entity.vx = 0
         entity.vy = 0
-      } else if (entity.type !== PowerType.BOMB && solids.find(entity.isColliding)) {
+      } else if (!entity.isExplosive && solids.find(entity.isColliding)) {
         this.entities().remove(entity)
       }
     }
@@ -152,14 +152,14 @@ export default class Game {
 
   private checkDisconnectedPlayers = () => {
     for (const player of this.players().disconnected()) {
-      console.log("Remove player: " + player.id)
+      console.log("Remove player_id: " + player.id)
       this.players().remove(player)
     }
   }
 
   private checkRespawnPlayers = () => {
     for (const player of this.players().respawns()) {
-      console.log("Respawn player: " + player.id)
+      console.log("Respawn player_id: " + player.id)
       const spawn = this.world().pickRandomSpawnPoint()
       if (spawn) player.respawn(spawn)
     }
