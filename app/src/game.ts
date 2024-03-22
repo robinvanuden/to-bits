@@ -71,6 +71,32 @@ export default class Game {
     const power_up_spawns = this.world().powers().tiles()
     this.world().spawnPowerUp()
 
+    for (const entity of this.entities().list()) {
+      // Entity loop
+      entity.vy += entity.gravity * delta
+      entity.x += entity.vx
+      entity.y += entity.vy
+
+      const solid = solids.find(t => entity.isColliding(t))
+      const semi_solid = semi_solids.find(t => entity.isWalkingOn(t))
+      if (solid && !entity.isProjectile && entity.vy > 0 && entity.isWalkingOn(solid)) {
+        entity.y = solid.y - entity.height
+        entity.vx = 0
+        entity.vy = 0
+      }
+      if (semi_solid && entity.isExplosive && entity.vy > 0) {
+        entity.y = semi_solid.y - entity.height
+        entity.vx = 0
+        entity.vy = 0
+      } else if (!entity.isExplosive && solids.find(entity.isColliding)) {
+        this.entities().remove(entity)
+      }
+
+      if (entity.isExplosive && this.entities().list().find(e => entity.isInOtherExplosion(e))) {
+        entity.explode()
+      }
+    }
+
     for (const player of this.players().alive()) {
       // Player loop
       for (const entity of this.entities().list()) {
@@ -133,28 +159,6 @@ export default class Game {
       }
       if (this.world().isPlayerInVoid(player)) {
         player.kill()
-      }
-    }
-
-    for (const entity of this.entities().list()) {
-      // Entity loop
-      entity.vy += entity.gravity * delta
-      entity.x += entity.vx
-      entity.y += entity.vy
-
-      const solid = solids.find(t => entity.isColliding(t))
-      const semi_solid = semi_solids.find(t => entity.isWalkingOn(t))
-      if (solid && !entity.isProjectile && entity.vy > 0 && entity.isWalkingOn(solid)) {
-        entity.y = solid.y - entity.height
-        entity.vx = 0
-        entity.vy = 0
-      }
-      if (semi_solid && entity.isExplosive && entity.vy > 0) {
-        entity.y = semi_solid.y - entity.height
-        entity.vx = 0
-        entity.vy = 0
-      } else if (!entity.isExplosive && solids.find(entity.isColliding)) {
-        this.entities().remove(entity)
       }
     }
   }
