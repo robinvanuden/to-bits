@@ -4,6 +4,8 @@ import Canvas from "./canvas"
 
 export default class Map {
 
+	cx: number
+	cy: number
 	images: Images
 	data: Data
 	canvas: Canvas
@@ -18,23 +20,12 @@ export default class Map {
 
 	you = () => this.data.players().find(p => p.i === this.data.id()) || undefined
 
-	tileWidth = () => this.data.map()[0][0]?.w || 0
-	mapWidth = () => (this.data.map().map(l => l.ls[0].x).sort((a, b) => b - a)[0] || 0) + this.tileWidth()
-	mapHeight = () => (this.data.map().map(l => l.ls[0].y).sort((a, b) => b - a)[0] || 0) + this.tileWidth()
-
 	tick = () => {
-		let cx: number
-		let cy: number
 
 		const playerToFocus = this.you()
 		if (playerToFocus && playerToFocus.d == undefined) {
-			cx = Math.round((this.canvas.tile(playerToFocus.x) + this.canvas.tile(playerToFocus.w) * .5) - this.canvas.width() * .5)
-			cy = Math.round((this.canvas.tile(playerToFocus.y) + this.canvas.tile(playerToFocus.h) * .5) - this.canvas.height() * .5)
-			this.canvas.setBackgroundHue(playerToFocus.y, 4000)
-		} else {
-			cx = Math.round((this.canvas.tile(this.mapWidth() * .5)) - this.canvas.width() * .5)
-			cy = Math.round((this.canvas.tile(this.mapHeight() * .5)) - this.canvas.height() * .5)
-			this.canvas.setBackgroundHue(8, 4000)
+			this.cx = Math.round((this.canvas.tile(playerToFocus.x) + this.canvas.tile(playerToFocus.w) * .5) - this.canvas.width() * .5)
+			this.cy = Math.round((this.canvas.tile(playerToFocus.y) + this.canvas.tile(playerToFocus.h) * .5) - this.canvas.height() * .5)
 		}
 
 		this.ctx.lineWidth = this.canvas.size(8)
@@ -43,35 +34,35 @@ export default class Map {
 			case "RANG":
 				this.ctx.fillStyle = "#503d27"
 				this.ctx.fillRect(
-					this.canvas.tile(projectile.x) - cx,
-					this.canvas.tile(projectile.y) - cy,
+					this.canvas.tile(projectile.x) - this.cx,
+					this.canvas.tile(projectile.y) - this.cy,
 					this.canvas.tile(projectile.w),
 					this.canvas.tile(projectile.h)
 				)
 				break
 			case "BOMB":
-				this.ctx.fillStyle = "#000"
+				const passed_millis = Math.round((Date.now() - projectile.s))
+				const passed = Math.round((passed_millis) / 150)
+				this.ctx.fillStyle = passed_millis > 2000 && (passed % 2) === 0 ? "#FFF" : "#000"
 				this.ctx.fillRect(
-					this.canvas.tile(projectile.x) - cx,
-					this.canvas.tile(projectile.y) - cy,
+					this.canvas.tile(projectile.x) - this.cx,
+					this.canvas.tile(projectile.y) - this.cy,
 					this.canvas.tile(projectile.w),
 					this.canvas.tile(projectile.h)
 				)
-				if ((Date.now() - projectile.s) > 4000) {
-					this.ctx.fillStyle = "#FFF"
-					this.ctx.fillRect(
-						this.canvas.tile(projectile.ex) - cx,
-						this.canvas.tile(projectile.ey) - cy,
-						this.canvas.tile(projectile.ew),
-						this.canvas.tile(projectile.eh)
-					)
-				}
+				this.ctx.fillStyle = "#FFF"
+				this.ctx.fillRect(
+					this.canvas.tile(projectile.ex) - this.cx,
+					this.canvas.tile(projectile.ey) - this.cy,
+					this.canvas.tile(projectile.ew),
+					this.canvas.tile(projectile.eh)
+				)
 				break
 			case "FIRE":
 				this.ctx.fillStyle = "#e0511c"
 				this.ctx.fillRect(
-					this.canvas.tile(projectile.x) - cx,
-					this.canvas.tile(projectile.y) - cy,
+					this.canvas.tile(projectile.x) - this.cx,
+					this.canvas.tile(projectile.y) - this.cy,
 					this.canvas.tile(projectile.w),
 					this.canvas.tile(projectile.h)
 				)
@@ -89,8 +80,8 @@ export default class Map {
 							tile.oy,
 							tile.w,
 							tile.h,
-							this.canvas.tile(tile.x) - cx,
-							this.canvas.tile(tile.y) - cy,
+							this.canvas.tile(tile.x) - this.cx,
+							this.canvas.tile(tile.y) - this.cy,
 							this.canvas.tile(tile.w),
 							this.canvas.tile(tile.h)
 						)
@@ -101,8 +92,8 @@ export default class Map {
 							tile.oy,
 							tile.w,
 							tile.h,
-							this.canvas.tile(tile.x) - cx,
-							this.canvas.tile(tile.y) - cy,
+							this.canvas.tile(tile.x) - this.cx,
+							this.canvas.tile(tile.y) - this.cy,
 							this.canvas.tile(tile.w),
 							this.canvas.tile(tile.h)
 						)
@@ -118,8 +109,8 @@ export default class Map {
 							break
 						}
 						this.ctx.fillRect(
-							this.canvas.tile(tile.x + 5) - cx,
-							this.canvas.tile(tile.y + 5) - cy,
+							this.canvas.tile(tile.x + 5) - this.cx,
+							this.canvas.tile(tile.y + 5) - this.cy,
 							this.canvas.tile(6),
 							this.canvas.tile(6)
 						)
@@ -140,8 +131,8 @@ export default class Map {
 			const player_x = this.canvas.tile(player.x)
 			const player_y = this.canvas.tile(player.y)
 
-			const name_x = player_x - cx + player_w * .5
-			const name_y = player_y - cy - this.canvas.size(12)
+			const name_x = player_x - this.cx + player_w * .5
+			const name_y = player_y - this.cy - this.canvas.size(12)
 
 			this.ctx.font = this.canvas.font(1)
 			this.ctx.textAlign = "center"
@@ -173,8 +164,8 @@ export default class Map {
 				0,
 				13,
 				16,
-				player_x - cx,
-				player_y - cy,
+				player_x - this.cx,
+				player_y - this.cy,
 				player_w,
 				player_h
 			)

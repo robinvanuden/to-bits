@@ -46,9 +46,4 @@ export default class Canvas {
 	clear = () => {
 		this.ctx.clearRect(0, 0, this.__width, this.__width)
 	}
-
-	setBackgroundHue(heightPlayer: number, heightMap: number) {
-		const heu = Math.min(80 - (heightPlayer / heightMap * 80), 80)
-		this.__canvas.style.backgroundColor = `hsl(137 50% ${heu}%)`
-	}
 }
