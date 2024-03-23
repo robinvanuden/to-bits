@@ -1,6 +1,8 @@
 import Entity from "../entities/Entity"
-import {PowerType} from "../entities/PowerUp"
 import Player from "../entities/Player"
+import Boomerang from "../entities/Boomerang"
+import Fireball from "../entities/Fireball"
+import Bomb from "../entities/Bomb"
 
 export default class EntityRepository {
 
@@ -9,15 +11,15 @@ export default class EntityRepository {
 	public list = () => this.entities
 
 	public throwBoomerang = (player: Player, degrees: number) => {
-		this.entities.push(Entity.create(player, PowerType.BOOMERANG, degrees))
+		this.entities.push(new Boomerang(player, degrees))
 	}
 
 	public throwFireball = (player: Player, degrees: number) => {
-		this.entities.push(Entity.create(player, PowerType.FIREBALL, degrees))
+		this.entities.push(new Fireball(player, degrees))
 	}
 
 	public placeBomb = (player: Player) => {
-		this.entities.push(Entity.create(player, PowerType.BOMB, 0))
+		this.entities.push(new Bomb(player))
 	}
 
 	public remove = (entity: Entity) => {

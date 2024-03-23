@@ -4,6 +4,8 @@ import WorldLoader, {useWorld1} from "./world/WorldLoader"
 import EntityRepository from "./repository/EntityRepository"
 import {PowerType} from "./entities/PowerUp"
 import {TICKS} from "./constants"
+import Bomb from "./entities/Bomb"
+import Projectile from "./entities/Projectile"
 
 export default class Game {
 
@@ -79,21 +81,20 @@ export default class Game {
 
       const solid = solids.find(t => entity.isColliding(t))
       const semi_solid = semi_solids.find(t => entity.isWalkingOn(t))
-      if (solid && !entity.isProjectile && entity.vy > 0 && entity.isWalkingOn(solid)) {
+      if (solid && entity instanceof Projectile && entity.vy > 0 && entity.isWalkingOn(solid)) {
         entity.y = solid.y - entity.height
         entity.vx = 0
         entity.vy = 0
       }
-      if (semi_solid && entity.isExplosive && entity.vy > 0) {
+      if (semi_solid && entity instanceof Bomb && entity.vy > 0) {
         entity.y = semi_solid.y - entity.height
         entity.vx = 0
         entity.vy = 0
-      } else if (!entity.isExplosive && solids.find(entity.isColliding)) {
+      } else if (entity instanceof Bomb && solids.find(entity.isColliding)) {
         this.entities().remove(entity)
       }
-
-      if (entity.isExplosive && this.entities().list().find(e => entity.isInOtherExplosion(e))) {
-        entity.explode()
+      for (const entity2 of this.entities().list()) {
+        entity.hits(entity2)
       }
     }
 

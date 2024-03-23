@@ -1,6 +1,6 @@
 import {TileLayerModel} from "./model/TileModel"
 import PlayerModel from "./model/PlayerModel"
-import ProjectileModel from "./model/ProjectileModel"
+import EntityModel from "./model/EntityModel"
 
 export default class Data {
 
@@ -8,7 +8,7 @@ export default class Data {
 	private VERSION: string = ""
 	private _map: TileLayerModel[] = []
 	private _players: PlayerModel[] = []
-	private _projectiles: ProjectileModel[] = []
+	private _projectiles: EntityModel[] = []
 
 	setID = (id: string) => this.ID = id
 
@@ -40,7 +40,7 @@ export default class Data {
 
 	players = () => this._players
 
-	setProjectiles = (projectiles: ProjectileModel[]) => this._projectiles = projectiles
+	setProjectiles = (projectiles: EntityModel[]) => this._projectiles = projectiles
 
-	projectiles = () => this._projectiles
+	entities = () => this._projectiles
 }

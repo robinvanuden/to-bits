@@ -7,6 +7,7 @@ import {Server as ModServer} from "module:tls"
 import cookie from "cookie"
 import {COOKIE_PLAYER_ID} from "../constants"
 import Entity from "../entities/Entity"
+import Bomb from "../entities/Bomb"
 
 export default class PlayerSocket {
 
@@ -121,11 +122,18 @@ export default class PlayerSocket {
 		}
 	}
 
+	private toModel = (entity: Entity) => {
+		if (entity instanceof Bomb) {
+			return Bomb.toModel(entity, entity.getExplosion())
+		}
+		return Entity.toModel(entity)
+	}
+
 	emitProjectiles = () => {
 		// Emit players
 		this.io.emit("players", this.game?.players().list().map(Player.toModel) ?? [])
 
-		this.io.emit("projectiles", this.game?.entities().list().map(Entity.toModel) ?? [])
+		this.io.emit("projectiles", this.game?.entities().list().map(this.toModel) ?? [])
 
 		this.io.emit("map_layer", this.game.world().powers().toModel())
 	}

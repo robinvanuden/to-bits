@@ -29,43 +29,46 @@ export default class Map {
 		}
 
 		this.ctx.lineWidth = this.canvas.size(8)
-		for (const projectile of this.data.projectiles()) {
-			switch (projectile.t) {
-			case "RANG":
+		for (const entity of this.data.entities()) {
+			switch (entity.t) {
+			case "BOOMERANG":
 				this.ctx.fillStyle = "#503d27"
 				this.ctx.fillRect(
-					this.canvas.tile(projectile.x) - this.cx,
-					this.canvas.tile(projectile.y) - this.cy,
-					this.canvas.tile(projectile.w),
-					this.canvas.tile(projectile.h)
+					this.canvas.tile(entity.x) - this.cx,
+					this.canvas.tile(entity.y) - this.cy,
+					this.canvas.tile(entity.w),
+					this.canvas.tile(entity.h)
 				)
 				break
 			case "BOMB":
-				const passed_millis = Math.round((Date.now() - projectile.s))
+				const passed_millis = Math.round((Date.now() - entity.s))
 				const passed = Math.round((passed_millis) / 150)
 				this.ctx.fillStyle = passed_millis > 2000 && (passed % 2) === 0 ? "#FFF" : "#000"
 				this.ctx.fillRect(
-					this.canvas.tile(projectile.x) - this.cx,
-					this.canvas.tile(projectile.y) - this.cy,
-					this.canvas.tile(projectile.w),
-					this.canvas.tile(projectile.h)
+					this.canvas.tile(entity.x) - this.cx,
+					this.canvas.tile(entity.y) - this.cy,
+					this.canvas.tile(entity.w),
+					this.canvas.tile(entity.h)
 				)
 				this.ctx.fillStyle = "#FFF"
-				this.ctx.fillRect(
-					this.canvas.tile(projectile.ex) - this.cx,
-					this.canvas.tile(projectile.ey) - this.cy,
-					this.canvas.tile(projectile.ew),
-					this.canvas.tile(projectile.eh)
+				if (entity.e) this.ctx.fillRect(
+					this.canvas.tile(entity.e.x) - this.cx,
+					this.canvas.tile(entity.e.y) - this.cy,
+					this.canvas.tile(entity.e.w),
+					this.canvas.tile(entity.e.h)
 				)
 				break
-			case "FIRE":
+			case "FIREBALL":
 				this.ctx.fillStyle = "#e0511c"
 				this.ctx.fillRect(
-					this.canvas.tile(projectile.x) - this.cx,
-					this.canvas.tile(projectile.y) - this.cy,
-					this.canvas.tile(projectile.w),
-					this.canvas.tile(projectile.h)
+					this.canvas.tile(entity.x) - this.cx,
+					this.canvas.tile(entity.y) - this.cy,
+					this.canvas.tile(entity.w),
+					this.canvas.tile(entity.h)
 				)
+				break
+			default:
+				console.log("Unknown entity type", entity.t)
 				break
 			}
 		}
