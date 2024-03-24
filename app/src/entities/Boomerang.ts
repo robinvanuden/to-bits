@@ -10,11 +10,17 @@ export default class Boomerang extends Projectile {
 		super(player, BOOMERANG_SIZE, BOOMERANG_SIZE, BOOMERANG_GRAVITY, degrees, BOOMERANG_SPEED)
 	}
 
-	public remove = (player: Player): boolean => {
-		if (this.hasLifetime(250) && this.isOwner(player) && this.isHit(player)) {
-			return true
+	public interacts = (player: Player): void => {
+		if (!this.hasLifetime(250)) {
+			return
 		}
-		return this.shouldRemove(player)
+		if (this.isOwner(player) && this.isHit(player)) {
+			return
+		}
+		if (!this.isOwner(player) && this.isHit(player)) {
+			player.kill()
+			return
+		}
 	}
 
 	public hits = (entity: Entity): boolean => {

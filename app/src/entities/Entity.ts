@@ -62,9 +62,15 @@ export default abstract class Entity {
 
 	protected hasLifetime = (milliseconds: number) => (Date.now() - this.spawned) >= milliseconds
 
-	public abstract remove(player: Player): boolean
+	// public kills = (player: Player): boolean => !this.isOwner(player) && this.isHit(player)
 
-	public abstract hits(entity: Entity): boolean
+	public abstract interacts(player: Player): void
+
+	public abstract hits(entity: Entity): void
+
+	public remove() {
+		this.timeRemove = -1000
+	}
 
 	public shouldRemove = (player: Player): boolean => {
 		if (this.hasLifetime(250)) {
@@ -75,7 +81,8 @@ export default abstract class Entity {
 		}
 		return player.died !== undefined
 	}
-	public kills = (player: Player): boolean => !this.isOwner(player) && this.isHit(player)
+
+	public isOverdue = () => this.hasLifetime(this.timeRemove)
 
 	static toModel = (entity: Entity, e: ExplosionModel | undefined = undefined): EntityModel => ({
 		id: entity.id,

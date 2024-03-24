@@ -101,12 +101,10 @@ export default class Game {
     for (const player of this.players().alive()) {
       // Player loop
       for (const entity of this.entities().list()) {
-        if (entity.remove(player)) {
+        if (entity.isOverdue()) {
           this.entities().remove(entity)
         }
-        if (entity.kills(player)) {
-          player.kill()
-        }
+        entity.interacts(player)
       }
 
       if (player.move.l) {

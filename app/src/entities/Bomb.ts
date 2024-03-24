@@ -2,6 +2,7 @@ import Entity from "./Entity"
 import Player from "./Player"
 import {BOMB_EXPLOSION_SIZE, BOMB_GRAVITY, BOMB_SIZE} from "../constants"
 import {ExplosionModel} from "../types/EntityModel"
+import Projectile from "./Projectile"
 
 export default class Bomb extends Entity {
 
@@ -31,9 +32,7 @@ export default class Bomb extends Entity {
 		this.ey() < p.y + p.height
 		&& this.ey() + this.eh > p.y
 
-	public isInOtherExplosion = (other: Entity): boolean =>
-		other instanceof Bomb &&
-		!this.equals(other) &&
+	public isInOtherExplosion = (other: Bomb): boolean =>
 		other.hasExploded &&
 		other.ex() < this.x + this.width &&
 		other.ex() + other.ew > this.x &&
@@ -44,7 +43,6 @@ export default class Bomb extends Entity {
 		if (this.hasExploded) {
 			return
 		}
-		console.log("Explode!")
 		this.hasExploded = true
 		this.ew = BOMB_EXPLOSION_SIZE
 		this.eh = Math.round(BOMB_EXPLOSION_SIZE * .75)
@@ -53,35 +51,31 @@ export default class Bomb extends Entity {
 		this.timeRemove = new_start + 500
 	}
 
-	public hits = (entity: Entity) => {
-		if (this.isInOtherExplosion(entity)) {
+	public hits = (other: Entity): void => {
+		if (other instanceof Bomb && !this.equals(other) && this.isInOtherExplosion(other)) {
 			this.explode()
-			return true
+			return
 		}
-		return this.isCollidingWithEntity(entity)
+		if (other instanceof Projectile && this.isCollidingWithEntity(other)) {
+			this.explode()
+			other.remove()
+		}
 	}
 
-	public remove = (player: Player): boolean => {
+	public interacts = (player: Player): void => {
+		if (this.hasExploded && this.isExplosionHit(player)) {
+			player.kill()
+			return
+		}
+		if (!this.isOwner(player) && this.isHit(player)) {
+			player.kill()
+			this.explode()
+			return
+		}
 		if (this.hasLifetime(this.timeExploded) && !this.hasLifetime(this.timeRemove)) {
 			this.explode()
-			return false
+			return
 		}
-		if (!this.isOwner(player) && this.isHit(player)) {
-			this.explode()
-			return false
-		}
-		return this.hasLifetime(this.timeRemove)
-	}
-
-	public kills = (player: Player) => {
-		if (this.hasExploded && this.isExplosionHit(player)) {
-			return true
-		}
-		if (!this.isOwner(player) && this.isHit(player)) {
-			this.explode()
-			return true
-		}
-		return false
 	}
 
 	public getExplosion = (): ExplosionModel | undefined => (!this.hasExploded ? undefined : {
