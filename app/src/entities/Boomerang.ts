@@ -2,6 +2,8 @@ import Projectile from "./Projectile"
 import Player from "./Player"
 import {BOOMERANG_GRAVITY, BOOMERANG_SIZE, BOOMERANG_SPEED} from "../constants"
 import Entity from "./Entity"
+import MapTile from "./MapTile"
+import Bomb from "./Bomb"
 
 export default class Boomerang extends Projectile {
 
@@ -10,21 +12,37 @@ export default class Boomerang extends Projectile {
 		super(player, BOOMERANG_SIZE, BOOMERANG_SIZE, BOOMERANG_GRAVITY, degrees, BOOMERANG_SPEED)
 	}
 
-	public interacts = (player: Player): void => {
-		if (!this.hasLifetime(250)) {
-			return
-		}
-		if (this.isOwner(player) && this.isHit(player)) {
+	public loop = () => {
+	}
+
+	public loopPlayer = (player: Player): void => {
+		if (this.hasLifetime(250) && this.isOwner(player) && this.isHit(player)) {
+			this.remove()
 			return
 		}
 		if (!this.isOwner(player) && this.isHit(player)) {
 			player.kill()
+			this.remove()
 			return
 		}
 	}
 
-	public hits = (entity: Entity): boolean => {
-		return this.isCollidingWithEntity(entity)
+	public loopEntity = (entity: Entity): void => {
+		if (!this.isCollidingWithEntity(entity)) {
+			return
+		}
+		this.remove()
+		if (entity instanceof Bomb) {
+			entity.explode()
+		} else {
+			entity.remove()
+		}
+	}
+
+	public loopTile = (tile: MapTile): void => {
+		if (this.isColliding(tile)) {
+			this.remove()
+		}
 	}
 
 }

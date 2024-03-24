@@ -3,6 +3,7 @@ import Player from "./Player"
 import {BOMB_EXPLOSION_SIZE, BOMB_GRAVITY, BOMB_SIZE} from "../constants"
 import {ExplosionModel} from "../types/EntityModel"
 import Projectile from "./Projectile"
+import MapTile from "./MapTile"
 
 export default class Bomb extends Entity {
 
@@ -51,7 +52,24 @@ export default class Bomb extends Entity {
 		this.timeRemove = new_start + 500
 	}
 
-	public hits = (other: Entity): void => {
+	public loop = (): void => {
+		if (this.hasLifetime(this.timeExploded) && !this.hasLifetime(this.timeRemove)) {
+			this.explode()
+		}
+	}
+
+	public loopPlayer = (player: Player): void => {
+		if (this.hasExploded && this.isExplosionHit(player)) {
+			player.kill()
+			return
+		}
+		if (!this.isOwner(player) && this.isHit(player)) {
+			player.kill()
+			this.explode()
+		}
+	}
+
+	public loopEntity = (other: Entity): void => {
 		if (other instanceof Bomb && !this.equals(other) && this.isInOtherExplosion(other)) {
 			this.explode()
 			return
@@ -62,20 +80,7 @@ export default class Bomb extends Entity {
 		}
 	}
 
-	public interacts = (player: Player): void => {
-		if (this.hasExploded && this.isExplosionHit(player)) {
-			player.kill()
-			return
-		}
-		if (!this.isOwner(player) && this.isHit(player)) {
-			player.kill()
-			this.explode()
-			return
-		}
-		if (this.hasLifetime(this.timeExploded) && !this.hasLifetime(this.timeRemove)) {
-			this.explode()
-			return
-		}
+	public loopTile = (tile: MapTile): void => {
 	}
 
 	public getExplosion = (): ExplosionModel | undefined => (!this.hasExploded ? undefined : {

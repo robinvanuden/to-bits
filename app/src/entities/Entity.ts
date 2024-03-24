@@ -64,9 +64,13 @@ export default abstract class Entity {
 
 	// public kills = (player: Player): boolean => !this.isOwner(player) && this.isHit(player)
 
-	public abstract interacts(player: Player): void
+	public abstract loop(): void
 
-	public abstract hits(entity: Entity): void
+	public abstract loopPlayer(player: Player): void
+
+	public abstract loopEntity(entity: Entity): void
+
+	public abstract loopTile(entity: MapTile): void
 
 	public remove() {
 		this.timeRemove = -1000
