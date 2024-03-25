@@ -47,6 +47,8 @@ export default class MapTile {
 
 	public hasPowerUp = (): boolean => this.power_up !== undefined
 
+	public isSolid = (): boolean => !this.properties.find(p => p.name === PROP_SEMI_SOLID && p.value)
+
 	public isSemiSolid = (): boolean => this.properties.find(p => p.name === PROP_SEMI_SOLID && p.value) != undefined
 
 	public spawnPower = () => {

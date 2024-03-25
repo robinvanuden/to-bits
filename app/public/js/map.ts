@@ -41,22 +41,25 @@ export default class Map {
 				)
 				break
 			case "BOMB":
-				const passed_millis = Math.round((Date.now() - entity.s))
-				const passed = Math.round((passed_millis) / 150)
-				this.ctx.fillStyle = passed_millis > 2000 && (passed % 2) === 0 ? "#FFF" : "#000"
-				this.ctx.fillRect(
-					this.canvas.tile(entity.x) - this.cx,
-					this.canvas.tile(entity.y) - this.cy,
-					this.canvas.tile(entity.w),
-					this.canvas.tile(entity.h)
-				)
 				this.ctx.fillStyle = "#FFF"
-				if (entity.e) this.ctx.fillRect(
-					this.canvas.tile(entity.e.x) - this.cx,
-					this.canvas.tile(entity.e.y) - this.cy,
-					this.canvas.tile(entity.e.w),
-					this.canvas.tile(entity.e.h)
-				)
+				if (entity.e) {
+					this.ctx.fillRect(
+						this.canvas.tile(entity.e.x) - this.cx,
+						this.canvas.tile(entity.e.y) - this.cy,
+						this.canvas.tile(entity.e.w),
+						this.canvas.tile(entity.e.h)
+					)
+				} else {
+					const passed_millis = Math.round((Date.now() - entity.s))
+					const passed = Math.round((passed_millis) / 150)
+					this.ctx.fillStyle = passed_millis > 1000 && (passed % 2) === 0 ? "#FFF" : "#000"
+					this.ctx.fillRect(
+						this.canvas.tile(entity.x) - this.cx,
+						this.canvas.tile(entity.y) - this.cy,
+						this.canvas.tile(entity.w),
+						this.canvas.tile(entity.h)
+					)
+				}
 				break
 			case "FIREBALL":
 				this.ctx.fillStyle = "#e0511c"

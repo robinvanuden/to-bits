@@ -9,7 +9,7 @@ export default class PlayerRepository {
 
 	filled = () => this.players.length > 0
 
-	alive = () => this.players.filter(p => p.died === undefined)
+	alive = () => this.players.filter(p => p.isAlive())
 
 	disconnected = () => this.players.filter(p => p.disconnected != undefined && (p.disconnected + 10_000) < Date.now())
 

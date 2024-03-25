@@ -89,6 +89,8 @@ export default class Player {
 		this.power_ups = []
 	}
 
+	isAlive = (): boolean => this.died == undefined
+
 	// +1 checks 1 row of pixels below player_id
 	canJump = (): boolean => this.grounded && this.vy >= 0 && this.vy < 1
 

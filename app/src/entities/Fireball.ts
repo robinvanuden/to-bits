@@ -23,7 +23,7 @@ export default class Fireball extends Projectile {
 	}
 
 	public loopEntity = (entity: Entity): void => {
-		if (!this.isCollidingWithEntity(entity)) {
+		if (!this.isCollidingWithEntity(entity) || this.equals(entity)) {
 			return
 		}
 		this.remove()
@@ -35,7 +35,7 @@ export default class Fireball extends Projectile {
 	}
 
 	public loopTile = (tile: MapTile): void => {
-		if (this.isColliding(tile)) {
+		if (tile.isSolid() && this.isColliding(tile)) {
 			this.remove()
 		}
 	}

@@ -17,10 +17,12 @@ export default class Boomerang extends Projectile {
 
 	public loopPlayer = (player: Player): void => {
 		if (this.hasLifetime(250) && this.isOwner(player) && this.isHit(player)) {
+			console.log("Caught")
 			this.remove()
 			return
 		}
 		if (!this.isOwner(player) && this.isHit(player)) {
+			console.log("Killed")
 			player.kill()
 			this.remove()
 			return
@@ -28,19 +30,22 @@ export default class Boomerang extends Projectile {
 	}
 
 	public loopEntity = (entity: Entity): void => {
-		if (!this.isCollidingWithEntity(entity)) {
+		if (!this.isCollidingWithEntity(entity) || this.equals(entity)) {
 			return
 		}
 		this.remove()
 		if (entity instanceof Bomb) {
+			console.log("Touched bomb")
 			entity.explode()
 		} else {
+			console.log("Touched")
 			entity.remove()
 		}
 	}
 
 	public loopTile = (tile: MapTile): void => {
-		if (this.isColliding(tile)) {
+		if (tile.isSolid() && this.isColliding(tile)) {
+			console.log("Collided")
 			this.remove()
 		}
 	}

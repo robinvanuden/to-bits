@@ -6,6 +6,7 @@ import Player from "../entities/Player"
 import TileSetLoader from "./TileSetLoader"
 import LayerLoader from "./LayerLoader"
 import {v4} from "uuid"
+import Entity from "../entities/Entity"
 
 export default class WorldLoader {
 
@@ -68,7 +69,7 @@ export default class WorldLoader {
 	}
 
 	public spawnPowerUp = () => {
-		if (Math.round(Math.random() * 500) !== 1) {
+		if (Math.round(Math.random() * 500) === 1) {
 			return
 		}
 		const airs = this.powers().tiles()
@@ -88,6 +89,8 @@ export default class WorldLoader {
 	}
 
 	isPlayerInVoid = (player: Player): boolean => (player.y + player.height) > (this.world.height * this.world.tileheight)
+
+	isEntityInVoid = (entity: Entity): boolean => (entity.y + entity.height) > (this.world.height * this.world.tileheight)
 }
 
 let world1: WorldLoader | undefined = undefined

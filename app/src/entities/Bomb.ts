@@ -20,8 +20,8 @@ export default class Bomb extends Entity {
 	constructor(player: Player) {
 		super(player, BOMB_SIZE, BOMB_SIZE, BOMB_GRAVITY)
 
-		this.timeRemove = 5000
-		this.timeExploded = 4500
+		this.timeRemove = 2500
+		this.timeExploded = 2000
 		this.vx = this.vy = 0
 		this.ew = this.eh = 0
 	}
@@ -53,7 +53,11 @@ export default class Bomb extends Entity {
 	}
 
 	public loop = (): void => {
-		if (this.hasLifetime(this.timeExploded) && !this.hasLifetime(this.timeRemove)) {
+		if (this.hasLifetime(this.timeRemove)) {
+			this.remove()
+			return
+		}
+		if (this.hasLifetime(this.timeExploded)) {
 			this.explode()
 		}
 	}
@@ -70,7 +74,10 @@ export default class Bomb extends Entity {
 	}
 
 	public loopEntity = (other: Entity): void => {
-		if (other instanceof Bomb && !this.equals(other) && this.isInOtherExplosion(other)) {
+		if (this.equals(other)) {
+			return
+		}
+		if (other instanceof Bomb && this.isInOtherExplosion(other)) {
 			this.explode()
 			return
 		}
@@ -81,6 +88,19 @@ export default class Bomb extends Entity {
 	}
 
 	public loopTile = (tile: MapTile): void => {
+		if (!this.isWalkingOn(tile)) {
+			return
+		}
+		if (tile.isSemiSolid() && this.vy > 0) {
+			this.y = tile.y - this.height
+			this.vx = 0
+			this.vy = 0
+		}
+		if (tile.isSolid() && this.vy > 0) {
+			this.y = tile.y - this.height
+			this.vx = 0
+			this.vy = 0
+		}
 	}
 
 	public getExplosion = (): ExplosionModel | undefined => (!this.hasExploded ? undefined : {

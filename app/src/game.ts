@@ -4,8 +4,6 @@ import WorldLoader, {useWorld1} from "./world/WorldLoader"
 import EntityRepository from "./repository/EntityRepository"
 import {PowerType} from "./entities/PowerUp"
 import {TICKS} from "./constants"
-import Bomb from "./entities/Bomb"
-import Projectile from "./entities/Projectile"
 
 export default class Game {
 
@@ -68,103 +66,86 @@ export default class Game {
 	}
 
 	private checkPlayerPosition = (delta: number) => {
+		const floor = this.world().floor().tiles()
 		const solids = this.world().floor().solids()
 		const semi_solids = this.world().floor().semis()
 		const power_up_spawns = this.world().powers().tiles()
 		this.world().spawnPowerUp()
 
 		for (const entity of this.entities().list()) {
-			if (entity.isOverdue()) {
+			// Entity loop
+			if (entity.isOverdue() || this.world().isEntityInVoid(entity)) {
 				this.entities().remove(entity)
 			} else {
-				// Entity loop
 				entity.vy += entity.gravity * delta
 				entity.x += entity.vx
 				entity.y += entity.vy
 
-				const solid = solids.find(t => entity.isColliding(t))
-				const semi_solid = semi_solids.find(t => entity.isWalkingOn(t))
-				if (solid && entity instanceof Projectile && entity.vy > 0 && entity.isWalkingOn(solid)) {
-					entity.y = solid.y - entity.height
-					entity.vx = 0
-					entity.vy = 0
-				}
-				if (semi_solid && entity instanceof Bomb && entity.vy > 0) {
-					entity.y = semi_solid.y - entity.height
-					entity.vx = 0
-					entity.vy = 0
-				}
-				if (solid && entity instanceof Bomb && entity.vy > 0) {
-					entity.y = solid.y - entity.height
-					entity.vx = 0
-					entity.vy = 0
-				}
-
 				entity.loop()
 
-				for (const entity2 of this.entities().list()) {
-					entity.loopEntity(entity2)
-				}
+				for (const entity2 of this.entities().exclude(entity)) entity.loopEntity(entity2)
+
+				for (const tile of floor) entity.loopTile(tile)
 			}
 		}
 
 		for (const player of this.players().alive()) {
 			// Player loop
-			for (const entity of this.entities().list()) {
-				entity.loopPlayer(player)
-			}
-
-			if (player.move.l) {
-				player.x -= player.sw
-				if (solids.find(t => player.isColliding(t))) player.x += player.sw
-			}
-			if (player.move.r) {
-				player.x += player.sw
-				if (solids.find(t => player.isColliding(t))) player.x -= player.sw
-			}
-			if (player.move.u && player.canJump() && !solids.find(t => player.isColliding(t))) {
-				player.vy -= player.sj
-				player.grounded = false
-			}
-			player.vy += player.gravity * delta
-			player.x += player.vx
-			player.y += player.vy
-
-
-			const solid = solids.find(t => player.isColliding(t))
-			if (solid && player.vy > 0 && player.isWalkingOn(solid)) {
-				player.y = solid.y - player.height
-				player.vy = 0
-				player.grounded = true
-			} else if (solid && player.vy > 0) {
-				player.y = solid.y - player.height
-				player.vy = 0
-				player.grounded = true
-			} else if (solid && player.vy <= 0) {
-				player.y = solid.y + solid.height
-				player.vy = 0
-				player.grounded = false
-			}
-
-			if (player.move.d && semi_solids.find(t => player.isWalkingOn(t))) {
-				player.vy += player.gravity * delta
-			}
-
-			const semi_solid = semi_solids.find(t => player.isWalkingOn(t))
-			if (!player.move.d && semi_solid && player.vy > 0) {
-				// If y-velocity is higher than 0 (falling)
-				player.y = semi_solid.y - player.height
-				player.vy = 0
-				player.grounded = true
-			}
-
-			for (const power_tile of power_up_spawns) {
-				if (player.isTouching(power_tile) && player.addPowerUp(power_tile.power_up)) {
-					power_tile.power_up = undefined
-				}
-			}
 			if (this.world().isPlayerInVoid(player)) {
 				player.kill()
+			} else {
+
+				if (player.move.l) {
+					player.x -= player.sw
+					if (solids.find(t => player.isColliding(t))) player.x += player.sw
+				}
+				if (player.move.r) {
+					player.x += player.sw
+					if (solids.find(t => player.isColliding(t))) player.x -= player.sw
+				}
+				if (player.move.u && player.canJump() && !solids.find(t => player.isColliding(t))) {
+					player.vy -= player.sj
+					player.grounded = false
+				}
+
+				player.vy += player.gravity * delta
+				player.x += player.vx
+				player.y += player.vy
+
+
+				const solid = solids.find(t => player.isColliding(t))
+				if (solid && player.vy > 0 && player.isWalkingOn(solid)) {
+					player.y = solid.y - player.height
+					player.vy = 0
+					player.grounded = true
+				} else if (solid && player.vy > 0) {
+					player.y = solid.y - player.height
+					player.vy = 0
+					player.grounded = true
+				} else if (solid && player.vy <= 0) {
+					player.y = solid.y + solid.height
+					player.vy = 0
+					player.grounded = false
+				}
+
+				if (player.move.d && semi_solids.find(t => player.isWalkingOn(t))) {
+					player.vy += player.gravity * delta
+				}
+
+				const semi_solid = semi_solids.find(t => player.isWalkingOn(t))
+				if (!player.move.d && semi_solid && player.vy > 0) {
+					// If y-velocity is higher than 0 (falling)
+					player.y = semi_solid.y - player.height
+					player.vy = 0
+					player.grounded = true
+				}
+				for (const entity of this.entities().list()) entity.loopPlayer(player)
+
+				for (const power_tile of power_up_spawns) {
+					if (player.isTouching(power_tile) && player.addPowerUp(power_tile.power_up)) {
+						power_tile.power_up = undefined
+					}
+				}
 			}
 		}
 	}

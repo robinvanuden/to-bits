@@ -10,6 +10,8 @@ export default class EntityRepository {
 
 	public list = () => this.entities
 
+	public exclude = (entity: Entity) => this.entities.filter(e => !e.equals(entity))
+
 	public throwBoomerang = (player: Player, degrees: number) => {
 		this.entities.push(new Boomerang(player, degrees))
 	}
