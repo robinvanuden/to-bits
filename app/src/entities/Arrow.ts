@@ -1,12 +1,16 @@
 import Projectile from "./Projectile"
 import Player from "./Player"
-import {ARROW_GRAVITY, ARROW_HEIGHT, ARROW_SPEED, ARROW_WIDTH} from "../constants"
+import {GRAVITY} from "../constants"
 import Entity from "./Entity"
 import MapTile from "../world/MapTile"
 import Bomb from "./Bomb"
 
-export default class Arrow extends Projectile {
+export const ARROW_WIDTH = 10
+export const ARROW_HEIGHT = 2
+export const ARROW_SPEED = 4
+export const ARROW_GRAVITY = GRAVITY * .2
 
+export default class Arrow extends Projectile {
 
 	constructor(player: Player, degrees: number) {
 		super(player, ARROW_WIDTH, ARROW_HEIGHT, ARROW_GRAVITY, degrees, ARROW_SPEED)

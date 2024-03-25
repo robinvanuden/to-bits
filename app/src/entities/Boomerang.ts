@@ -1,9 +1,13 @@
 import Projectile from "./Projectile"
 import Player from "./Player"
-import {BOOMERANG_GRAVITY, BOOMERANG_SIZE, BOOMERANG_SPEED} from "../constants"
+import {GRAVITY} from "../constants"
 import Entity from "./Entity"
 import MapTile from "../world/MapTile"
 import Bomb from "./Bomb"
+
+export const BOOMERANG_SIZE = 4
+export const BOOMERANG_SPEED = 5
+export const BOOMERANG_GRAVITY = GRAVITY * .2
 
 export default class Boomerang extends Projectile {
 

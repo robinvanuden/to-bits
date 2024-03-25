@@ -1,15 +1,15 @@
 import {names, uniqueNamesGenerator} from "unique-names-generator"
 import PowerUp from "./PowerUp"
 import MapTile from "../world/MapTile"
-import {
-	PLAYER_GRAVITY,
-	PLAYER_HEIGHT,
-	PLAYER_MAX_POWER_UP,
-	PLAYER_SPEED_JUMP,
-	PLAYER_SPEED_WALK,
-	PLAYER_WIDTH
-} from "../constants"
+import {GRAVITY} from "../constants"
 import PlayerModel, {Direction} from "../types/PlayerModel"
+
+export const PLAYER_WIDTH = 13
+export const PLAYER_HEIGHT = 16
+export const PLAYER_SPEED_WALK = 2
+export const PLAYER_SPEED_JUMP = 4
+export const PLAYER_MAX_POWER_UP = 5
+export const PLAYER_GRAVITY = GRAVITY
 
 const randomName = () => uniqueNamesGenerator({length: 1, dictionaries: [names]})
 
