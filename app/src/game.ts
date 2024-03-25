@@ -198,7 +198,7 @@ export default class Game {
 
 	throwItem = (uuid: string, degrees: number) => {
 		const player = this.players().getById(uuid)
-		if (!player) {
+		if (!player || !player.isAlive()) {
 			return
 		}
 		const powerUp = player.getFirstPowerUp()

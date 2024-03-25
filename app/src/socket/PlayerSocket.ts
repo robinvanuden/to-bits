@@ -84,7 +84,7 @@ export default class PlayerSocket {
 			return
 		}
 		const player = this.game.players().getById(uuid)
-		if (!player) {
+		if (!player || !player.isAlive()) {
 			return
 		}
 		switch (direction) {
