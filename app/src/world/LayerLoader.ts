@@ -1,4 +1,4 @@
-import MapTile from "../entities/MapTile"
+import MapTile from "./MapTile"
 import World, {WorldLayer} from "../types/World"
 import TileSetLoader from "./TileSetLoader"
 import {TileLayerModel} from "../types/MapTileModel"

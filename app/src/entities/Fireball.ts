@@ -3,7 +3,7 @@ import Player from "./Player"
 import {FIREBALL_GRAVITY, FIREBALL_SIZE, FIREBALL_SPEED} from "../constants"
 import Entity from "./Entity"
 import Bomb from "./Bomb"
-import MapTile from "./MapTile"
+import MapTile from "../world/MapTile"
 
 export default class Fireball extends Projectile {
 

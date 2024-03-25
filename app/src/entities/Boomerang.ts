@@ -2,7 +2,7 @@ import Projectile from "./Projectile"
 import Player from "./Player"
 import {BOOMERANG_GRAVITY, BOOMERANG_SIZE, BOOMERANG_SPEED} from "../constants"
 import Entity from "./Entity"
-import MapTile from "./MapTile"
+import MapTile from "../world/MapTile"
 import Bomb from "./Bomb"
 
 export default class Boomerang extends Projectile {

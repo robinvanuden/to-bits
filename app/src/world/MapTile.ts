@@ -2,7 +2,7 @@ import {PROP_SEMI_SOLID, Tile, TileSetProperty} from "../types/TileSet"
 import {WorldLayer} from "../types/World"
 import MapTileModel from "../types/MapTileModel"
 import path from "path"
-import PowerUp from "./PowerUp"
+import PowerUp from "../entities/PowerUp"
 
 export default class MapTile {
 	id: number

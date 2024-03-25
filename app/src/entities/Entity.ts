@@ -1,5 +1,5 @@
 import Player from "./Player"
-import MapTile from "./MapTile"
+import MapTile from "../world/MapTile"
 import {v4} from "uuid"
 import EntityModel from "../types/EntityModel"
 import {ExplosionModel} from "../../public/js/model/EntityModel"

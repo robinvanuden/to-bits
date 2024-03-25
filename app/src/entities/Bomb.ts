@@ -3,7 +3,7 @@ import Player from "./Player"
 import {BOMB_EXPLOSION_SIZE, BOMB_GRAVITY, BOMB_SIZE} from "../constants"
 import {ExplosionModel} from "../types/EntityModel"
 import Projectile from "./Projectile"
-import MapTile from "./MapTile"
+import MapTile from "../world/MapTile"
 
 export default class Bomb extends Entity {
 

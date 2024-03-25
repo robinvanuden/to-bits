@@ -1,6 +1,6 @@
 import {names, uniqueNamesGenerator} from "unique-names-generator"
 import PowerUp from "./PowerUp"
-import MapTile from "./MapTile"
+import MapTile from "../world/MapTile"
 import {
 	PLAYER_GRAVITY,
 	PLAYER_HEIGHT,
