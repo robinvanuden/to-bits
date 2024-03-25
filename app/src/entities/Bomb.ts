@@ -74,9 +74,6 @@ export default class Bomb extends Entity {
 	}
 
 	public loopEntity = (other: Entity): void => {
-		if (this.equals(other)) {
-			return
-		}
 		if (other instanceof Bomb && this.isInOtherExplosion(other)) {
 			this.explode()
 			return

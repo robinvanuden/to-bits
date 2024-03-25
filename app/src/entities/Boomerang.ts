@@ -30,7 +30,7 @@ export default class Boomerang extends Projectile {
 	}
 
 	public loopEntity = (entity: Entity): void => {
-		if (!this.isCollidingWithEntity(entity) || this.equals(entity)) {
+		if (!this.isCollidingWithEntity(entity)) {
 			return
 		}
 		this.remove()

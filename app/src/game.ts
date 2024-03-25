@@ -207,11 +207,14 @@ export default class Game {
 		}
 		player.usePowerUp(powerUp)
 		switch (powerUp.type()) {
-		case PowerType.BOOMERANG:
-			this.entities().throwBoomerang(player, degrees)
+		case PowerType.ARROW:
+			this.entities().shootArrow(player, degrees)
 			break
 		case PowerType.BOMB:
 			this.entities().placeBomb(player)
+			break
+		case PowerType.BOOMERANG:
+			this.entities().throwBoomerang(player, degrees)
 			break
 		case PowerType.FIREBALL:
 			this.entities().throwFireball(player, degrees)

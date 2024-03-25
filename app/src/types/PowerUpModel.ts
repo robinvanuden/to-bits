@@ -1,4 +1,4 @@
 export interface PowerUpModel {
   id: string
-  t: string
+  t: string | undefined
 }

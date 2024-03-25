@@ -31,8 +31,8 @@ export default class Map {
 		this.ctx.lineWidth = this.canvas.size(8)
 		for (const entity of this.data.entities()) {
 			switch (entity.t) {
-			case "BOOMERANG":
-				this.ctx.fillStyle = "#503d27"
+			case "ARROW":
+				this.ctx.fillStyle = "#cec3bd"
 				this.ctx.fillRect(
 					this.canvas.tile(entity.x) - this.cx,
 					this.canvas.tile(entity.y) - this.cy,
@@ -60,6 +60,15 @@ export default class Map {
 						this.canvas.tile(entity.h)
 					)
 				}
+				break
+			case "BOOMERANG":
+				this.ctx.fillStyle = "#503d27"
+				this.ctx.fillRect(
+					this.canvas.tile(entity.x) - this.cx,
+					this.canvas.tile(entity.y) - this.cy,
+					this.canvas.tile(entity.w),
+					this.canvas.tile(entity.h)
+				)
 				break
 			case "FIREBALL":
 				this.ctx.fillStyle = "#e0511c"
@@ -104,13 +113,16 @@ export default class Map {
 							this.canvas.tile(tile.h)
 						)
 						switch (tile.pu.t) {
+						case "ARROW":
+							this.ctx.fillStyle = "#cec3bd"
+							break
 						case "BOMB":
 							this.ctx.fillStyle = "#1d1d1e"
 							break
-						case "RANG":
+						case "BOOMERANG":
 							this.ctx.fillStyle = "#6c492e"
 							break
-						case "FIRE":
+						case "FIREBALL":
 							this.ctx.fillStyle = "#e87619"
 							break
 						}

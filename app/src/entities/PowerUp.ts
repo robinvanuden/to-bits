@@ -1,7 +1,7 @@
 import {v4} from "uuid"
 import {PowerUpModel} from "../types/PowerUpModel"
 
-export enum PowerType {BOOMERANG, BOMB, FIREBALL}
+export enum PowerType {ARROW, BOOMERANG, BOMB, FIREBALL}
 
 export default class PowerUp {
 
@@ -23,12 +23,14 @@ export default class PowerUp {
 
 	public static toString = (type: PowerType) => {
 		switch (type) {
+		case PowerType.ARROW:
+			return "ARROW"
 		case PowerType.BOOMERANG:
-			return "RANG"
+			return "BOOMERANG"
 		case PowerType.BOMB:
 			return "BOMB"
 		case PowerType.FIREBALL:
-			return "FIRE"
+			return "FIREBALL"
 		}
 	}
 
