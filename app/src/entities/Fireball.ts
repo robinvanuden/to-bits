@@ -5,7 +5,7 @@ import Entity from "./Entity"
 import Bomb from "./Bomb"
 import MapTile from "../world/MapTile"
 
-export const FIREBALL_SIZE = 6
+export const FIREBALL_SIZE = 8
 export const FIREBALL_SPEED = 6
 export const FIREBALL_GRAVITY = GRAVITY * .2
 

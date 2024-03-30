@@ -2,8 +2,9 @@ import Entity from "./Entity"
 import Player from "./Player"
 import {GRAVITY} from "../constants"
 import {ExplosionModel} from "../types/EntityModel"
-import Projectile from "./Projectile"
 import MapTile from "../world/MapTile"
+import Fireball from "./Fireball"
+import Arrow from "./Arrow"
 
 export const BOMB_EXPLOSION_SIZE = 48
 export const BOMB_GRAVITY = GRAVITY
@@ -82,7 +83,10 @@ export default class Bomb extends Entity {
 			this.explode()
 			return
 		}
-		if (other instanceof Projectile && this.isCollidingWithEntity(other)) {
+		if (!this.isCollidingWithEntity(other)) {
+			return
+		}
+		if (other instanceof Fireball || other instanceof Arrow) {
 			this.explode()
 			other.remove()
 		}

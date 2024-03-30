@@ -32,8 +32,12 @@ export default class Map {
 		for (const entity of this.data.entities()) {
 			switch (entity.t) {
 			case "ARROW":
-				this.ctx.fillStyle = "#cec3bd"
-				this.ctx.fillRect(
+				this.ctx.drawImage(
+					this.images.addImage("img/arrow.png"),
+					1,
+					6,
+					this.canvas.size(entity.w),
+					this.canvas.size(entity.h),
 					this.canvas.tile(entity.x) - this.cx,
 					this.canvas.tile(entity.y) - this.cy,
 					this.canvas.tile(entity.w),
@@ -52,13 +56,6 @@ export default class Map {
 				} else {
 					const passed_millis = Math.round((Date.now() - entity.s))
 					const passed = Math.round((passed_millis) / 150)
-					this.ctx.fillStyle = passed_millis > 1000 && (passed % 2) === 0 ? "#FFF" : "#000"
-					// this.ctx.fillRect(
-					// 	this.canvas.tile(entity.x) - this.cx,
-					// 	this.canvas.tile(entity.y) - this.cy,
-					// 	this.canvas.tile(entity.w),
-					// 	this.canvas.tile(entity.h)
-					// )
 					const FRAME_NEUTRAL = 3
 					const FRAME_PRIMED = 3 + 16
 					const FRAME_PRIMED2 = 3 + 32
@@ -78,8 +75,14 @@ export default class Map {
 				}
 				break
 			case "BOOMERANG":
-				this.ctx.fillStyle = "#503d27"
-				this.ctx.fillRect(
+				const passed_millis = Math.round((Date.now() - entity.s))
+				const passed = Math.round((passed_millis) / 100)
+				this.ctx.drawImage(
+					this.images.addImage("img/boomerang.png"),
+					4 + (passed % 4 * 16),
+					4,
+					this.canvas.size(entity.w),
+					this.canvas.size(entity.h),
 					this.canvas.tile(entity.x) - this.cx,
 					this.canvas.tile(entity.y) - this.cy,
 					this.canvas.tile(entity.w),
@@ -87,8 +90,12 @@ export default class Map {
 				)
 				break
 			case "FIREBALL":
-				this.ctx.fillStyle = "#e0511c"
-				this.ctx.fillRect(
+				this.ctx.drawImage(
+					this.images.addImage("img/fireball.png"),
+					4,
+					4,
+					this.canvas.size(entity.w),
+					this.canvas.size(entity.h),
 					this.canvas.tile(entity.x) - this.cx,
 					this.canvas.tile(entity.y) - this.cy,
 					this.canvas.tile(entity.w),
@@ -127,26 +134,6 @@ export default class Map {
 							this.canvas.tile(tile.y) - this.cy,
 							this.canvas.tile(tile.w),
 							this.canvas.tile(tile.h)
-						)
-						switch (tile.pu.t) {
-						case "ARROW":
-							this.ctx.fillStyle = "#cec3bd"
-							break
-						case "BOMB":
-							this.ctx.fillStyle = "#1d1d1e"
-							break
-						case "BOOMERANG":
-							this.ctx.fillStyle = "#6c492e"
-							break
-						case "FIREBALL":
-							this.ctx.fillStyle = "#e87619"
-							break
-						}
-						this.ctx.fillRect(
-							this.canvas.tile(tile.x + 5) - this.cx,
-							this.canvas.tile(tile.y + 5) - this.cy,
-							this.canvas.tile(6),
-							this.canvas.tile(6)
 						)
 					}
 				}

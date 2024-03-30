@@ -4,6 +4,7 @@ import {GRAVITY} from "../constants"
 import Entity from "./Entity"
 import MapTile from "../world/MapTile"
 import Bomb from "./Bomb"
+import Fireball from "./Fireball"
 
 export const BOOMERANG_SIZE = 8
 export const BOOMERANG_SPEED = 10
@@ -54,12 +55,12 @@ export default class Boomerang extends Projectile {
 		if (!this.isCollidingWithEntity(entity)) {
 			return
 		}
-		this.remove()
 		if (entity instanceof Bomb) {
-			console.log("Touched bomb")
-			entity.explode()
+			return
+		}
+		if (entity instanceof Fireball) {
+			this.remove()
 		} else {
-			console.log("Touched")
 			entity.remove()
 		}
 	}
