@@ -69,7 +69,7 @@ export default class WorldLoader {
 	}
 
 	public spawnPowerUp = () => {
-		if (Math.round(Math.random() * 500) === 1) {
+		if (Math.round(Math.random() * 500) !== 1) {
 			return
 		}
 		const airs = this.powers().tiles()

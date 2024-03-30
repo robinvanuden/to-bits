@@ -75,11 +75,9 @@ export default class Map {
 				}
 				break
 			case "BOOMERANG":
-				const passed_millis = Math.round((Date.now() - entity.s))
-				const passed = Math.round((passed_millis) / 100)
 				this.ctx.drawImage(
 					this.images.addImage("img/boomerang.png"),
-					4 + (passed % 4 * 16),
+					4 + (Math.round(Math.round(Date.now() - entity.s) / 100) % 4 * 16),
 					4,
 					this.canvas.size(entity.w),
 					this.canvas.size(entity.h),

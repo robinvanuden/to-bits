@@ -4,8 +4,8 @@ WORKDIR /app/
 
 COPY app .
 
-RUN npm i -g npm@latest
+RUN npm install -g npm@latest
 
-RUN npm i
+RUN npm install
 
 CMD ["npm", "run", "start"]
