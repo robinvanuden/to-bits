@@ -5,8 +5,8 @@ import Entity from "./Entity"
 import MapTile from "../world/MapTile"
 import Bomb from "./Bomb"
 
-export const ARROW_WIDTH = 10
-export const ARROW_HEIGHT = 2
+export const ARROW_WIDTH = 14
+export const ARROW_HEIGHT = 3
 export const ARROW_SPEED = 4
 export const ARROW_GRAVITY = GRAVITY * .2
 

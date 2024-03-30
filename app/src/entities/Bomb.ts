@@ -6,7 +6,6 @@ import Projectile from "./Projectile"
 import MapTile from "../world/MapTile"
 
 export const BOMB_EXPLOSION_SIZE = 48
-export const BOMB_SIZE = 8
 export const BOMB_GRAVITY = GRAVITY
 
 export default class Bomb extends Entity {
@@ -22,7 +21,7 @@ export default class Bomb extends Entity {
 
 
 	constructor(player: Player) {
-		super(player, BOMB_SIZE, BOMB_SIZE, BOMB_GRAVITY)
+		super(player, 11, 12, BOMB_GRAVITY)
 
 		this.timeRemove = 2500
 		this.timeExploded = 2000
@@ -51,6 +50,7 @@ export default class Bomb extends Entity {
 		this.hasExploded = true
 		this.ew = BOMB_EXPLOSION_SIZE
 		this.eh = Math.round(BOMB_EXPLOSION_SIZE * .75)
+		this.vx = this.vy = this.gravity = 0
 		const new_start = Math.round(Date.now() - this.timeSpawned)
 		this.timeExploded = new_start
 		this.timeRemove = new_start + 500

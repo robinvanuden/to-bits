@@ -102,12 +102,11 @@ import Canvas from "./canvas"
 		}
 		if (key === "w") {
 			socket.emit("move.up", pressed)
+		} else if (key === "s") {
+			socket.emit("move.down", pressed)
 		}
 		if (key === " ") {
 			socket.emit("move.jump", pressed)
-		}
-		if (key === "s") {
-			socket.emit("move.down", pressed)
 		}
 		if (pressed && key === ";") {
 			hud.toggleDebug()

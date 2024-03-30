@@ -53,12 +53,28 @@ export default class Map {
 					const passed_millis = Math.round((Date.now() - entity.s))
 					const passed = Math.round((passed_millis) / 150)
 					this.ctx.fillStyle = passed_millis > 1000 && (passed % 2) === 0 ? "#FFF" : "#000"
-					this.ctx.fillRect(
+					// this.ctx.fillRect(
+					// 	this.canvas.tile(entity.x) - this.cx,
+					// 	this.canvas.tile(entity.y) - this.cy,
+					// 	this.canvas.tile(entity.w),
+					// 	this.canvas.tile(entity.h)
+					// )
+					const FRAME_NEUTRAL = 3
+					const FRAME_PRIMED = 3 + 16
+					const FRAME_PRIMED2 = 3 + 32
+					const frame = passed_millis <= 1000 ? FRAME_NEUTRAL : (passed % 2) === 0 ? FRAME_PRIMED2 : FRAME_PRIMED
+					this.ctx.drawImage(
+						this.images.addImage("img/bomb.png"),
+						frame,
+						2,
+						this.canvas.size(entity.w),
+						this.canvas.size(entity.h),
 						this.canvas.tile(entity.x) - this.cx,
 						this.canvas.tile(entity.y) - this.cy,
 						this.canvas.tile(entity.w),
 						this.canvas.tile(entity.h)
 					)
+
 				}
 				break
 			case "BOOMERANG":

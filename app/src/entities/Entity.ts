@@ -11,13 +11,13 @@ export default abstract class Entity {
 	public readonly width: number // width
 	public readonly height: number // height
 
-	x: number = 0 // x-coord
-	y: number = 0 // y-coord
+	public x: number = 0 // x-coord
+	public y: number = 0 // y-coord
 
-	vx: number = 0 // x velocity
-	vy: number = 0 // y velocity
+	public vx: number = 0 // x velocity
+	public vy: number = 0 // y velocity
 
-	public readonly gravity: number = 0
+	public gravity: number = 0
 	public readonly timeSpawned: number = 0
 	public timeRemove: number = 20000
 

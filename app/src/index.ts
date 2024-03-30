@@ -26,6 +26,7 @@ game.setEntityRepository(entities)
 
 app.use(cookieParser())
 app.use("/", express.static("dist"))
+app.use("/img", express.static("public/img"))
 
 app.get("/", (req, res) => {
 	let uuid: string = req.cookies[COOKIE_PLAYER_ID] || ""

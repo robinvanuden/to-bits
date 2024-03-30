@@ -7,16 +7,16 @@ export default class Images {
 		this.host = host
 	}
 
-	addImage = (name: string): HTMLImageElement => {
-		if (this.images[name]) {
-			return this.images[name]
+	addImage = (file_path: string): HTMLImageElement => {
+		if (this.images[file_path]) {
+			return this.images[file_path]
 		}
 		const url = new URL(this.host.toString())
 		const image = new Image()
-		url.pathname = name
+		url.pathname = file_path
 		image.src = url.toString()
 		image.style.imageRendering = "pixelated"
-		this.images[name] = image
+		this.images[file_path] = image
 		return image
 	}
 
