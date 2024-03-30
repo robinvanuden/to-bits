@@ -8,13 +8,12 @@ import Bomb from "./Bomb"
 export const BOOMERANG_SIZE = 8
 export const BOOMERANG_SPEED = 10
 export const BOOMERANG_GRAVITY = GRAVITY * .2
-export const BOOMERANG_RETURN = 350
 
 export default class Boomerang extends Projectile {
 
 	dx: number = 0
 	dy: number = 0
-	timeReturn: number = BOOMERANG_RETURN
+	timeReturn: number = 350
 
 	constructor(player: Player, degrees: number) {
 		super(player, BOOMERANG_SIZE, BOOMERANG_SIZE, BOOMERANG_GRAVITY, degrees, BOOMERANG_SPEED * .5)
@@ -38,7 +37,7 @@ export default class Boomerang extends Projectile {
 			this.dx = dx / distance
 			this.dy = dy / distance
 		}
-		if (this.hasLifetime(250) && this.isOwner(player) && this.isHit(player)) {
+		if (this.isThrown() && this.isOwner(player) && this.isHit(player)) {
 			console.log("Caught")
 			this.remove()
 			return

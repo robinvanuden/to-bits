@@ -75,17 +75,6 @@ export default abstract class Entity {
 	public remove() {
 		this.timeRemove = -1000
 	}
-
-	public shouldRemove = (player: Player): boolean => {
-		if (this.hasLifetime(250)) {
-			return false
-		}
-		if (this.hasLifetime(this.timeRemove)) {
-			return true
-		}
-		return player.died !== undefined
-	}
-
 	public isOverdue = () => this.hasLifetime(this.timeRemove)
 
 	static toModel = (entity: Entity, e: ExplosionModel | undefined = undefined): EntityModel => ({

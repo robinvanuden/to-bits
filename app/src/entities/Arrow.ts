@@ -20,7 +20,7 @@ export default class Arrow extends Projectile {
 	}
 
 	public loopPlayer = (player: Player): void => {
-		if (!this.hasLifetime(250)) {
+		if (!this.isThrown()) {
 			return
 		}
 		if (this.isHit(player)) {
