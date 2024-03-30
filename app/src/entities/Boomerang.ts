@@ -40,12 +40,10 @@ export default class Boomerang extends Projectile {
 			this.dy = dy / distance
 		}
 		if (this.isThrown() && this.isOwner(player) && this.isHit(player)) {
-			console.log("Caught")
 			this.remove()
 			return
 		}
 		if (!this.isOwner(player) && this.isHit(player)) {
-			console.log("Killed")
 			player.kill()
 			this.remove()
 			return
@@ -68,7 +66,6 @@ export default class Boomerang extends Projectile {
 
 	public loopTile = (tile: MapTile): void => {
 		if (tile.isSolid() && this.isColliding(tile)) {
-			console.log("Collided")
 			this.timeReturn = Date.now() - this.timeSpawned
 		}
 	}

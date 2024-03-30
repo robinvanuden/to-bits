@@ -36,17 +36,14 @@ export default class Arrow extends Projectile {
 		}
 		this.remove()
 		if (entity instanceof Bomb) {
-			console.log("Touched bomb")
 			entity.explode()
 		} else {
-			console.log("Touched")
 			entity.remove()
 		}
 	}
 
 	public loopTile = (tile: MapTile): void => {
 		if (tile.isSolid() && this.isColliding(tile)) {
-			console.log("Collided")
 			this.remove()
 		}
 	}

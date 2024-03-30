@@ -1,25 +1,21 @@
 {
   "name": "to-bits",
-  "version": "0.5.5",
+  "version": "0.5.6",
+  "private": true,
   "author": {
     "name": "Robin van Uden",
-    "email": "hello@robinvanuden.com",
+    "email": "code@robinvanuden.com",
     "url": "https://www.robinvanuden.com"
   },
-  "private": true,
   "scripts": {
+    "test": "eslint src/*/**.ts public/*/**.ts",
     "clean": "rm -r dist & rm -r .parcel-cache || echo 'nope'",
-    "dev:server": "nodemon --watch src src/index.ts",
+    "dev:server": "nodemon --watch src",
     "dev:client": "npm run clean && parcel public/main.html --port=3001",
-    "dev": "npm run dev:client & npm run dev:server",
-    "build:client": "npm run clean && parcel build public/main.html",
-    "start:server": "ts-node src/index.ts",
-    "start:clean": "npm run clean && npm run start",
-    "start": "parcel build public/main.html && ts-node src/index.ts",
-    "test": "eslint src/*/**.ts public/*/**.ts"
+    "dev": "bun run dev:client & bun run dev:server",
+    "start": "parcel build public/main.html && ts-node src/index.ts"
   },
   "dependencies": {
-    "color": "^4.2",
     "express": "^4.19",
     "sharp": "^0.33",
     "socket.io": "^4.7",

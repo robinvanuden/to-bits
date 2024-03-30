@@ -30,7 +30,6 @@ app.use("/img", express.static("public/img"))
 
 app.get("/", (req, res) => {
 	let uuid: string = req.cookies[COOKIE_PLAYER_ID] || ""
-	console.log("incoming uuid", uuid, uuid.length)
 	if (uuid.length === 0) {
 		// No cookie yet
 		uuid = game.generate_uuid()
@@ -45,7 +44,7 @@ app.get("/", (req, res) => {
 	if (!player) {
 		// Possible old cookie, generate new one
 		uuid = game.generate_uuid()
-		console.log("Generated uuid for an old player_id (outdated cookie)")
+		// console.log("Generated uuid for an old player_id (outdated cookie)")
 	}
 	if (player && !player.disconnected) {
 		// console.log("Invalid session", uuid)
@@ -60,7 +59,6 @@ app.get("/", (req, res) => {
 		maxAge: 60_000 * 12,
 		secure: req.secure || (req.headers.origin || "").startsWith("https")
 	})
-	console.log(COOKIE_PLAYER_ID, uuid)
 	res.sendFile(path.resolve(__dirname, "../dist/main.html"))
 })
 

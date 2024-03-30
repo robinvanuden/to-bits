@@ -45,8 +45,8 @@ export default class Map {
 				)
 				break
 			case "BOMB":
-				this.ctx.fillStyle = "#FFF"
 				if (entity.e) {
+					this.ctx.fillStyle = "#FFF"
 					this.ctx.fillRect(
 						this.canvas.tile(entity.e.x) - this.cx,
 						this.canvas.tile(entity.e.y) - this.cy,
@@ -109,19 +109,7 @@ export default class Map {
 			for (const tile of layer.ls) {
 				this.ctx.fillStyle = tile.c || "#000"
 				if (tile.i) {
-					if (!tile.pu && layer.n === "floor") {
-						this.ctx.drawImage(
-							this.images.addImage(tile.i),
-							tile.ox,
-							tile.oy,
-							tile.w,
-							tile.h,
-							this.canvas.tile(tile.x) - this.cx,
-							this.canvas.tile(tile.y) - this.cy,
-							this.canvas.tile(tile.w),
-							this.canvas.tile(tile.h)
-						)
-					} else if (tile.pu && layer.n === "powers") {
+					if ((!tile.pu && layer.n === "floor") || (tile.pu && layer.n === "powers")) {
 						this.ctx.drawImage(
 							this.images.addImage(tile.i),
 							tile.ox,

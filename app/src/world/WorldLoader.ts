@@ -41,7 +41,6 @@ export default class WorldLoader {
 	constructor(name: string) {
 		this._seed = v4()
 		this.world = this.loadJsonMap(name + ".json")
-		console.log(this.world)
 		for (const set of this.world.tilesets) {
 			this.sets.push(new TileSetLoader(set.source, set.firstgid))
 		}
