@@ -14,6 +14,9 @@ export default class Hud {
 	COLOR_BLACK = "#151414"
 	COLOR_WHITE = "#F3F3F3"
 
+	COUNTER = 0
+	FPS = 0
+
 	constructor(canvas: Canvas, data: Data) {
 		this.canvas = canvas
 		this.data = data
@@ -73,15 +76,16 @@ export default class Hud {
 		this.ctx.fillText("NOPE", this.canvas.width() * .5, this.canvas.height() * .5)
 	}
 	drawDebug = (delta: number) => {
-		this.ctx.font = this.canvas.font(.7)
+		this.ctx.font = this.canvas.font(.8)
 		this.ctx.fillStyle = this.COLOR_WHITE
 		this.ctx.textAlign = "left"
 		this.ctx.strokeStyle = this.COLOR_BLACK
-		this.ctx.lineWidth = this.canvas.size(4)
-		const SPACE = this.canvas.size(12)
+		this.ctx.lineWidth = this.canvas.size(6)
+		const SPACE = this.canvas.size(14)
 
 		const debug_texts = ["version: " + this.data.version()]
 		debug_texts.push("delta: " + delta)
+		debug_texts.push("fps: " + 1000 / delta)
 
 		const you = this.you()
 		if (you != null && you.d === undefined) {

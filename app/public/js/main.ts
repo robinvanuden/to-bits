@@ -144,14 +144,14 @@ import Canvas from "./canvas"
 
 	updateFavicon()
 
-	let lastRender = Date.now()
+	let lastRender = performance.now()
 	const loop = (timestamp: number) => {
-		const delta = timestamp - lastRender
 		canvas.clear()
 		if (!hud.loading()) map.tick()
+		const delta = timestamp - lastRender
 		hud.tick(delta)
 		lastRender = timestamp
-		window.requestAnimationFrame(loop)
+		requestAnimationFrame(loop)
 	}
-	window.requestAnimationFrame(loop)
+	requestAnimationFrame(loop)
 })()
