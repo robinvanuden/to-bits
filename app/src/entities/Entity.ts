@@ -18,7 +18,7 @@ export default abstract class Entity {
 	vy: number = 0 // y velocity
 
 	public readonly gravity: number = 0
-	public readonly spawned: number = 0
+	public readonly timeSpawned: number = 0
 	public timeRemove: number = 20000
 
 	protected constructor(player: Player, width: number, height: number, gravity: number) {
@@ -29,7 +29,7 @@ export default abstract class Entity {
 		this.gravity = gravity
 		this.x = player.x + player.width * .5
 		this.y = player.y + player.height * .5
-		this.spawned = Date.now()
+		this.timeSpawned = Date.now()
 	}
 
 	public equals = (entity: Entity): boolean => this.id === entity.id
@@ -60,7 +60,7 @@ export default abstract class Entity {
 
 	protected isOwner = (p: Player) => this.player_id === p.id
 
-	protected hasLifetime = (milliseconds: number) => (Date.now() - this.spawned) >= milliseconds
+	protected hasLifetime = (milliseconds: number) => (Date.now() - this.timeSpawned) >= milliseconds
 
 	// public kills = (player: Player): boolean => !this.isOwner(player) && this.isHit(player)
 
@@ -91,7 +91,7 @@ export default abstract class Entity {
 	static toModel = (entity: Entity, e: ExplosionModel | undefined = undefined): EntityModel => ({
 		id: entity.id,
 		p: entity.player_id,
-		s: entity.spawned,
+		s: entity.timeSpawned,
 		t: String(entity.constructor.name).toUpperCase(),
 		x: entity.x,
 		y: entity.y,
