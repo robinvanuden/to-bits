@@ -163,21 +163,15 @@ export default class Map {
 			this.ctx.strokeText(player.n.toLowerCase(), name_x, name_y)
 			this.ctx.fillText(player.n.toLowerCase(), name_x, name_y)
 
-			const sx = player.l.r ? 1 : 2
-			if ((!player.m.u && !player.m.d) && (player.m.r || player.m.l)) {
-				player.a += 1
-			} else {
-				player.a = 0
-			}
-			if (player.a >= 20) {
-				player.a = 0
-			}
 			let image_name = ""
-			if (player.vy !== 0 || player.a >= 10) {
+			if (player.m.u || player.m.d) {
+				image_name = "image/" + player.uid + (player.l.r ? "r" : "l") + 1 + ".png"
+			} else if ((player.m.r || player.m.l) && Math.round((Date.now() / 250) % 1) === 0) {
 				image_name = "image/" + player.uid + (player.l.r ? "r" : "l") + 1 + ".png"
 			} else {
 				image_name = "image/" + player.uid + (player.l.r ? "r" : "l") + 0 + ".png"
 			}
+			const sx = player.l.r ? 1 : 2
 			const image = this.images.addImage(image_name)
 			this.ctx.drawImage(
 				image,
