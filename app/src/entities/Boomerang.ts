@@ -14,6 +14,7 @@ export default class Boomerang extends Projectile {
 
 	dx: number = 0
 	dy: number = 0
+
 	timeReturn: number = 350
 
 	constructor(player: Player, degrees: number) {

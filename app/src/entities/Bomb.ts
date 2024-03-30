@@ -20,12 +20,11 @@ export default class Bomb extends Entity {
 	ex = () => this.x - Math.round((this.ew - this.width) * .5)
 	ey = () => this.y - Math.round((this.eh - this.height))
 
-
 	constructor(player: Player) {
 		super(player, 11, 12, BOMB_GRAVITY)
 
-		this.timeRemove = 2500
 		this.timeExploded = 2000
+		this.timeRemove = 2500
 		this.vx = this.vy = 0
 		this.ew = this.eh = 0
 	}
@@ -58,10 +57,6 @@ export default class Bomb extends Entity {
 	}
 
 	public loop = (): void => {
-		if (this.hasLifetime(this.timeRemove)) {
-			this.remove()
-			return
-		}
 		if (this.hasLifetime(this.timeExploded)) {
 			this.explode()
 		}
@@ -70,9 +65,7 @@ export default class Bomb extends Entity {
 	public loopPlayer = (player: Player): void => {
 		if (this.hasExploded && this.isExplosionHit(player)) {
 			player.kill()
-			return
-		}
-		if (!this.isOwner(player) && this.isHit(player)) {
+		} else if (!this.isOwner(player) && this.isHit(player)) {
 			player.kill()
 			this.explode()
 		}
