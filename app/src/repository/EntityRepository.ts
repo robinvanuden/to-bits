@@ -1,17 +1,17 @@
-import Entity from "../entities/Entity"
-import Player from "../entities/Player"
-import Boomerang from "../entities/Boomerang"
-import Fireball from "../entities/Fireball"
-import Bomb from "../entities/Bomb"
-import Arrow from "../entities/Arrow"
+import Projectile from "../entities/Projectile"
+import Player from "../entities/entity/Player"
+import Boomerang from "../entities/projectile/Boomerang"
+import Fireball from "../entities/projectile/Fireball"
+import Bomb from "../entities/entity/Bomb"
+import Arrow from "../entities/projectile/Arrow"
 
 export default class EntityRepository {
 
-	private entities: Entity[] = []
+	private entities: Projectile[] = []
 
 	public list = () => this.entities
 
-	public exclude = (entity: Entity) => this.entities.filter(e => !e.equals(entity))
+	public exclude = (entity: Projectile) => this.entities.filter(e => !e.equals(entity))
 
 	public shootArrow = (player: Player, degrees: number) => {
 		this.entities.push(new Arrow(player, degrees))
@@ -29,7 +29,7 @@ export default class EntityRepository {
 		this.entities.push(new Bomb(player))
 	}
 
-	public remove = (entity: Entity) => {
+	public remove = (entity: Projectile) => {
 		this.entities = this.entities.filter(e => !entity.equals(e))
 	}
 }

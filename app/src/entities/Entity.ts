@@ -1,94 +1,62 @@
-import Player from "./Player"
-import MapTile from "../world/MapTile"
 import {v4} from "uuid"
-import EntityModel from "../types/EntityModel"
-import {ExplosionModel} from "../../public/js/model/EntityModel"
 
 export default abstract class Entity {
-	protected readonly id: string = ""
-	protected readonly player_id: string = ""
 
-	public readonly width: number // width
-	public readonly height: number // height
+	private readonly _id: string
 
-	public x: number = 0 // x-coord
-	public y: number = 0 // y-coord
+	private _x: number
+	private _y: number
 
-	public vx: number = 0 // x velocity
-	public vy: number = 0 // y velocity
+	private readonly _width: number
+	private readonly _height: number
 
-	public gravity: number = 0
-	public readonly timeSpawned: number = 0
-	public timeRemove: number = 20000
-
-	protected constructor(player: Player, width: number, height: number, gravity: number) {
-		this.id = v4()
-		this.player_id = player.id
-		this.width = width
-		this.height = height
-		this.gravity = gravity
-		this.x = player.x + player.width * .5
-		this.y = player.y + player.height * .5
-		this.timeSpawned = Date.now()
+	get id(): string {
+		return this._id
 	}
 
-	public equals = (entity: Entity): boolean => this.id === entity.id
-
-	protected isHit = (p: Player): boolean =>
-		this.x < p.x + p.width &&
-		this.x + this.width > p.x &&
-		this.y < p.y + p.height
-		&& this.y + this.height > p.y
-
-	public isColliding = (tile: MapTile): boolean =>
-		tile.x < this.x + this.width &&
-		tile.x + tile.width > this.x &&
-		tile.y < this.y + this.height &&
-		tile.y + tile.height > this.y
-
-	public isCollidingWithEntity = (entity: Entity): boolean =>
-		entity.x < this.x + this.width &&
-		entity.x + entity.width > this.x &&
-		entity.y < this.y + this.height &&
-		entity.y + entity.height > this.y
-
-	public isWalkingOn = (tile: MapTile): boolean =>
-		tile.x < this.x + this.width &&
-		tile.x + tile.width > this.x &&
-		tile.y < this.y + this.height &&
-		tile.y + 1 > this.y
-
-	protected isOwner = (p: Player) => this.player_id === p.id
-
-	protected hasLifetime = (milliseconds: number) => (Date.now() - this.timeSpawned) >= milliseconds
-
-	// public kills = (player: Player): boolean => !this.isOwner(player) && this.isHit(player)
-
-	public abstract loop(): void
-
-	public abstract loopPlayer(player: Player): void
-
-	public abstract loopEntity(entity: Entity): void
-
-	public abstract loopTile(entity: MapTile): void
-
-	public remove() {
-		this.timeRemove = -1000
+	get x(): number {
+		return this._x
 	}
-	public isOverdue = () => this.hasLifetime(this.timeRemove)
 
-	static toModel = (entity: Entity, e: ExplosionModel | undefined = undefined): EntityModel => ({
-		id: entity.id,
-		p: entity.player_id,
-		s: entity.timeSpawned,
-		t: String(entity.constructor.name).toUpperCase(),
-		x: entity.x,
-		y: entity.y,
-		w: entity.width,
-		h: entity.height,
-		vx: entity.vx,
-		vy: entity.vy,
-		e: e
-	})
+	get y(): number {
+		return this._y
+	}
+
+	get width(): number {
+		return this._width
+	}
+
+	get height(): number {
+		return this._height
+	}
+
+	set x(x: number) {
+		this._x = x
+	}
+
+	set y(y: number) {
+		this._y = y
+	}
+
+	constructor(x: number, y: number, width: number, height: number, id: string | undefined = undefined) {
+		this._id = id || v4()
+		this._x = x
+		this._y = y
+		this._width = width
+		this._height = height
+	}
+
+	public equals = (entity: Entity): boolean => this._id === entity._id
+
+	public collidesWith = (entity: Entity): boolean =>
+		this.isWithinX(entity) &&
+		this.isWithinY(entity)
+
+	public isWithinX = (entity: Entity): boolean =>
+		entity._x < this._x + this._width &&
+		entity._x + entity._width > this._x
+
+	public isWithinY = (entity: Entity): boolean =>
+		entity._y < this._y + this._height &&
+		entity._y + entity._height > this._y
 }
-

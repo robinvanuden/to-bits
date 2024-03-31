@@ -1,16 +1,15 @@
-import Projectile from "./Projectile"
-import Player from "./Player"
-import {GRAVITY} from "../constants"
-import Entity from "./Entity"
-import Bomb from "./Bomb"
-import MapTile from "../world/MapTile"
+import ItemProjectile from "../ItemProjectile"
+import Player from "../entity/Player"
+import {GRAVITY} from "../../constants"
+import Projectile from "../Projectile"
+import Bomb from "../entity/Bomb"
+import MapTile from "../../world/MapTile"
 
 export const FIREBALL_SIZE = 8
 export const FIREBALL_SPEED = 6
 export const FIREBALL_GRAVITY = GRAVITY * .2
 
-export default class Fireball extends Projectile {
-
+export default class Fireball extends ItemProjectile {
 
 	constructor(player: Player, degrees: number) {
 		super(player, FIREBALL_SIZE, FIREBALL_SIZE, FIREBALL_GRAVITY, degrees, FIREBALL_SPEED)
@@ -20,14 +19,14 @@ export default class Fireball extends Projectile {
 	}
 
 	public loopPlayer = (player: Player): void => {
-		if (!this.isOwner(player) && this.isHit(player)) {
+		if (!this.isOwner(player) && this.collidesWith(player)) {
 			player.kill()
 			this.remove()
 		}
 	}
 
-	public loopEntity = (entity: Entity): void => {
-		if (!this.isCollidingWithEntity(entity)) {
+	public loopEntity = (entity: Projectile): void => {
+		if (!this.collidesWith(entity)) {
 			return
 		}
 		this.remove()
@@ -39,7 +38,7 @@ export default class Fireball extends Projectile {
 	}
 
 	public loopTile = (tile: MapTile): void => {
-		if (tile.isSolid() && this.isColliding(tile)) {
+		if (tile.isSolid() && this.collidesWith(tile)) {
 			this.remove()
 		}
 	}

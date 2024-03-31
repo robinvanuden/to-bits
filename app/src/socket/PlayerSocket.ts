@@ -1,13 +1,12 @@
 import {Server, Socket} from "socket.io"
-import Player from "../entities/Player"
 import Game from "../game"
 // @ts-expect-error: Unknown type
 import {Server as ModServer} from "module:tls"
 
 import cookie from "cookie"
 import {COOKIE_PLAYER_ID} from "../constants"
-import Entity from "../entities/Entity"
-import Bomb from "../entities/Bomb"
+import Projectile from "../entities/Projectile"
+import Bomb from "../entities/entity/Bomb"
 
 export default class PlayerSocket {
 
@@ -122,16 +121,13 @@ export default class PlayerSocket {
 		}
 	}
 
-	private toModel = (entity: Entity) => {
-		if (entity instanceof Bomb) {
-			return Bomb.toModel(entity, entity.getExplosion())
-		}
-		return Entity.toModel(entity)
+	private toModel = (entity: Projectile) => {
+		return entity instanceof Bomb ? entity.toModel(entity.getExplosion()) : entity.toModel()
 	}
 
 	emitProjectiles = () => {
 		// Emit players
-		const players = this.game?.players().list().map(Player.toModel) ?? []
+		const players = this.game?.players().list().map(p => p.toModel()) ?? []
 		if (players.length > 0) this.io.emit("players", players)
 
 		const projectiles = this.game?.entities().list().map(this.toModel) ?? []

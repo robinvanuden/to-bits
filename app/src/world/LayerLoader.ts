@@ -38,6 +38,6 @@ export default class LayerLoader {
 
 	public toModel = (): TileLayerModel => ({
 		n: this.name(),
-		ls: this.tiles().map(MapTile.toModel)
+		ls: this.tiles().map(t => t.toModel())
 	})
 }

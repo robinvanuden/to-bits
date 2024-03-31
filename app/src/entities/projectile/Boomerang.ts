@@ -1,16 +1,16 @@
-import Projectile from "./Projectile"
-import Player from "./Player"
-import {GRAVITY} from "../constants"
-import Entity from "./Entity"
-import MapTile from "../world/MapTile"
-import Bomb from "./Bomb"
+import ItemProjectile from "../ItemProjectile"
+import Player from "../entity/Player"
+import {GRAVITY} from "../../constants"
+import Projectile from "../Projectile"
+import MapTile from "../../world/MapTile"
+import Bomb from "../entity/Bomb"
 import Fireball from "./Fireball"
 
 export const BOOMERANG_SIZE = 8
 export const BOOMERANG_SPEED = 10
 export const BOOMERANG_GRAVITY = GRAVITY * .2
 
-export default class Boomerang extends Projectile {
+export default class Boomerang extends ItemProjectile {
 
 	dx: number = 0
 	dy: number = 0
@@ -39,19 +39,19 @@ export default class Boomerang extends Projectile {
 			this.dx = dx / distance
 			this.dy = dy / distance
 		}
-		if (this.isThrown() && this.isOwner(player) && this.isHit(player)) {
+		if (this.isThrown() && this.isOwner(player) && this.collidesWith(player)) {
 			this.remove()
 			return
 		}
-		if (!this.isOwner(player) && this.isHit(player)) {
+		if (!this.isOwner(player) && this.collidesWith(player)) {
 			player.kill()
 			this.remove()
 			return
 		}
 	}
 
-	public loopEntity = (entity: Entity): void => {
-		if (!this.isCollidingWithEntity(entity)) {
+	public loopEntity = (entity: Projectile): void => {
+		if (!this.collidesWith(entity)) {
 			return
 		}
 		if (entity instanceof Bomb) {
@@ -65,7 +65,7 @@ export default class Boomerang extends Projectile {
 	}
 
 	public loopTile = (tile: MapTile): void => {
-		if (tile.isSolid() && this.isColliding(tile)) {
+		if (tile.isSolid() && this.collidesWith(tile)) {
 			this.timeReturn = Date.now() - this.timeSpawned
 		}
 	}

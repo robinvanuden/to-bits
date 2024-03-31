@@ -2,11 +2,11 @@ import World from "../types/World"
 import * as path from "path"
 import * as fs from "fs"
 import MapTile from "./MapTile"
-import Player from "../entities/Player"
+import Player from "../entities/entity/Player"
 import TileSetLoader from "./TileSetLoader"
 import LayerLoader from "./LayerLoader"
 import {v4} from "uuid"
-import Entity from "../entities/Entity"
+import Projectile from "../entities/Projectile"
 
 export default class WorldLoader {
 
@@ -91,7 +91,7 @@ export default class WorldLoader {
 
 	isPlayerInVoid = (player: Player): boolean => (player.y + player.height) > (this.world.height * this.world.tileheight)
 
-	isEntityInVoid = (entity: Entity): boolean => (entity.y + entity.height) > (this.world.height * this.world.tileheight)
+	isEntityInVoid = (entity: Projectile): boolean => (entity.y + entity.height) > (this.world.height * this.world.tileheight)
 }
 
 let world1: WorldLoader | undefined = undefined

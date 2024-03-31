@@ -1,8 +1,9 @@
 import {names, uniqueNamesGenerator} from "unique-names-generator"
-import PowerUp from "./PowerUp"
-import MapTile from "../world/MapTile"
-import {GRAVITY} from "../constants"
-import PlayerModel, {Direction} from "../types/PlayerModel"
+import PowerUp from "../PowerUp"
+import MapTile from "../../world/MapTile"
+import {GRAVITY} from "../../constants"
+import PlayerModel, {Direction} from "../../types/PlayerModel"
+import Entity from "../Entity"
 
 export const PLAYER_WIDTH = 13
 export const PLAYER_HEIGHT = 16
@@ -17,57 +18,38 @@ const randomColor = () => `hsl(${Math.round(360 * Math.random())}, 74%, 58%)`
 
 const randomMask = () => Math.round(Math.random() * 3) + 1
 
-
-export default class Player {
+export default class Player extends Entity {
 	// ID
-	id: string
 	socket_id: string
-	// is disconnected
 	disconnected: number | undefined
 	died: number | undefined
-	// color
 	color: string
-	// mask
 	mask: number
-	// name
 	name: string
-	// speed walking
 	sw: number
-	// speed falling
 	sj: number
-	// width
-	width: number
-	// height
-	height: number
-	// x-coord
-	x: number
-	// y-coord
-	y: number
-	// x velocity
+
 	vx: number
-	// y velocity
 	vy: number
-	// gravity
+
 	gravity: number
 	grounded: boolean
-	// directions looking
+
 	look: Direction
-	// directions pressed
 	move: Direction
+
 	power_ups: PowerUp[] = []
 
 	constructor(id: string, socket: string, spawn: MapTile) {
-		this.id = id
+		super(spawn.x, spawn.y, PLAYER_WIDTH, PLAYER_HEIGHT, id)
+
 		this.socket_id = socket
 		this.disconnected = undefined
 		this.died = undefined
 		this.color = randomColor()
 		this.mask = randomMask()
 		this.name = randomName()
-		this.width = PLAYER_WIDTH
-		this.height = PLAYER_HEIGHT
-		this.x = spawn.x
-		this.y = spawn.y
+
 		this.vx = 0
 		this.vy = 0
 		this.gravity = PLAYER_GRAVITY
@@ -126,24 +108,12 @@ export default class Player {
 		this.power_ups = []
 	}
 
-	isColliding = (tile: MapTile): boolean =>
-		tile.x < this.x + this.width &&
-		tile.x + tile.width > this.x &&
-		tile.y < this.y + this.height &&
-		tile.y + tile.height > this.y
-
 	isWalkingOn = (tile: MapTile): boolean =>
-		tile.x < this.x + this.width &&
-		tile.x + tile.width > this.x &&
+		this.isWithinX(tile) &&
 		tile.y - 1 < this.y + this.height &&
 		tile.y + tile.height > this.y + (this.height - 1)
 
-	isTouching = (tile: MapTile) =>
-		tile.power_up &&
-		tile.x < this.x + this.width &&
-		tile.x + tile.width > this.x &&
-		tile.y < this.y + this.height &&
-		tile.y + tile.height > this.y
+	isTouching = (tile: MapTile) => tile.power_up && this.collidesWith(tile)
 
 	getFirstPowerUp = () => this.power_ups[0] || undefined
 
@@ -155,21 +125,21 @@ export default class Player {
 		this.power_ups = this.power_ups.filter(power.notEquals)
 	}
 
-	static toModel = (p: Player): PlayerModel => ({
-		i: p.socket_id,
-		uid: p.id,
-		w: p.width,
-		h: p.height,
-		x: p.x,
-		y: p.y,
-		vx: p.vx,
-		vy: p.vy,
-		d: p.died,
-		dc: p.disconnected,
-		n: p.name,
-		c: p.color,
-		l: p.look,
-		m: p.move,
-		pu: p.power_ups.map(PowerUp.toModel)
+	toModel = (): PlayerModel => ({
+		i: this.socket_id,
+		uid: this.id,
+		w: this.width,
+		h: this.height,
+		x: this.x,
+		y: this.y,
+		vx: this.vx,
+		vy: this.vy,
+		d: this.died,
+		dc: this.disconnected,
+		n: this.name,
+		c: this.color,
+		l: this.look,
+		m: this.move,
+		pu: this.power_ups.map(PowerUp.toModel)
 	})
 }

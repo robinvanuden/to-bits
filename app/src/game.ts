@@ -4,7 +4,7 @@ import WorldLoader, {useWorld1} from "./world/WorldLoader"
 import EntityRepository from "./repository/EntityRepository"
 import {PowerType} from "./entities/PowerUp"
 import {TICKS} from "./constants"
-import Boomerang from "./entities/Boomerang"
+import Boomerang from "./entities/projectile/Boomerang"
 
 export default class Game {
 
@@ -74,7 +74,7 @@ export default class Game {
 		this.world().spawnPowerUp()
 
 		for (const entity of this.entities().list()) {
-			// Entity loop
+			// Projectile loop
 			if (entity.isOverdue() || this.world().isEntityInVoid(entity)) {
 				this.entities().remove(entity)
 			} else {
@@ -103,13 +103,13 @@ export default class Game {
 
 				if (player.move.l) {
 					player.x -= player.sw
-					if (solids.find(t => player.isColliding(t))) player.x += player.sw
+					if (solids.find(t => player.collidesWith(t))) player.x += player.sw
 				}
 				if (player.move.r) {
 					player.x += player.sw
-					if (solids.find(t => player.isColliding(t))) player.x -= player.sw
+					if (solids.find(t => player.collidesWith(t))) player.x -= player.sw
 				}
-				if (player.move.u && player.canJump() && !solids.find(t => player.isColliding(t))) {
+				if (player.move.u && player.canJump() && !solids.find(t => player.collidesWith(t))) {
 					player.vy -= player.sj
 					player.grounded = false
 				}
@@ -119,7 +119,7 @@ export default class Game {
 				player.y += player.vy
 
 
-				const solid = solids.find(t => player.isColliding(t))
+				const solid = solids.find(t => player.collidesWith(t))
 				if (solid && player.vy > 0 && player.isWalkingOn(solid)) {
 					player.y = solid.y - player.height
 					player.vy = 0

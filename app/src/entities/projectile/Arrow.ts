@@ -1,16 +1,16 @@
-import Projectile from "./Projectile"
-import Player from "./Player"
-import {GRAVITY} from "../constants"
-import Entity from "./Entity"
-import MapTile from "../world/MapTile"
-import Bomb from "./Bomb"
+import ItemProjectile from "../ItemProjectile"
+import Player from "../entity/Player"
+import {GRAVITY} from "../../constants"
+import Projectile from "../Projectile"
+import MapTile from "../../world/MapTile"
+import Bomb from "../entity/Bomb"
 
 export const ARROW_WIDTH = 14
 export const ARROW_HEIGHT = 5
 export const ARROW_SPEED = 4
 export const ARROW_GRAVITY = GRAVITY * .2
 
-export default class Arrow extends Projectile {
+export default class Arrow extends ItemProjectile {
 
 	constructor(player: Player, degrees: number) {
 		super(player, ARROW_WIDTH, ARROW_HEIGHT, ARROW_GRAVITY, degrees, ARROW_SPEED)
@@ -23,15 +23,15 @@ export default class Arrow extends Projectile {
 		if (!this.isThrown()) {
 			return
 		}
-		if (this.isHit(player)) {
+		if (this.collidesWith(player)) {
 			player.kill()
 			this.remove()
 			return
 		}
 	}
 
-	public loopEntity = (entity: Entity): void => {
-		if (!this.isCollidingWithEntity(entity)) {
+	public loopEntity = (entity: Projectile): void => {
+		if (!this.collidesWith(entity)) {
 			return
 		}
 		this.remove()
@@ -43,7 +43,7 @@ export default class Arrow extends Projectile {
 	}
 
 	public loopTile = (tile: MapTile): void => {
-		if (tile.isSolid() && this.isColliding(tile)) {
+		if (tile.isSolid() && this.collidesWith(tile)) {
 			this.remove()
 		}
 	}

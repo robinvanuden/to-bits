@@ -43,7 +43,7 @@ The Item update.
 
 ### Added
 
-- [x] Entity class for entities other than players.
+- [x] Projectile class for entities other than players.
 - [ ] Added lobbies instead of a fixed world.
 - [ ] Added melee logic to punch other players
 - [ ] Added damage attribute to players (no instant kills)
@@ -55,47 +55,47 @@ The Item update.
     - [ ] Bow
         - [ ] Item texture
         - [ ] Player holding
-        - [ ] Projectile texture for the arrow
+      - [ ] ItemProjectile texture for the arrow
         - [ ] Logic to shoot an arrow
     - [ ] Fireball
         - [ ] Item texture
         - [ ] Player holding
-        - [ ] Projectile texture
+      - [ ] ItemProjectile texture
         - [ ] Logic to shoot a fireball
     - [ ] Bomb
         - [ ] Item texture
         - [ ] Player holding
-        - [ ] Projectile texture
+      - [ ] ItemProjectile texture
         - [ ] Logic to drop a bomb and it explodes
     - [ ] Boomerang
         - [ ] Item texture
         - [ ] Player holding
-        - [ ] Projectile texture
+      - [ ] ItemProjectile texture
         - [ ] Logic to throw a rotating boomerang and it comes back
     - [ ] Sword
         - [ ] Item texture
         - [ ] Player holding
-        - [ ] Projectile texture
+      - [ ] ItemProjectile texture
         - [ ] Logic to damage a player
     - [ ] Lightsaber
         - [ ] Item texture
         - [ ] Player holding
-        - [ ] Projectile texture
+      - [ ] ItemProjectile texture
         - [ ] Logic to damage a player
     - [ ] Magic Wand
         - [ ] Item texture
         - [ ] Player holding
-        - [ ] Projectile texture for the magic bolt
+      - [ ] ItemProjectile texture for the magic bolt
         - [ ] Logic to shoot a bolt that follows the mouse
     - [ ] Mjolnir
         - [ ] Item texture
         - [ ] Player holding
-        - [ ] Projectile texture for the thunderbolt
+      - [ ] ItemProjectile texture for the thunderbolt
         - [ ] Logic to shoot a thunderbolt on the mouse
     - [ ] Shield
         - [ ] Item texture
         - [ ] Player holding
-        - [ ] Projectile texture
+      - [ ] ItemProjectile texture
         - [ ] Logic to shield a player from damage
 
 ### Changed

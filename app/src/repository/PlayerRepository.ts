@@ -1,4 +1,4 @@
-import Player from "../entities/Player"
+import Player from "../entities/entity/Player"
 import MapTile from "../world/MapTile"
 
 export default class PlayerRepository {
