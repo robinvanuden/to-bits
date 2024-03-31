@@ -10,6 +10,7 @@ import Entity from "../entities/Entity"
 
 export default class WorldLoader {
 
+	private readonly isDev: boolean
 	private world: World
 	private sets: TileSetLoader[] = []
 
@@ -39,6 +40,7 @@ export default class WorldLoader {
 	}
 
 	constructor(name: string) {
+		this.isDev = (process.env?.NODE_ENV || "development") === "development"
 		this._seed = v4()
 		this.world = this.loadJsonMap(name + ".json")
 		for (const set of this.world.tilesets) {
@@ -68,7 +70,7 @@ export default class WorldLoader {
 	}
 
 	public spawnPowerUp = () => {
-		if (Math.round(Math.random() * 500) !== 1) {
+		if (!this.isDev && Math.round(Math.random() * 500) !== 1) {
 			return
 		}
 		const airs = this.powers().tiles()
