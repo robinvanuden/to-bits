@@ -11,14 +11,22 @@ export default abstract class Projectile extends Entity {
 	public vx: number = 0 // x velocity
 	public vy: number = 0 // y velocity
 
+	public damage: number
 	public gravity: number = 0
 	public timeRemove: number = 20000
 
 	public readonly timeSpawned: number = 0
 
-	protected constructor(player: Player, width: number, height: number, gravity: number) {
+	protected constructor(
+		player: Player,
+		width: number,
+		height: number,
+		gravity: number,
+		damage: number
+	) {
 		super(player.x + player.width * .5, player.y + player.height * .5, width, height)
 		this.player = player
+		this.damage = damage
 		this.gravity = gravity
 		this.timeSpawned = Date.now()
 	}

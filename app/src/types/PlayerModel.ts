@@ -13,6 +13,7 @@ export default interface PlayerModel {
   n: string // name
   c: string // color
   w: number // width
+  hp: number // healthPoints
   h: number // height
   x: number // x-coord
   y: number // y-coord

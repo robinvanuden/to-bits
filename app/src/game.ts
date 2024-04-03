@@ -90,19 +90,19 @@ export default class Game {
 		for (const player of this.players().alive()) {
 			// Player loop
 			if (this.world().isPlayerInVoid(player)) {
-				player.kill()
+				player.damage(100)
 			} else {
 
 				if (player.move.l) {
-					player.x -= player.sw
-					if (solids.find(t => player.collidesWith(t))) player.x += player.sw
+					player.x -= player.speedWalking
+					if (solids.find(t => player.collidesWith(t))) player.x += player.speedWalking
 				}
 				if (player.move.r) {
-					player.x += player.sw
-					if (solids.find(t => player.collidesWith(t))) player.x -= player.sw
+					player.x += player.speedWalking
+					if (solids.find(t => player.collidesWith(t))) player.x -= player.speedWalking
 				}
 				if (player.move.u && player.canJump() && !solids.find(t => player.collidesWith(t))) {
-					player.vy -= player.sj
+					player.vy -= player.speedJumping
 					player.grounded = false
 				}
 
@@ -113,10 +113,12 @@ export default class Game {
 
 				const solid = solids.find(t => player.collidesWith(t))
 				if (solid && player.vy > 0 && player.isWalkingOn(solid)) {
+					player.damageFall(player.vy)
 					player.y = solid.y - player.height
 					player.vy = 0
 					player.grounded = true
 				} else if (solid && player.vy > 0) {
+					player.damageFall(player.vy)
 					player.y = solid.y - player.height
 					player.vy = 0
 					player.grounded = true
@@ -132,6 +134,7 @@ export default class Game {
 
 				const semi_solid = semi_solids.find(t => player.isWalkingOn(t))
 				if (!player.move.d && semi_solid && player.vy > 0) {
+					player.damageFall(player.vy)
 					// If y-velocity is higher than 0 (falling)
 					player.y = semi_solid.y - player.height
 					player.vy = 0

@@ -90,6 +90,7 @@ export default class Hud {
 		const you = this.you()
 		if (you != null && you.d === undefined) {
 			debug_texts.push("name: " + you.n)
+			debug_texts.push("health: " + you.hp)
 			debug_texts.push("x: " + you.x)
 			debug_texts.push("y: " + you.y)
 			debug_texts.push("vx: " + you.vx)

@@ -1,5 +1,5 @@
 import {names, uniqueNamesGenerator} from "unique-names-generator"
-import PowerUp from "../PowerUp"
+import PowerUp, {PowerType} from "../PowerUp"
 import MapTile from "../../world/MapTile"
 import {GRAVITY} from "../../constants"
 import PlayerModel, {Direction} from "../../types/PlayerModel"
@@ -10,6 +10,8 @@ export const PLAYER_HEIGHT = 16
 export const PLAYER_SPEED_WALK = 2
 export const PLAYER_SPEED_JUMP = 4
 export const PLAYER_MAX_POWER_UP = 5
+export const PLAYER_MAX_HEALTH = 100
+export const PLAYER_DAMAGE = 10
 export const PLAYER_GRAVITY = GRAVITY
 
 const randomName = () => uniqueNamesGenerator({length: 1, dictionaries: [names]})
@@ -20,25 +22,29 @@ const randomMask = () => Math.round(Math.random() * 3) + 1
 
 export default class Player extends Entity {
 	// ID
-	socket_id: string
-	disconnected: number | undefined
-	died: number | undefined
-	color: string
-	mask: number
-	name: string
-	sw: number
-	sj: number
+	private socket_id: string
+	public disconnected: number | undefined
+	public died: number | undefined
+	public color: string
+	public mask: number
+	public name: string
+	public speedWalking: number
+	public speedJumping: number
 
-	vx: number
-	vy: number
+	public vx: number
+	public vy: number
 
-	gravity: number
-	grounded: boolean
+	public gravity: number
+	public grounded: boolean
 
-	look: Direction
-	move: Direction
+	private healthPoints: number
+	private healthPointsMax: number
+	private damagePoints: number
 
-	power_ups: PowerUp[] = []
+	public look: Direction
+	public move: Direction
+
+	private power_ups: PowerUp[] = []
 
 	constructor(id: string, socket: string, spawn: MapTile) {
 		super(spawn.x, spawn.y, PLAYER_WIDTH, PLAYER_HEIGHT, id)
@@ -46,6 +52,9 @@ export default class Player extends Entity {
 		this.socket_id = socket
 		this.disconnected = undefined
 		this.died = undefined
+		this.healthPointsMax = PLAYER_MAX_HEALTH
+		this.healthPoints = this.healthPointsMax
+		this.damagePoints = PLAYER_DAMAGE
 		this.color = randomColor()
 		this.mask = randomMask()
 		this.name = randomName()
@@ -54,8 +63,8 @@ export default class Player extends Entity {
 		this.vy = 0
 		this.gravity = PLAYER_GRAVITY
 		this.grounded = false
-		this.sw = PLAYER_SPEED_WALK
-		this.sj = PLAYER_SPEED_JUMP
+		this.speedWalking = PLAYER_SPEED_WALK
+		this.speedJumping = PLAYER_SPEED_JUMP
 		this.look = {
 			u: false,
 			d: false,
@@ -76,8 +85,15 @@ export default class Player extends Entity {
 	// +1 checks 1 row of pixels below player_id
 	canJump = (): boolean => this.grounded && this.vy >= 0 && this.vy < 1
 
-	addPowerUp = (power_up: PowerUp | undefined): boolean => {
-		if (!power_up || this.power_ups.length >= PLAYER_MAX_POWER_UP) {
+	public addPowerUp = (power_up: PowerUp | undefined): boolean => {
+		if (!power_up) {
+			return false
+		}
+		if (power_up.type() === PowerType.HEALTH) {
+			this.heal(this.healthPointsMax * .25)
+			return true
+		}
+		if (this.power_ups.length >= PLAYER_MAX_POWER_UP) {
 			return false
 		}
 		this.power_ups.push(power_up)
@@ -90,22 +106,47 @@ export default class Player extends Entity {
 		this.move = {u: false, d: false, l: false, r: false}
 	}
 
-	respawn = (spawn: MapTile) => {
+	respawn = (spawn: Entity) => {
 		this.died = undefined
+		this.healthPoints = this.healthPointsMax
 		this.x = spawn.x
 		this.y = spawn.y
 		this.gravity = PLAYER_GRAVITY
 		this.look = {u: false, d: false, l: false, r: true}
 	}
 
-	kill = () => {
+	private kill = () => {
 		this.died = Date.now()
+		this.healthPoints = 0
 		this.vx = 0
 		this.vy = 0
 		this.gravity = 0
 		this.move = {u: false, d: false, l: false, r: false}
 		// Clear items
 		this.power_ups = []
+	}
+
+	heal = (damage: number) => {
+		this.healthPoints += damage
+		if (this.healthPoints >= this.healthPointsMax) this.healthPoints = this.healthPointsMax
+	}
+
+	damage = (damage: number) => {
+		this.healthPoints -= Math.max(damage, 0)
+		if (this.healthPoints <= 0) this.kill()
+	}
+
+	damageFall = (vy: number) => {
+		const part = -5 + vy
+		const damage = Math.ceil(part / this.healthPointsMax * 100)
+		if (damage <= 0) {
+			return
+		}
+		this.damage(damage)
+	}
+
+	hits = (player: Player) => {
+		player.damage(this.damagePoints)
 	}
 
 	isWalkingOn = (tile: MapTile): boolean =>
@@ -128,6 +169,9 @@ export default class Player extends Entity {
 	toModel = (): PlayerModel => ({
 		i: this.socket_id,
 		uid: this.id,
+		n: this.name,
+		c: this.color,
+		hp: this.healthPoints,
 		w: this.width,
 		h: this.height,
 		x: this.x,
@@ -136,8 +180,6 @@ export default class Player extends Entity {
 		vy: this.vy,
 		d: this.died,
 		dc: this.disconnected,
-		n: this.name,
-		c: this.color,
 		l: this.look,
 		m: this.move,
 		pu: this.power_ups.map(PowerUp.toModel)

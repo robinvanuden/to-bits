@@ -5,6 +5,7 @@ export default interface PlayerModel {
   uid: string // client-id
   n: string // name
   c: string // color
+  hp: number // health
   w: number // width
   h: number // height
   x: number // x-coord

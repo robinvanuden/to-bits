@@ -1,7 +1,7 @@
 import {v4} from "uuid"
 import {PowerUpModel} from "../types/PowerUpModel"
 
-export enum PowerType {ARROW, BOOMERANG, BOMB, FIREBALL}
+export enum PowerType {ARROW, BOOMERANG, BOMB, FIREBALL, HEALTH}
 
 export default class PowerUp {
 
@@ -31,6 +31,8 @@ export default class PowerUp {
 			return "BOMB"
 		case PowerType.FIREBALL:
 			return "FIREBALL"
+		case PowerType.HEALTH:
+			return "HEALTH"
 		}
 	}
 

@@ -1,5 +1,5 @@
 import ItemProjectile from "../ItemProjectile"
-import Player from "../entity/Player"
+import Player, {PLAYER_MAX_HEALTH} from "../entity/Player"
 import {GRAVITY} from "../../constants"
 import Projectile from "../Projectile"
 import MapTile from "../../world/MapTile"
@@ -9,6 +9,7 @@ import Fireball from "./Fireball"
 export const BOOMERANG_SIZE = 8
 export const BOOMERANG_SPEED = 10
 export const BOOMERANG_GRAVITY = GRAVITY * .2
+export const BOOMERANG_DAMAGE = PLAYER_MAX_HEALTH * .4
 
 export default class Boomerang extends ItemProjectile {
 
@@ -18,7 +19,7 @@ export default class Boomerang extends ItemProjectile {
 	timeReturn: number = 350
 
 	constructor(player: Player, degrees: number) {
-		super(player, BOOMERANG_SIZE, BOOMERANG_SIZE, BOOMERANG_GRAVITY, degrees, BOOMERANG_SPEED * .5)
+		super(player, BOOMERANG_SIZE, BOOMERANG_SIZE, BOOMERANG_GRAVITY, BOOMERANG_DAMAGE, degrees, BOOMERANG_SPEED * .5)
 	}
 
 	public shouldReturn = () => this.hasLifetime(this.timeReturn)
@@ -50,7 +51,7 @@ export default class Boomerang extends ItemProjectile {
 			return
 		}
 		if (!this.isOwner(player) && this.collidesWith(player)) {
-			player.kill()
+			player.damage(this.damage)
 			this.remove()
 			return
 		}
