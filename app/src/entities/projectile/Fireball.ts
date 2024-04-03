@@ -15,10 +15,8 @@ export default class Fireball extends ItemProjectile {
 		super(player, FIREBALL_SIZE, FIREBALL_SIZE, FIREBALL_GRAVITY, degrees, FIREBALL_SPEED)
 	}
 
-	public loop = (): void => {
-	}
-
-	public loopPlayer = (player: Player): void => {
+	public loopPlayer(player: Player): void {
+		super.loopPlayer(player)
 		if (!this.isOwner(player) && this.collidesWith(player)) {
 			player.kill()
 			this.remove()

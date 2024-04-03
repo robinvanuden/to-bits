@@ -23,11 +23,17 @@ export default class Boomerang extends ItemProjectile {
 
 	public shouldReturn = () => this.hasLifetime(this.timeReturn)
 
-	public loop = () => {
-
+	public loopGravity = (delta: number) => {
+		if (this.shouldReturn()) {
+			this.x += this.dx * this.speed
+			this.y += this.dy * this.speed
+		} else {
+			super.loopGravity(delta)
+		}
 	}
 
-	public loopPlayer = (player: Player): void => {
+	public loopPlayer(player: Player): void {
+		super.loopPlayer(player)
 		if (this.hasLifetime(this.timeReturn) && this.isOwner(player)) {
 			const dx = player.x - this.x
 			const dy = player.y - this.y
@@ -39,7 +45,7 @@ export default class Boomerang extends ItemProjectile {
 			this.dx = dx / distance
 			this.dy = dy / distance
 		}
-		if (this.isThrown() && this.isOwner(player) && this.collidesWith(player)) {
+		if (this.hasLeftPlayer && this.isOwner(player) && this.collidesWith(player)) {
 			this.remove()
 			return
 		}

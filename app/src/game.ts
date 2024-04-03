@@ -4,7 +4,6 @@ import WorldLoader, {useWorld1} from "./world/WorldLoader"
 import EntityRepository from "./repository/EntityRepository"
 import {PowerType} from "./entities/PowerUp"
 import {TICKS} from "./constants"
-import Boomerang from "./entities/projectile/Boomerang"
 
 export default class Game {
 
@@ -78,14 +77,7 @@ export default class Game {
 			if (entity.isOverdue() || this.world().isEntityInVoid(entity)) {
 				this.entities().remove(entity)
 			} else {
-				if (entity instanceof Boomerang && entity.shouldReturn()) {
-					entity.x += entity.dx * entity.speed
-					entity.y += entity.dy * entity.speed
-				} else {
-					entity.vy += entity.gravity * delta
-					entity.x += entity.vx
-					entity.y += entity.vy
-				}
+				entity.loopGravity(delta)
 
 				entity.loop()
 

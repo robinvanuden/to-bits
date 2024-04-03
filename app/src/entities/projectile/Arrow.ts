@@ -16,11 +16,9 @@ export default class Arrow extends ItemProjectile {
 		super(player, ARROW_WIDTH, ARROW_HEIGHT, ARROW_GRAVITY, degrees, ARROW_SPEED)
 	}
 
-	public loop = () => {
-	}
-
-	public loopPlayer = (player: Player): void => {
-		if (!this.isThrown()) {
+	public loopPlayer(player: Player): void {
+		super.loopPlayer(player)
+		if (!this.hasLeftPlayer) {
 			return
 		}
 		if (this.collidesWith(player)) {
