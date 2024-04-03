@@ -13,8 +13,8 @@ export const ARROW_DAMAGE = PLAYER_MAX_HEALTH * .65
 
 export default class Arrow extends ItemProjectile {
 
-	constructor(player: Player, degrees: number) {
-		super(player, ARROW_WIDTH, ARROW_HEIGHT, ARROW_GRAVITY, ARROW_DAMAGE, degrees, ARROW_SPEED)
+	constructor(player: Player) {
+		super(player, ARROW_WIDTH, ARROW_HEIGHT, ARROW_GRAVITY, ARROW_DAMAGE, ARROW_SPEED)
 	}
 
 	public loopPlayer(player: Player): void {

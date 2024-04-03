@@ -197,7 +197,7 @@ export default class Game {
 		this.generate_seed()
 	}
 
-	throwItem = (uuid: string, degrees: number) => {
+	throwItem = (uuid: string) => {
 		const player = this.players().getById(uuid)
 		if (!player || !player.isAlive()) {
 			return
@@ -209,16 +209,16 @@ export default class Game {
 		player.usePowerUp(powerUp)
 		switch (powerUp.type()) {
 		case PowerType.ARROW:
-			this.entities().shootArrow(player, degrees)
+			this.entities().shootArrow(player)
 			break
 		case PowerType.BOMB:
 			this.entities().placeBomb(player)
 			break
 		case PowerType.BOOMERANG:
-			this.entities().throwBoomerang(player, degrees)
+			this.entities().throwBoomerang(player)
 			break
 		case PowerType.FIREBALL:
-			this.entities().throwFireball(player, degrees)
+			this.entities().throwFireball(player)
 			break
 
 		}

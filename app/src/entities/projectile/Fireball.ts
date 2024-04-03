@@ -12,8 +12,8 @@ export const FIREBALL_DAMAGE = PLAYER_MAX_HEALTH * .4
 
 export default class Fireball extends ItemProjectile {
 
-	constructor(player: Player, degrees: number) {
-		super(player, FIREBALL_SIZE, FIREBALL_SIZE, FIREBALL_GRAVITY, FIREBALL_DAMAGE, degrees, FIREBALL_SPEED)
+	constructor(player: Player) {
+		super(player, FIREBALL_SIZE, FIREBALL_SIZE, FIREBALL_GRAVITY, FIREBALL_DAMAGE, FIREBALL_SPEED)
 	}
 
 	public loopPlayer(player: Player): void {

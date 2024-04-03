@@ -18,8 +18,8 @@ export default class Boomerang extends ItemProjectile {
 
 	timeReturn: number = 350
 
-	constructor(player: Player, degrees: number) {
-		super(player, BOOMERANG_SIZE, BOOMERANG_SIZE, BOOMERANG_GRAVITY, BOOMERANG_DAMAGE, degrees, BOOMERANG_SPEED * .5)
+	constructor(player: Player) {
+		super(player, BOOMERANG_SIZE, BOOMERANG_SIZE, BOOMERANG_GRAVITY, BOOMERANG_DAMAGE, BOOMERANG_SPEED * .5)
 	}
 
 	public shouldReturn = () => this.hasLifetime(this.timeReturn)

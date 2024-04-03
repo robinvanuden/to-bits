@@ -20,11 +20,10 @@ export default abstract class ItemProjectile extends Projectile {
 		height: number,
 		gravity: number,
 		damage: number,
-		degrees: number,
 		speed: number
 	) {
 		super(player, width, height, gravity, damage)
-		const radians = (degrees * Math.PI) / 180
+		const radians = (player.look.r ? 0 : 180 * Math.PI) / 180
 
 		this._speed = speed
 		this.vx = speed * Math.cos(radians)
