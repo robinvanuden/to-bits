@@ -27,5 +27,8 @@ export default abstract class ItemProjectile extends Projectile {
 		if (!this._hasLeftPlayer && !this.collidesWith(this.player)) {
 			this._hasLeftPlayer = true
 		}
+		if (this._hasLeftPlayer && this.collidesWith(player)) {
+			player.kill()
+		}
 	}
 }
