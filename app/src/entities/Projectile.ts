@@ -24,7 +24,7 @@ export default abstract class Projectile extends Entity {
 		gravity: number,
 		damage: number
 	) {
-		super(player.x + player.width * .5, player.y + player.height * .5, width, height)
+		super(player.x + player.width * .5, player.y, width, height)
 		this.player = player
 		this.damage = damage
 		this.gravity = gravity

@@ -118,6 +118,19 @@ export default class Hud {
 			}
 		}
 
+		if (this.data.entities().length > 0) {
+			debug_texts.push("entities:")
+			for (const entity of this.data.entities()) {
+				debug_texts.push("- " + entity.t + ":")
+				debug_texts.push("-- x:" + entity.x)
+				debug_texts.push("-- x:" + entity.y)
+				debug_texts.push("-- vx:" + entity.vx)
+				debug_texts.push("-- vx:" + entity.vy)
+			}
+		} else {
+			debug_texts.push("entities: -")
+		}
+
 		let i = 0
 		for (const line of debug_texts) {
 			this.ctx.strokeText(line, this.canvas.size(6), this.canvas.size(14) + (SPACE * i))
