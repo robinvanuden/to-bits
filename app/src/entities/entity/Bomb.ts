@@ -1,7 +1,7 @@
 import Projectile from "../Projectile"
 import Player, {PLAYER_MAX_HEALTH} from "./Player"
 import {GRAVITY} from "../../constants"
-import {ExplosionModel} from "../../types/EntityModel"
+import {ExplosionModel} from "../../types/ProjectileModel"
 import MapTile from "../../world/MapTile"
 import Fireball from "../projectile/Fireball"
 import Arrow from "../projectile/Arrow"

@@ -77,23 +77,9 @@ export default class PlayerSocket {
 		switch (direction) {
 		case "move.left":
 			player.move.l = button_down
-			if (button_down && !player.look.l) {
-				player.look.l = true
-				player.look.r = false
-			} else if (!button_down && player.move.r) {
-				player.look.l = false
-				player.look.r = true
-			}
 			break
 		case "move.right":
 			player.move.r = button_down
-			if (button_down && !player.look.r) {
-				player.look.r = true
-				player.look.l = false
-			} else if (!button_down && player.move.l) {
-				player.look.r = false
-				player.look.l = true
-			}
 			break
 		case "move.up":
 			player.move.u = button_down

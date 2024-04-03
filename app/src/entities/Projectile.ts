@@ -1,6 +1,6 @@
 import Player from "./entity/Player"
 import MapTile from "../world/MapTile"
-import EntityModel from "../types/EntityModel"
+import ProjectileModel from "../types/ProjectileModel"
 import {ExplosionModel} from "../../public/js/model/EntityModel"
 import Entity from "./Entity"
 
@@ -61,7 +61,7 @@ export default abstract class Projectile extends Entity {
 
 	public isOverdue = () => this.hasLifetime(this.timeRemove)
 
-	public toModel = (e: ExplosionModel | undefined = undefined): EntityModel => ({
+	public toModel = (e: ExplosionModel | undefined = undefined): ProjectileModel => ({
 		id: this.id,
 		p: this.player.id,
 		s: this.timeSpawned,

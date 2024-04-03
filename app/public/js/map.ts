@@ -34,7 +34,7 @@ export default class Map {
 			case "ARROW":
 				this.ctx.drawImage(
 					this.images.addImage("img/arrow.png"),
-					1,
+					entity.vx <= 0 ? entity.w + 1 : 1,
 					6,
 					entity.w,
 					entity.h,

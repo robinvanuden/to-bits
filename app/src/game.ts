@@ -93,11 +93,17 @@ export default class Game {
 				player.damage(100)
 			} else {
 
-				if (player.move.l) {
+				if (player.move.l && !player.look.l) {
+					player.look.l = true
+					player.look.r = false
+				} else if (player.move.l) {
 					player.x -= player.speedWalking
 					if (solids.find(t => player.collidesWith(t))) player.x += player.speedWalking
 				}
-				if (player.move.r) {
+				if (player.move.r && !player.look.r) {
+					player.look.r = true
+					player.look.l = false
+				} else if (player.move.r) {
 					player.x += player.speedWalking
 					if (solids.find(t => player.collidesWith(t))) player.x -= player.speedWalking
 				}

@@ -5,9 +5,9 @@ import Projectile from "../Projectile"
 import Bomb from "../entity/Bomb"
 import MapTile from "../../world/MapTile"
 
-export const FIREBALL_SIZE = 8
-export const FIREBALL_SPEED = 6
-export const FIREBALL_GRAVITY = GRAVITY * .2
+export const FIREBALL_SIZE = 14
+export const FIREBALL_SPEED = 7.5
+export const FIREBALL_GRAVITY = GRAVITY * .1
 export const FIREBALL_DAMAGE = PLAYER_MAX_HEALTH * .4
 
 export default class Fireball extends ItemProjectile {
