@@ -30,7 +30,7 @@ export default abstract class ItemProjectile extends Projectile {
 		this.vy = speed * Math.sin(radians)
 	}
 
-	public loopPlayer(player: Player): void {
+	loopPlayer(_: Player) {
 		if (!this._hasLeftPlayer && !this.collidesWith(this.player)) {
 			this._hasLeftPlayer = true
 		}
