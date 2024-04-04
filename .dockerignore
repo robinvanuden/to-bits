@@ -136,3 +136,10 @@ dist
 /dev
 /docs
 *.md
+
+.gitignore
+.git
+
+app/node_modules
+app/.parcel-cache
+app/dist
