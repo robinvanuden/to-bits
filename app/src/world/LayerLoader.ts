@@ -26,9 +26,11 @@ export default class LayerLoader {
 				const tile_x = x * world.tilewidth
 				const tile_y = y * world.tileheight
 				const id = layer.data[c]
-				const item = sets.find(s => id >= s.firstId() && s.getTileById(id))?.getTileById(id)
-				if (item) {
-					this._map_tiles.push(new MapTile(id, tile_x, tile_y, seed, layer, item))
+				if (id) {
+					const item = sets.find(s => id >= s.firstId() && s.getTileById(id))?.getTileById(id)
+					if (item) {
+						this._map_tiles.push(new MapTile(id, tile_x, tile_y, seed, layer, item))
+					}
 				}
 				c++
 			}
