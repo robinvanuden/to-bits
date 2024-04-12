@@ -92,7 +92,6 @@ export default class Game {
 			if (this.world().isPlayerInVoid(player)) {
 				player.damage(100)
 			} else {
-
 				if (player.move.l && !player.look.l) {
 					player.look.l = true
 					player.look.r = false
@@ -146,6 +145,11 @@ export default class Game {
 					player.vy = 0
 					player.grounded = true
 				}
+
+				for (const other of this.players().others(player)) {
+					player.hits(other)
+				}
+
 				for (const entity of this.entities().list()) entity.loopPlayer(player)
 
 				for (const power_tile of power_up_spawns) {
@@ -209,11 +213,12 @@ export default class Game {
 			return
 		}
 		const powerUp = player.getFirstPowerUp()
-		if (!powerUp) {
-			return
+		let type: PowerType | null = null
+		if (powerUp) {
+			player.usePowerUp(powerUp)
+			type = powerUp.type()
 		}
-		player.usePowerUp(powerUp)
-		switch (powerUp.type()) {
+		switch (type) {
 		case PowerType.ARROW:
 			this.entities().shootArrow(player)
 			break
@@ -225,6 +230,9 @@ export default class Game {
 			break
 		case PowerType.FIREBALL:
 			this.entities().throwFireball(player)
+			break
+		default:
+			player.doSwing()
 			break
 
 		}

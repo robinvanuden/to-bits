@@ -1,5 +1,5 @@
 import {createServer} from "http"
-import express from "express"
+import express, {Express, Request, Response} from "express"
 import cookieParser from "cookie-parser"
 import PlayerSocket from "./socket/PlayerSocket"
 import imageController from "./controller/ImageController"
@@ -11,7 +11,7 @@ import {COOKIE_PLAYER_ID} from "./constants"
 import path from "path"
 import EntityRepository from "./repository/EntityRepository"
 
-const app = express()
+const app: Express = express()
 const server = createServer(app)
 
 const VERSION: string = pack.version || "?.?.?"
@@ -28,7 +28,7 @@ app.use(cookieParser())
 app.use("/", express.static("dist"))
 app.use("/img", express.static("public/img"))
 
-app.get("/", (req, res) => {
+app.get("/", (req: Request, res: Response) => {
 	let uuid: string = req.cookies[COOKIE_PLAYER_ID] || ""
 	if (uuid.length === 0) {
 		// No cookie yet

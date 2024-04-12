@@ -4,6 +4,7 @@ import MapTile from "../../world/MapTile"
 import {GRAVITY} from "../../constants"
 import PlayerModel, {Direction} from "../../types/PlayerModel"
 import Entity from "../Entity"
+import HitBox from "./HitBox"
 
 export const PLAYER_WIDTH = 13
 export const PLAYER_HEIGHT = 16
@@ -38,8 +39,10 @@ export default class Player extends Entity {
 	public grounded: boolean
 
 	private healthPoints: number
-	private healthPointsMax: number
-	private damagePoints: number
+	private readonly healthPointsMax: number
+
+	private timeSwung: number
+	private readonly damagePoints: number
 
 	public look: Direction
 	public move: Direction
@@ -55,6 +58,7 @@ export default class Player extends Entity {
 		this.healthPointsMax = PLAYER_MAX_HEALTH
 		this.healthPoints = this.healthPointsMax
 		this.damagePoints = PLAYER_DAMAGE
+		this.timeSwung = 0
 		this.color = randomColor()
 		this.mask = randomMask()
 		this.name = randomName()
@@ -146,8 +150,22 @@ export default class Player extends Entity {
 	}
 
 	hits = (player: Player) => {
-		player.damage(this.damagePoints)
+		if (this.isSwung() && player.collidesWith(this.hit_box())) {
+			player.damage(this.damagePoints)
+		}
 	}
+
+	hit_box = (): HitBox => {
+		const width = Math.round(this.width * .5)
+		const height = this.height
+		const x = this.look.l ? this.x - width : this.x + this.width
+		const y = this.y
+		return new HitBox(x, y, width, height)
+	}
+
+	isSwung = () => Date.now() - 250 < this.timeSwung
+
+	doSwing = () => this.timeSwung = Date.now()
 
 	isWalkingOn = (tile: MapTile): boolean =>
 		this.isWithinX(tile) &&
