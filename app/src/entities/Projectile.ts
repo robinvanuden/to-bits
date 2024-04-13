@@ -28,7 +28,7 @@ export default abstract class Projectile extends Entity {
 		this.player = player
 		this.damage = damage
 		this.gravity = gravity
-		this.timeSpawned = Date.now()
+		this.timeSpawned = this.getNow()
 	}
 
 	public isWalkingOn = (tile: MapTile): boolean =>
@@ -38,7 +38,7 @@ export default abstract class Projectile extends Entity {
 
 	protected isOwner = (p: Player) => this.player.equals(p)
 
-	protected hasLifetime = (milliseconds: number) => (Date.now() - this.timeSpawned) >= milliseconds
+	protected hasLifetime = (milliseconds: number) => this.isBeforeNow(this.timeSpawned + milliseconds)
 
 	public loop(): void {
 	}

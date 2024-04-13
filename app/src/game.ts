@@ -15,10 +15,11 @@ export default class Game {
 	private entityRepository!: EntityRepository
 
 	private running: boolean = false
-	private updated: number = Date.now()
+	private updated: number
 
 	constructor(VERSION: string) {
 		this.VERSION = VERSION
+		this.updated = Game.getNow()
 		this.generate_seed()
 	}
 
@@ -29,7 +30,7 @@ export default class Game {
 		console.log("Seed generated: ", this.uuid_seed())
 	}
 
-	generate_uuid = () => v5(Date.now() + "", this.uuid_seed())
+	generate_uuid = () => v5(Game.getNow() + "", this.uuid_seed())
 
 	version = () => this.VERSION
 
@@ -183,7 +184,7 @@ export default class Game {
 	}
 
 	private loop = (run: () => void) => {
-		let now = Date.now()
+		let now = Game.getNow()
 		this.tick(now - this.updated)
 		run()
 		this.updated = now
@@ -195,7 +196,7 @@ export default class Game {
 		if (!this.running) {
 			this.running = true
 			console.log("Started game loop")
-			this.updated = Date.now()
+			this.updated = Game.getNow()
 			this.loop(run)
 		}
 	}
@@ -244,4 +245,6 @@ export default class Game {
 			break
 		}
 	}
+
+	public static getNow = Date.now
 }

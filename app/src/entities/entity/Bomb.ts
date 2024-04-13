@@ -41,7 +41,7 @@ export default class Bomb extends Projectile {
 			BOMB_EXPLOSION_SIZE
 		)
 		this.vx = this.vy = this.gravity = 0
-		const new_start = Math.round(Date.now() - this.timeSpawned)
+		const new_start = Math.round(this.getNow() - this.timeSpawned)
 		this.timeExploded = new_start
 		this.timeRemove = new_start + 500
 	}

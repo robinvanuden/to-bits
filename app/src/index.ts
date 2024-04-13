@@ -15,7 +15,7 @@ const app: Express = express()
 const server = createServer(app)
 
 const VERSION: string = pack.version || "?.?.?"
-const VERSION_CODE: number = Date.now()
+const VERSION_CODE: number = Game.getNow()
 
 const game: Game | undefined = new Game(VERSION)
 

@@ -127,7 +127,7 @@ export default class Player extends Entity {
 	}
 
 	private kill = () => {
-		this.timeDied = Date.now()
+		this.timeDied = this.getNow()
 		this.healthPoints = 0
 		this.vx = 0
 		this.vy = 0
@@ -181,9 +181,9 @@ export default class Player extends Entity {
 		return new HitBox(x, y, width, height)
 	}
 
-	isSwung = () => Date.now() - 150 < this.timeSwung
+	isSwung = () => this.getNow() - 150 < this.timeSwung
 
-	doSwing = () => this.timeSwung = Date.now()
+	doSwing = () => this.timeSwung = this.getNow()
 
 	setDamagePoints = (number: number) => this.damagePoints *= number
 
@@ -196,7 +196,7 @@ export default class Player extends Entity {
 
 	isTouching = (tile: MapTile) => tile.power_up && this.collidesWith(tile)
 
-	isRespawnAble = () => this.timeDied >= 0 && this.timeDisconnected < 0 && (this.timeDied + 5000) < Date.now()
+	isRespawnAble = () => this.timeDied >= 0 && this.timeDisconnected < 0 && this.isBeforeNow(this.timeDied + 5000)
 
 	toModel = (): PlayerModel => ({
 		i: this.socket_id,
@@ -219,9 +219,9 @@ export default class Player extends Entity {
 
 	isConnected = () => this.timeDisconnected < 0
 
-	isDisconnected = () => this.timeDisconnected >= 0 && (this.timeDisconnected + 10_000) < Date.now()
+	isDisconnected = () => this.timeDisconnected >= 0 && this.isNowOrAfter(this.timeDisconnected + 10_000)
 
-	isDangling = () => this.timeDisconnected >= 0 && (this.timeDisconnected + 10_000) > Date.now()
+	isDangling = () => this.timeDisconnected >= 0 && this.isBeforeNow(this.timeDisconnected + 10_000)
 
 	reconnect = (socket_id: string) => {
 		this.socket_id = socket_id
@@ -231,7 +231,7 @@ export default class Player extends Entity {
 
 	disconnect = () => {
 		this.socket_id = ""
-		this.timeDisconnected = Date.now()
+		this.timeDisconnected = this.getNow()
 		this.move = {u: false, d: false, l: false, r: false}
 	}
 }

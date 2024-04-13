@@ -73,7 +73,7 @@ export default class Boomerang extends ItemProjectile {
 
 	public loopTile = (tile: MapTile): void => {
 		if (tile.isSolid() && this.collidesWith(tile)) {
-			this.timeReturn = Date.now() - this.timeSpawned
+			this.timeReturn = this.getNow() - this.timeSpawned
 		}
 	}
 
