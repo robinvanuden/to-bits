@@ -1,6 +1,6 @@
 {
   "name": "to-bits",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "private": true,
   "author": {
     "name": "Robin van Uden",
@@ -31,14 +31,14 @@
     "@types/cookie-parser": "^1.4",
     "@types/express": "^4.17",
     "@types/uuid": "^9.0",
-    "@typescript-eslint/eslint-plugin": "^7.5",
-    "@typescript-eslint/parser": "^7.5",
+    "@typescript-eslint/eslint-plugin": "^7.6",
+    "@typescript-eslint/parser": "^7.6",
     "buffer": "^6.0",
     "cookie-parser": "^1.4",
     "eslint": "^8.57",
     "nodemon": "^3.1",
     "parcel": "^2.12",
-    "sass": "^1.72",
+    "sass": "^1.75",
     "ts-node": "^10.9",
     "typescript": "^5.4"
   }
