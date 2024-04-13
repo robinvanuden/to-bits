@@ -12,8 +12,8 @@ export default interface PlayerModel {
   y: number // y-coord
   vx: number // x-coord
   vy: number // y-coord
-  d: number | undefined // died
-  dc: number | undefined // disconnected
+  td: number // time of death
+  dc: number // timeDisconnected
   l: Direction // looking
   m: Direction // moving
   pu: PowerUpModel[]

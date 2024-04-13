@@ -49,10 +49,10 @@ export default class PlayerSocket {
 				if (!this.game) {
 					return
 				}
-				console.log("User disconnected", uuid)
+				console.log("User timeDisconnected", uuid)
 				const player = this.game.players().getById(uuid)
 				if (player) {
-					player.disconnected = Date.now()
+					player.timeDisconnected = Date.now()
 					player.move = {u: false, d: false, l: false, r: false}
 				}
 			})

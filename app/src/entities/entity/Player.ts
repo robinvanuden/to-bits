@@ -24,11 +24,11 @@ const randomMask = () => Math.round(Math.random() * 3) + 1
 export default class Player extends Entity {
 	// ID
 	private socket_id: string
-	public disconnected: number | undefined
-	public died: number | undefined
+	public timeDisconnected: number
+	private timeDied: number
 	public color: string
 	public mask: number
-	public name: string
+	private readonly name: string
 	public speedWalking: number
 	public speedJumping: number
 
@@ -54,8 +54,8 @@ export default class Player extends Entity {
 		super(spawn.x, spawn.y, PLAYER_WIDTH, PLAYER_HEIGHT, id)
 
 		this.socket_id = socket
-		this.disconnected = undefined
-		this.died = undefined
+		this.timeDisconnected = -1
+		this.timeDied = -1
 		this.healthPointsMax = PLAYER_MAX_HEALTH
 		this.healthPoints = this.healthPointsMax
 		this.damagePoints = PLAYER_DAMAGE
@@ -86,7 +86,7 @@ export default class Player extends Entity {
 		this.power_ups = []
 	}
 
-	isAlive = (): boolean => this.died == undefined
+	isAlive = (): boolean => this.timeDied < 0
 
 	// +1 checks 1 row of pixels below player_id
 	canJump = (): boolean => this.grounded && this.vy >= 0 && this.vy < 1
@@ -118,12 +118,12 @@ export default class Player extends Entity {
 
 	recreate = (socket: string) => {
 		this.socket_id = socket
-		this.disconnected = undefined
+		this.timeDisconnected = -1
 		this.move = {u: false, d: false, l: false, r: false}
 	}
 
 	respawn = (spawn: Entity) => {
-		this.died = undefined
+		this.timeDied = -1
 		this.healthPoints = this.healthPointsMax
 		this.x = spawn.x
 		this.y = spawn.y
@@ -132,7 +132,7 @@ export default class Player extends Entity {
 	}
 
 	private kill = () => {
-		this.died = Date.now()
+		this.timeDied = Date.now()
 		this.healthPoints = 0
 		this.vx = 0
 		this.vy = 0
@@ -203,6 +203,8 @@ export default class Player extends Entity {
 
 	isTouching = (tile: MapTile) => tile.power_up && this.collidesWith(tile)
 
+	isRespawnAble = () => this.timeDied >= 0 && this.timeDisconnected < 0 && (this.timeDied + 5000) < Date.now()
+
 	toModel = (): PlayerModel => ({
 		i: this.socket_id,
 		uid: this.id,
@@ -215,8 +217,8 @@ export default class Player extends Entity {
 		y: this.y,
 		vx: this.vx,
 		vy: this.vy,
-		d: this.died,
-		dc: this.disconnected,
+		td: this.timeDied,
+		dc: this.timeDisconnected,
 		l: this.look,
 		m: this.move,
 		pu: this.power_ups.map(PowerUp.toModel)
