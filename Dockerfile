@@ -2,10 +2,14 @@ FROM node:20-alpine
 
 WORKDIR /app/
 
-COPY app .
-
 RUN npm install -g npm@latest
 
+COPY app/package*.json .
+
 RUN npm install
+
+COPY app .
+
+RUN npm run test && npm run build
 
 CMD ["npm", "run", "start"]

@@ -12,10 +12,9 @@ export default class Images {
 			return this.images[file_path]
 		}
 		const url = new URL(this.host.toString())
-		const image = new Image()
 		url.pathname = file_path
+		const image = new Image()
 		image.src = url.toString()
-		image.style.imageRendering = "pixelated"
 		this.images[file_path] = image
 		return image
 	}

@@ -1,7 +1,7 @@
 import {v4} from "uuid"
 import {PowerUpModel} from "../types/PowerUpModel"
 
-export enum PowerType {ARROW, BOOMERANG, BOMB, FIREBALL}
+export enum PowerType {ARROW, BOOMERANG, BOMB, FIREBALL, SWORD, HAMMER, HEALTH}
 
 export default class PowerUp {
 
@@ -21,18 +21,7 @@ export default class PowerUp {
 
 	public typeToString = () => PowerUp.toString(this._type)
 
-	public static toString = (type: PowerType) => {
-		switch (type) {
-		case PowerType.ARROW:
-			return "ARROW"
-		case PowerType.BOOMERANG:
-			return "BOOMERANG"
-		case PowerType.BOMB:
-			return "BOMB"
-		case PowerType.FIREBALL:
-			return "FIREBALL"
-		}
-	}
+	public static toString = (type: PowerType) => PowerType[type].toString()
 
 	private static randomType = (): PowerType => {
 		const index = Object.keys(PowerType).map(Number).filter(Number.isInteger)

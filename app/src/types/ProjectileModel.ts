@@ -5,7 +5,7 @@ export interface ExplosionModel {
   h: number
 }
 
-export default interface EntityModel {
+export default interface ProjectileModel {
   id: string
   p: string
   t: string

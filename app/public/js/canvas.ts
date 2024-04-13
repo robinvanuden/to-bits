@@ -36,7 +36,7 @@ export default class Canvas {
 		this.__width = this.__canvas.width = this.size(width)
 		this.__height = this.__canvas.height = this.size(height)
 
-		this.ctx.textRendering = "geometricPrecision"
+		this.ctx.textRendering = "optimizeSpeed"
 		this.ctx.fontKerning = "normal"
 		this.ctx.imageSmoothingEnabled = false
 		this.ctx.imageSmoothingQuality = "low"

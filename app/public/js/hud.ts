@@ -40,7 +40,7 @@ export default class Hud {
 		if (!you) {
 			return
 		}
-		if (you.d === undefined) {
+		if (you.tod < 0) {
 			return
 		}
 		const now = Date.now()
@@ -56,7 +56,7 @@ export default class Hud {
 
 		// Subtitle
 		this.ctx.font = this.canvas.font(1.5)
-		this.ctx.fillText("Respawn in: " + Math.round(((you.d + 5000) - now) / 1000), this.canvas.width() / 2, (this.canvas.height() / 2) + this.canvas.size(70))
+		this.ctx.fillText("Respawn in: " + Math.round(((you.tod + 5000) - now) / 1000), this.canvas.width() / 2, (this.canvas.height() / 2) + this.canvas.size(70))
 
 	}
 	drawLoading = () => {
@@ -88,13 +88,14 @@ export default class Hud {
 		debug_texts.push("fps: " + 1000 / delta)
 
 		const you = this.you()
-		if (you != null && you.d === undefined) {
+		if (you != null && you.tod < 0) {
 			debug_texts.push("name: " + you.n)
+			debug_texts.push("health: " + you.hp)
 			debug_texts.push("x: " + you.x)
 			debug_texts.push("y: " + you.y)
 			debug_texts.push("vx: " + you.vx)
 			debug_texts.push("vy: " + you.vy)
-			debug_texts.push("alive: " + you.d !== undefined ? "true" : "false")
+			debug_texts.push("alive: " + (you.tod < 0) ? "true" : "false")
 
 			// Moved directions
 			for (const direction in you.m) {
@@ -115,6 +116,19 @@ export default class Hud {
 			} else {
 				debug_texts.push("powers: -")
 			}
+		}
+
+		if (this.data.entities().length > 0) {
+			debug_texts.push("entities:")
+			for (const entity of this.data.entities()) {
+				debug_texts.push("- " + entity.t + ":")
+				debug_texts.push("-- x:" + entity.x)
+				debug_texts.push("-- x:" + entity.y)
+				debug_texts.push("-- vx:" + entity.vx)
+				debug_texts.push("-- vx:" + entity.vy)
+			}
+		} else {
+			debug_texts.push("entities: -")
 		}
 
 		let i = 0

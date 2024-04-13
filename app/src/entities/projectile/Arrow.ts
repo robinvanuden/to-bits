@@ -1,5 +1,5 @@
 import ItemProjectile from "../ItemProjectile"
-import Player from "../entity/Player"
+import Player, {PLAYER_MAX_HEALTH} from "../entity/Player"
 import {GRAVITY} from "../../constants"
 import Projectile from "../Projectile"
 import MapTile from "../../world/MapTile"
@@ -9,11 +9,12 @@ export const ARROW_WIDTH = 14
 export const ARROW_HEIGHT = 5
 export const ARROW_SPEED = 4
 export const ARROW_GRAVITY = GRAVITY * .2
+export const ARROW_DAMAGE = PLAYER_MAX_HEALTH * .65
 
 export default class Arrow extends ItemProjectile {
 
-	constructor(player: Player, degrees: number) {
-		super(player, ARROW_WIDTH, ARROW_HEIGHT, ARROW_GRAVITY, degrees, ARROW_SPEED)
+	constructor(player: Player) {
+		super(player, ARROW_WIDTH, ARROW_HEIGHT, ARROW_GRAVITY, ARROW_DAMAGE, ARROW_SPEED)
 	}
 
 	public loopPlayer(player: Player): void {
@@ -22,7 +23,7 @@ export default class Arrow extends ItemProjectile {
 			return
 		}
 		if (this.collidesWith(player)) {
-			player.kill()
+			player.damage(this.damage)
 			this.remove()
 			return
 		}

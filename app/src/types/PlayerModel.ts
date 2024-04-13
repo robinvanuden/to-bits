@@ -13,13 +13,15 @@ export default interface PlayerModel {
   n: string // name
   c: string // color
   w: number // width
+  hp: number // healthPoints
   h: number // height
   x: number // x-coord
   y: number // y-coord
   vx: number // x velocity
   vy: number // y velocity
-  d: number | undefined // died
-  dc: number | undefined // disconnected
+  tdm: number // time damaged
+  tod: number // time of death
+  tdc: number // timeDisconnected
   l: Direction
   m: Direction
   pu: PowerUpModel[]

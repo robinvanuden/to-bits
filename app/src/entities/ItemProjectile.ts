@@ -14,21 +14,25 @@ export default abstract class ItemProjectile extends Projectile {
 		return this._speed
 	}
 
-	protected constructor(player: Player, width: number, height: number, gravity: number, degrees: number, speed: number) {
-		super(player, width, height, gravity)
-		const radians = (degrees * Math.PI) / 180
+	protected constructor(
+		player: Player,
+		width: number,
+		height: number,
+		gravity: number,
+		damage: number,
+		speed: number
+	) {
+		super(player, width, height, gravity, damage)
+		const radians = (player.look.r ? 0 : 180 * Math.PI) / 180
 
 		this._speed = speed
 		this.vx = speed * Math.cos(radians)
 		this.vy = speed * Math.sin(radians)
 	}
 
-	public loopPlayer(player: Player): void {
+	loopPlayer(_: Player) {
 		if (!this._hasLeftPlayer && !this.collidesWith(this.player)) {
 			this._hasLeftPlayer = true
-		}
-		if (this._hasLeftPlayer && this.collidesWith(player)) {
-			player.kill()
 		}
 	}
 }

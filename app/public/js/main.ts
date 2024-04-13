@@ -105,34 +105,20 @@ import Canvas from "./canvas"
 		} else if (key === "s") {
 			socket.emit("move.down", pressed)
 		}
-		if (key === " ") {
-			socket.emit("move.jump", pressed)
+		if (!pressed && key === " ") {
+			socket.emit("move.action", pressed)
 		}
 		if (pressed && key === ";") {
 			hud.toggleDebug()
 		}
 	}
 
-	const getRotationDegrees = (x1: number, y1: number, x2: number, y2: number) => {
-		const deltaX = x2 - x1
-		const deltaY = y2 - y1
-		const radians = Math.atan2(deltaY, deltaX)
-		const degrees = (radians * 180) / Math.PI
-		return (degrees + 360) % 360
-	}
-
-	const onMouseRelease = (ev: MouseEvent) => {
+	const onMouseRelease = () => {
 		const you = map.you()
 		if (!you) {
 			return
 		}
-		const ratio = canvas.ratio
-		socket.emit("radius", getRotationDegrees(
-			window.innerWidth / 2 * ratio,
-			window.innerHeight / 2 * ratio,
-			ev.clientX * ratio,
-			ev.clientY * ratio
-		))
+		socket.emit("radius")
 	}
 
 

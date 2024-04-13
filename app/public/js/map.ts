@@ -23,7 +23,7 @@ export default class Map {
 	tick = () => {
 
 		const playerToFocus = this.you()
-		if (playerToFocus && playerToFocus.d == undefined) {
+		if (playerToFocus && playerToFocus.tod < 0) {
 			this.cx = Math.round((this.canvas.tile(playerToFocus.x) + this.canvas.tile(playerToFocus.w) * .5) - this.canvas.width() * .5)
 			this.cy = Math.round((this.canvas.tile(playerToFocus.y) + this.canvas.tile(playerToFocus.h) * .5) - this.canvas.height() * .5)
 		}
@@ -34,7 +34,7 @@ export default class Map {
 			case "ARROW":
 				this.ctx.drawImage(
 					this.images.addImage("img/arrow.png"),
-					1,
+					entity.vx <= 0 ? entity.w + 1 : 1,
 					6,
 					entity.w,
 					entity.h,
@@ -126,12 +126,12 @@ export default class Map {
 			}
 		}
 
-		for (const player of this.data.players().filter(p => p.d === undefined).sort((a, b) => {
+		for (const player of this.data.players().filter(p => p.tod < 0).sort((a, b) => {
 			const you_id = (this.you()?.i || "")
 			return (a.i === you_id ? 1 : -1) - (b.i === you_id ? 1 : -1) || a.i.localeCompare(b.i)
 		})) {
 
-			this.ctx.globalAlpha = player.dc != undefined ? 0.5 : 1
+			this.ctx.globalAlpha = player.tdc < 0 ? 1 : 0.5
 
 			const player_w = this.canvas.tile(player.w)
 			const player_h = this.canvas.tile(player.h)
@@ -170,6 +170,13 @@ export default class Map {
 				player_w,
 				player_h
 			)
+			if (player.tdm + 100 > Date.now()) {
+				this.ctx.fillRect(
+					player_x - this.cx,
+					player_y - this.cy,
+					player_w,
+					player_h)
+			}
 		}
 	}
 }

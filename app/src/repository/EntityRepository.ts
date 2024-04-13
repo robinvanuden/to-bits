@@ -13,16 +13,16 @@ export default class EntityRepository {
 
 	public exclude = (entity: Projectile) => this.entities.filter(e => !e.equals(entity))
 
-	public shootArrow = (player: Player, degrees: number) => {
-		this.entities.push(new Arrow(player, degrees))
+	public shootArrow = (player: Player) => {
+		this.entities.push(new Arrow(player))
 	}
 
-	public throwBoomerang = (player: Player, degrees: number) => {
-		this.entities.push(new Boomerang(player, degrees))
+	public throwBoomerang = (player: Player) => {
+		this.entities.push(new Boomerang(player))
 	}
 
-	public throwFireball = (player: Player, degrees: number) => {
-		this.entities.push(new Fireball(player, degrees))
+	public throwFireball = (player: Player) => {
+		this.entities.push(new Fireball(player))
 	}
 
 	public placeBomb = (player: Player) => {

@@ -1,7 +1,7 @@
 import Projectile from "../Projectile"
-import Player from "./Player"
+import Player, {PLAYER_MAX_HEALTH} from "./Player"
 import {GRAVITY} from "../../constants"
-import {ExplosionModel} from "../../types/EntityModel"
+import {ExplosionModel} from "../../types/ProjectileModel"
 import MapTile from "../../world/MapTile"
 import Fireball from "../projectile/Fireball"
 import Arrow from "../projectile/Arrow"
@@ -9,6 +9,7 @@ import Entity from "../Entity"
 import Explosion from "./Explosion"
 
 export const BOMB_EXPLOSION_SIZE = 48
+export const BOMB_DAMAGE = PLAYER_MAX_HEALTH * 10
 export const BOMB_GRAVITY = GRAVITY
 
 export default class Bomb extends Projectile {
@@ -17,7 +18,7 @@ export default class Bomb extends Projectile {
 	private explosion: Entity | undefined = undefined
 
 	constructor(player: Player) {
-		super(player, 11, 12, BOMB_GRAVITY)
+		super(player, 11, 12, BOMB_GRAVITY, BOMB_DAMAGE)
 
 		this.timeExploded = 2000
 		this.timeRemove = 2500
@@ -40,7 +41,7 @@ export default class Bomb extends Projectile {
 			BOMB_EXPLOSION_SIZE
 		)
 		this.vx = this.vy = this.gravity = 0
-		const new_start = Math.round(Date.now() - this.timeSpawned)
+		const new_start = Math.round(this.getNow() - this.timeSpawned)
 		this.timeExploded = new_start
 		this.timeRemove = new_start + 500
 	}
@@ -53,9 +54,9 @@ export default class Bomb extends Projectile {
 
 	public loopPlayer = (player: Player): void => {
 		if (this.explosion && this.isExplosionHit(player)) {
-			player.kill()
+			player.damage(this.damage)
 		} else if (!this.isOwner(player) && this.collidesWith(player)) {
-			player.kill()
+			player.damage(this.damage)
 			this.explode()
 		}
 	}

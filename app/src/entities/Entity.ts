@@ -59,4 +59,15 @@ export default abstract class Entity {
 	public isWithinY = (entity: Entity): boolean =>
 		entity._y < this._y + this._height &&
 		entity._y + entity._height > this._y
+
+
+	protected getNow = Date.now
+
+	protected isBeforeNow = (time: number) => time < this.getNow()
+
+	protected isNowOrBefore = (time: number) => time <= this.getNow()
+
+	protected isAfterNow = (time: number) => time > this.getNow()
+
+	protected isNowOrAfter = (time: number) => time >= this.getNow()
 }

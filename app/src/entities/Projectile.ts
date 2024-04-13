@@ -1,6 +1,6 @@
 import Player from "./entity/Player"
 import MapTile from "../world/MapTile"
-import EntityModel from "../types/EntityModel"
+import ProjectileModel from "../types/ProjectileModel"
 import {ExplosionModel} from "../../public/js/model/EntityModel"
 import Entity from "./Entity"
 
@@ -11,16 +11,24 @@ export default abstract class Projectile extends Entity {
 	public vx: number = 0 // x velocity
 	public vy: number = 0 // y velocity
 
+	public damage: number
 	public gravity: number = 0
 	public timeRemove: number = 20000
 
 	public readonly timeSpawned: number = 0
 
-	protected constructor(player: Player, width: number, height: number, gravity: number) {
-		super(player.x + player.width * .5, player.y + player.height * .5, width, height)
+	protected constructor(
+		player: Player,
+		width: number,
+		height: number,
+		gravity: number,
+		damage: number
+	) {
+		super(player.x + player.width * .5, player.y, width, height)
 		this.player = player
+		this.damage = damage
 		this.gravity = gravity
-		this.timeSpawned = Date.now()
+		this.timeSpawned = this.getNow()
 	}
 
 	public isWalkingOn = (tile: MapTile): boolean =>
@@ -30,7 +38,7 @@ export default abstract class Projectile extends Entity {
 
 	protected isOwner = (p: Player) => this.player.equals(p)
 
-	protected hasLifetime = (milliseconds: number) => (Date.now() - this.timeSpawned) >= milliseconds
+	protected hasLifetime = (milliseconds: number) => this.isBeforeNow(this.timeSpawned + milliseconds)
 
 	public loop(): void {
 	}
@@ -53,7 +61,7 @@ export default abstract class Projectile extends Entity {
 
 	public isOverdue = () => this.hasLifetime(this.timeRemove)
 
-	public toModel = (e: ExplosionModel | undefined = undefined): EntityModel => ({
+	public toModel = (e: ExplosionModel | undefined = undefined): ProjectileModel => ({
 		id: this.id,
 		p: this.player.id,
 		s: this.timeSpawned,
