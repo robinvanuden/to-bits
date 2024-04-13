@@ -11,7 +11,7 @@ export default class PlayerRepository {
 
 	alive = () => this.players.filter(p => p.isAlive())
 
-	disconnected = () => this.players.filter(p => p.timeDisconnected >= 0 && (p.timeDisconnected + 10_000) < Date.now())
+	disconnected = () => this.players.filter(p => p.isDisconnected())
 
 	respawns = () => this.players.filter(p => p.isRespawnAble())
 
@@ -21,7 +21,7 @@ export default class PlayerRepository {
 
 	getById = (id: string) => this.players.find(player => player.id === id) ?? null
 
-	getConnected = (id: string) => this.players.find(player => player.id === id && player.timeDisconnected >= 0) ?? null
+	getConnected = (id: string) => this.players.find(player => player.id === id && player.isDangling()) ?? null
 
 	others = (player: Player) => this.players.filter(p => p.id !== player.id)
 }

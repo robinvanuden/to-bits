@@ -24,11 +24,9 @@ const randomMask = () => Math.round(Math.random() * 3) + 1
 export default class Player extends Entity {
 	// ID
 	private socket_id: string
-	public timeDisconnected: number
-	private timeDied: number
-	public color: string
-	public mask: number
 	private readonly name: string
+	public readonly color: string
+	public readonly mask: number
 	public speedWalking: number
 	public speedJumping: number
 
@@ -40,6 +38,9 @@ export default class Player extends Entity {
 
 	private healthPoints: number
 	private readonly healthPointsMax: number
+
+	private timeDisconnected: number
+	private timeDied: number
 
 	private timeSwung: number
 	private damagePoints: number
@@ -116,12 +117,6 @@ export default class Player extends Entity {
 		this.power_ups = this.power_ups.filter(power.notEquals)
 	}
 
-	recreate = (socket: string) => {
-		this.socket_id = socket
-		this.timeDisconnected = -1
-		this.move = {u: false, d: false, l: false, r: false}
-	}
-
 	respawn = (spawn: Entity) => {
 		this.timeDied = -1
 		this.healthPoints = this.healthPointsMax
@@ -190,9 +185,7 @@ export default class Player extends Entity {
 
 	doSwing = () => this.timeSwung = Date.now()
 
-	setDamagePoints = (number: number) => {
-		this.damagePoints *= number
-	}
+	setDamagePoints = (number: number) => this.damagePoints *= number
 
 	resetDamagePoints = () => this.damagePoints = this.damagePointsDefault
 
@@ -223,4 +216,22 @@ export default class Player extends Entity {
 		m: this.move,
 		pu: this.power_ups.map(PowerUp.toModel)
 	})
+
+	isConnected = () => this.timeDisconnected < 0
+
+	isDisconnected = () => this.timeDisconnected >= 0 && (this.timeDisconnected + 10_000) < Date.now()
+
+	isDangling = () => this.timeDisconnected >= 0 && (this.timeDisconnected + 10_000) > Date.now()
+
+	reconnect = (socket_id: string) => {
+		this.socket_id = socket_id
+		this.timeDisconnected = -1
+		this.move = {u: false, d: false, l: false, r: false}
+	}
+
+	disconnect = () => {
+		this.socket_id = ""
+		this.timeDisconnected = Date.now()
+		this.move = {u: false, d: false, l: false, r: false}
+	}
 }

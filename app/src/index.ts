@@ -46,7 +46,7 @@ app.get("/", (req: Request, res: Response) => {
 		uuid = game.generate_uuid()
 		// console.log("Generated uuid for an old player_id (outdated cookie)")
 	}
-	if (player && player.timeDisconnected < 0) {
+	if (player && player.isConnected()) {
 		// console.log("Invalid session", uuid)
 		res.sendStatus(409)
 		return

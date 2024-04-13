@@ -48,7 +48,7 @@ export default class Game {
 		if (continue_player) {
 			// Reconnect
 			console.log("User reconnected", socket_id, uuid)
-			continue_player.recreate(socket_id)
+			continue_player.reconnect(socket_id)
 			return true
 		}
 		const player = this.players().getById(uuid)
