@@ -41,6 +41,7 @@ export default class Player extends Entity {
 
 	private timeDisconnected: number
 	private timeDied: number
+	private timeDamaged: number
 
 	private timeSwung: number
 	private damagePoints: number
@@ -57,6 +58,7 @@ export default class Player extends Entity {
 		this.socket_id = socket
 		this.timeDisconnected = -1
 		this.timeDied = -1
+		this.timeDamaged = -1
 		this.healthPointsMax = PLAYER_MAX_HEALTH
 		this.healthPoints = this.healthPointsMax
 		this.damagePoints = PLAYER_DAMAGE
@@ -143,6 +145,7 @@ export default class Player extends Entity {
 	}
 
 	damage = (damage: number) => {
+		this.timeDamaged = this.getNow()
 		this.healthPoints -= Math.max(damage, 0)
 		if (this.healthPoints <= 0) this.kill()
 	}
@@ -210,8 +213,9 @@ export default class Player extends Entity {
 		y: this.y,
 		vx: this.vx,
 		vy: this.vy,
-		td: this.timeDied,
-		dc: this.timeDisconnected,
+		tdm: this.timeDamaged,
+		tod: this.timeDied,
+		tdc: this.timeDisconnected,
 		l: this.look,
 		m: this.move,
 		pu: this.power_ups.map(PowerUp.toModel)
