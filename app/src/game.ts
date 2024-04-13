@@ -213,28 +213,35 @@ export default class Game {
 			return
 		}
 		const powerUp = player.getFirstPowerUp()
-		let type: PowerType | null = null
-		if (powerUp) {
-			player.usePowerUp(powerUp)
-			type = powerUp.type()
+		if (!powerUp) {
+			player.doSwing()
+			return
 		}
-		switch (type) {
+		switch (powerUp.type()) {
 		case PowerType.ARROW:
+			player.usePowerUp(powerUp)
 			this.entities().shootArrow(player)
 			break
 		case PowerType.BOMB:
+			player.usePowerUp(powerUp)
 			this.entities().placeBomb(player)
 			break
 		case PowerType.BOOMERANG:
+			player.usePowerUp(powerUp)
 			this.entities().throwBoomerang(player)
 			break
 		case PowerType.FIREBALL:
+			player.usePowerUp(powerUp)
 			this.entities().throwFireball(player)
 			break
-		default:
+		case PowerType.SWORD:
+			player.setDamagePoints(1.5)
 			player.doSwing()
 			break
-
+		case PowerType.HAMMER:
+			player.setDamagePoints(2)
+			player.doSwing()
+			break
 		}
 	}
 }

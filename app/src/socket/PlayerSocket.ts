@@ -41,7 +41,9 @@ export default class PlayerSocket {
 			client.on("move.up", (bool: boolean) => this.onMovement(uuid, "move.up", bool))
 			client.on("move.down", (bool: boolean) => this.onMovement(uuid, "move.down", bool))
 
-			client.on("move.action", () => this.onAction(uuid))
+			client.on("move.action", (bool: boolean) => {
+				if (!bool) this.onAction(uuid)
+			})
 
 			client.on("disconnect", () => {
 				if (!this.game) {

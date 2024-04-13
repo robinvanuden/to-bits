@@ -12,7 +12,7 @@ export const PLAYER_SPEED_WALK = 2
 export const PLAYER_SPEED_JUMP = 4
 export const PLAYER_MAX_POWER_UP = 5
 export const PLAYER_MAX_HEALTH = 100
-export const PLAYER_DAMAGE = 10
+export const PLAYER_DAMAGE = PLAYER_MAX_HEALTH * .30
 export const PLAYER_GRAVITY = GRAVITY
 
 const randomName = () => uniqueNamesGenerator({length: 1, dictionaries: [names]})
@@ -42,7 +42,8 @@ export default class Player extends Entity {
 	private readonly healthPointsMax: number
 
 	private timeSwung: number
-	private readonly damagePoints: number
+	private damagePoints: number
+	private readonly damagePointsDefault: number
 
 	public look: Direction
 	public move: Direction
@@ -58,6 +59,7 @@ export default class Player extends Entity {
 		this.healthPointsMax = PLAYER_MAX_HEALTH
 		this.healthPoints = this.healthPointsMax
 		this.damagePoints = PLAYER_DAMAGE
+		this.damagePointsDefault = PLAYER_DAMAGE
 		this.timeSwung = 0
 		this.color = randomColor()
 		this.mask = randomMask()
@@ -102,6 +104,16 @@ export default class Player extends Entity {
 		}
 		this.power_ups.push(power_up)
 		return true
+	}
+
+	getFirstPowerUp = () => this.power_ups[0] || undefined
+
+	usePowerUp = (power: PowerUp) => {
+		const power_up = this.power_ups.find(power.equals)
+		if (!power_up) {
+			return
+		}
+		this.power_ups = this.power_ups.filter(power.notEquals)
 	}
 
 	recreate = (socket: string) => {
@@ -151,7 +163,18 @@ export default class Player extends Entity {
 
 	hits = (player: Player) => {
 		if (this.isSwung() && player.collidesWith(this.hit_box())) {
+			this.timeSwung = 0
 			player.damage(this.damagePoints)
+			const power = this.getFirstPowerUp()
+			if (power) {
+				switch (power.type()) {
+				case PowerType.HAMMER:
+				case PowerType.SWORD:
+					this.resetDamagePoints()
+					this.usePowerUp(power)
+					break
+				}
+			}
 		}
 	}
 
@@ -163,9 +186,15 @@ export default class Player extends Entity {
 		return new HitBox(x, y, width, height)
 	}
 
-	isSwung = () => Date.now() - 250 < this.timeSwung
+	isSwung = () => Date.now() - 150 < this.timeSwung
 
 	doSwing = () => this.timeSwung = Date.now()
+
+	setDamagePoints = (number: number) => {
+		this.damagePoints *= number
+	}
+
+	resetDamagePoints = () => this.damagePoints = this.damagePointsDefault
 
 	isWalkingOn = (tile: MapTile): boolean =>
 		this.isWithinX(tile) &&
@@ -173,16 +202,6 @@ export default class Player extends Entity {
 		tile.y + tile.height > this.y + (this.height - 1)
 
 	isTouching = (tile: MapTile) => tile.power_up && this.collidesWith(tile)
-
-	getFirstPowerUp = () => this.power_ups[0] || undefined
-
-	usePowerUp = (power: PowerUp) => {
-		const power_up = this.power_ups.find(power.equals)
-		if (!power_up) {
-			return
-		}
-		this.power_ups = this.power_ups.filter(power.notEquals)
-	}
 
 	toModel = (): PlayerModel => ({
 		i: this.socket_id,
