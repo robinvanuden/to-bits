@@ -2,7 +2,7 @@ import {names, uniqueNamesGenerator} from "unique-names-generator"
 import PowerUp, {PowerType} from "../PowerUp"
 import MapTile from "../../world/MapTile"
 import {GRAVITY} from "../../constants"
-import PlayerModel, {Direction} from "../../types/PlayerModel"
+import PlayerModel, {Direction} from "../../types/model/PlayerModel"
 import Entity from "../Entity"
 import HitBox from "./HitBox"
 

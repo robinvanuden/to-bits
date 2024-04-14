@@ -1,6 +1,6 @@
 import Player from "./entity/Player"
 import MapTile from "../world/MapTile"
-import ProjectileModel from "../types/ProjectileModel"
+import ProjectileModel from "../types/model/ProjectileModel"
 import {ExplosionModel} from "../../public/js/model/EntityModel"
 import Entity from "./Entity"
 

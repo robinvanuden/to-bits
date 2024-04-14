@@ -1,4 +1,4 @@
-import World from "../types/World"
+import TiledWorld from "../types/TiledWorld"
 import * as path from "path"
 import * as fs from "fs"
 import MapTile from "./MapTile"
@@ -11,7 +11,7 @@ import Projectile from "../entities/Projectile"
 export default class WorldLoader {
 
 	private readonly isDev: boolean
-	private world: World
+	private world: TiledWorld
 	private sets: TileSetLoader[] = []
 
 	private readonly _seed!: string
@@ -61,7 +61,7 @@ export default class WorldLoader {
 		}
 	}
 
-	loadJsonMap = (name: string): World => JSON.parse(fs.readFileSync(path.resolve(__dirname, "../map/", name)).toString("utf-8"))
+	loadJsonMap = (name: string): TiledWorld => JSON.parse(fs.readFileSync(path.resolve(__dirname, "../map/", name)).toString("utf-8"))
 
 	pickRandomSpawnPoint = (): MapTile | undefined => {
 		const spawns = this.spawns().tiles().filter(t => t !== undefined)

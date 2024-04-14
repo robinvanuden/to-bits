@@ -1,5 +1,5 @@
 import {v4} from "uuid"
-import {PowerUpModel} from "../types/PowerUpModel"
+import {PowerUpModel} from "../types/model/PowerUpModel"
 
 export enum PowerType {ARROW, BOOMERANG, BOMB, FIREBALL, SWORD, HAMMER, HEALTH}
 

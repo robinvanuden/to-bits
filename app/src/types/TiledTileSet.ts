@@ -1,6 +1,12 @@
 export const PROP_SEMI_SOLID = "is_semi_solid"
 
-export default interface TileSet {
+export interface TiledTileSetProperty {
+	name: string
+	type: string
+	value: unknown
+}
+
+export default interface TiledTileSet {
 	columns: number
 	image: string
 	imageheight: number
@@ -14,16 +20,10 @@ export default interface TileSet {
 	tilewidth: number
 	type: string
 	version: string
-	properties: TileSetProperty[] | undefined
+	properties: TiledTileSetProperty[] | undefined
 }
 
-export interface TileSetProperty {
-	name: string
-	type: string
-	value: unknown
-}
-
-export interface Tile {
+export interface TiledTile {
 	id: number
 	tile_id: number
 	type: string
@@ -37,5 +37,5 @@ export interface Tile {
 	tiledversion: string
 	height: number
 	width: number
-	properties: TileSetProperty[] | undefined
+	properties: TiledTileSetProperty[] | undefined
 }

@@ -1,6 +1,6 @@
-import {PROP_SEMI_SOLID, Tile, TileSetProperty} from "../types/TileSet"
-import {WorldLayer} from "../types/World"
-import MapTileModel from "../types/MapTileModel"
+import {PROP_SEMI_SOLID, TiledTile, TiledTileSetProperty} from "../types/TiledTileSet"
+import {TiledWorldLayer} from "../types/TiledWorld"
+import MapTileModel from "../types/model/MapTileModel"
 import path from "path"
 import PowerUp from "../entities/PowerUp"
 import Entity from "../entities/Entity"
@@ -16,9 +16,9 @@ export default class MapTile extends Entity {
 	tiledversion: string
 	layer: string
 	power_up: PowerUp | undefined
-	properties: TileSetProperty[]
+	properties: TiledTileSetProperty[]
 
-	constructor(id: number, x: number, y: number, seed: string, layer: WorldLayer, item: Tile) {
+	constructor(id: number, x: number, y: number, seed: string, layer: TiledWorldLayer, item: TiledTile) {
 		super(x, y, item.tilewidth, item.tileheight, String(id))
 		this.seed = seed
 		this.name = item.name

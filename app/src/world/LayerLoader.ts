@@ -1,12 +1,12 @@
 import MapTile from "./MapTile"
-import World, {WorldLayer} from "../types/World"
+import TiledWorld, {TiledWorldLayer} from "../types/TiledWorld"
 import TileSetLoader from "./TileSetLoader"
-import {TileLayerModel} from "../types/MapTileModel"
+import {TileLayerModel} from "../types/model/MapTileModel"
 
 export default class LayerLoader {
 
 	private _map_tiles: MapTile[] = []
-	private readonly _layer: WorldLayer
+	private readonly _layer: TiledWorldLayer
 
 	public tiles = (): MapTile[] => this._map_tiles || []
 
@@ -18,7 +18,7 @@ export default class LayerLoader {
 
 	public semis = (): MapTile[] => this.tiles().filter(t => t.isSemiSolid())
 
-	constructor(world: World, layer: WorldLayer, sets: TileSetLoader[], seed: string) {
+	constructor(world: TiledWorld, layer: TiledWorldLayer, sets: TileSetLoader[], seed: string) {
 		this._layer = layer
 		let c = 0
 		for (let y = 0; y < world.height; y++) {
