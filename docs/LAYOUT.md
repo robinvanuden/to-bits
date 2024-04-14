@@ -1,12 +1,13 @@
 # Game layout
 
-- index
-    - game
-    - repositories
-        - Players
-        - PowerUps
-    - map
-    - controllers
-        - endpoints
-  - socket_id
-      - endpoints
+```text
+---index
+---game
+---/controllers
+------...Controller.ts
+---/map
+---/repositories
+------...Repository.ts
+---/socket
+------...Socket.ts
+```

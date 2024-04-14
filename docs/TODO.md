@@ -7,15 +7,16 @@
     - [x]  Move logic in separate files
 - [x]  Fix boomerang angels (do math)
 - [ ]  More items
-    - [ ]  Sword
-    - [ ]  Bombs
-    - [ ]  Boomerangs
-    - [ ]  Fireballs
+   - [x]  Sword
+   - [x]  Bombs
+   - [x]  Boomerangs
+   - [x]  Fireballs
     - [ ]  Traps
     - [ ]  Shield
     - [ ]  Grabbing hook
     - [ ]  Coins
-    - [ ]  Bows or cross bows
+   - [x]  Bows
+   - [ ]  Cross bows
     - [ ]  Lances
 - [ ]  Night mode / blindness
 - [ ]  Map objects for navigating
@@ -52,6 +53,6 @@
 
 ## Archive
 
-- [ ]  ~~Add shadow to player_id~~
-- [ ]  ~~Move boomerangs to separate controller and repository~~
-- [ ]  ~~Write about Timer when thrown boomerang to start returning~~
+- ~~Add shadow to player_id~~
+- ~~Move boomerangs to separate controller and repository~~
+- ~~Write about Timer when thrown boomerang to start returning~~
