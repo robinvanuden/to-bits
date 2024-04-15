@@ -6,11 +6,13 @@ import PlayerModel, {Direction} from "../../types/model/PlayerModel"
 import Entity from "../Entity"
 import HitBox from "./HitBox"
 
-export const PLAYER_WIDTH = 13
-export const PLAYER_HEIGHT = 16
-export const PLAYER_SPEED_WALK = 2
-export const PLAYER_SPEED_JUMP = 4
-export const PLAYER_MAX_POWER_UP = 5
+const PLAYER_TIMEOUT = 10_000
+
+const PLAYER_WIDTH = 13
+const PLAYER_HEIGHT = 16
+const PLAYER_SPEED_WALK = 2
+const PLAYER_SPEED_JUMP = 4
+const PLAYER_MAX_POWER_UP = 5
 export const PLAYER_MAX_HEALTH = 100
 export const PLAYER_DAMAGE = PLAYER_MAX_HEALTH * .30
 export const PLAYER_GRAVITY = GRAVITY
@@ -98,7 +100,7 @@ export default class Player extends Entity {
 		if (!power_up) {
 			return false
 		}
-		if (power_up.type() === PowerType.HEALTH) {
+		if (power_up.type === PowerType.HEALTH) {
 			this.heal(this.healthPointsMax * .25)
 			return true
 		}
@@ -114,6 +116,10 @@ export default class Player extends Entity {
 	usePowerUp = (power: PowerUp) => {
 		const power_up = this.power_ups.find(power.equals)
 		if (!power_up) {
+			return
+		}
+		power_up.usePower()
+		if (power_up.uses > 0) {
 			return
 		}
 		this.power_ups = this.power_ups.filter(power.notEquals)
@@ -165,7 +171,7 @@ export default class Player extends Entity {
 			player.damage(this.damagePoints)
 			const power = this.getFirstPowerUp()
 			if (power) {
-				switch (power.type()) {
+				switch (power.type) {
 				case PowerType.HAMMER:
 				case PowerType.SWORD:
 					this.resetDamagePoints()
@@ -218,16 +224,17 @@ export default class Player extends Entity {
 		tdc: this.timeDisconnected,
 		l: this.look,
 		m: this.move,
-		pu: this.power_ups.map(PowerUp.toModel)
+		pu: this.power_ups.map(p => p.toModel())
 	})
 
 	isConnected = () => this.timeDisconnected < 0
 
-	isDisconnected = () => this.timeDisconnected >= 0 && this.isNowOrAfter(this.timeDisconnected + 10_000)
+	isTimedOut = () => this.timeDisconnected >= 0 && this.isNowOrBefore(this.timeDisconnected + PLAYER_TIMEOUT)
 
-	isDangling = () => this.timeDisconnected >= 0 && this.isBeforeNow(this.timeDisconnected + 10_000)
+	isDangling = () => this.timeDisconnected >= 0 && this.isAfterNow(this.timeDisconnected + PLAYER_TIMEOUT)
 
 	reconnect = (socket_id: string) => {
+		console.log("Reconnected", socket_id)
 		this.socket_id = socket_id
 		this.timeDisconnected = -1
 		this.move = {u: false, d: false, l: false, r: false}

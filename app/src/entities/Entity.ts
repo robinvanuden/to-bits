@@ -61,13 +61,13 @@ export default abstract class Entity {
 		entity._y + entity._height > this._y
 
 
-	protected getNow = Date.now
+	protected getNow = () => Date.now()
 
-	protected isBeforeNow = (time: number) => time < this.getNow()
+	protected isBeforeNow = (time: number): boolean => time < this.getNow()
 
-	protected isNowOrBefore = (time: number) => time <= this.getNow()
+	protected isNowOrBefore = (time: number): boolean => time <= this.getNow()
 
-	protected isAfterNow = (time: number) => time > this.getNow()
+	protected isAfterNow = (time: number): boolean => time > this.getNow()
 
-	protected isNowOrAfter = (time: number) => time >= this.getNow()
+	protected isNowOrAfter = (time: number): boolean => time >= this.getNow()
 }

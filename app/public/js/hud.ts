@@ -111,7 +111,7 @@ export default class Hud {
 				debug_texts.push("powers:")
 				// Power ups
 				for (const power of you.pu) {
-					debug_texts.push("- " + power.t)
+					debug_texts.push("- " + power.t + ": " + power.u)
 				}
 			} else {
 				debug_texts.push("powers: -")

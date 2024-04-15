@@ -164,14 +164,14 @@ export default class Game {
 
 	private checkDisconnectedPlayers = () => {
 		for (const player of this.players().disconnected()) {
-			console.log("Remove player_id: " + player.id)
+			console.log("Remove player:", player.id)
 			this.players().remove(player)
 		}
 	}
 
 	private checkRespawnPlayers = () => {
 		for (const player of this.players().respawns()) {
-			console.log("Respawn player_id: " + player.id)
+			console.log("Respawn player:", player.id)
 			const spawn = this.world().pickRandomSpawnPoint()
 			if (spawn) player.respawn(spawn)
 		}
@@ -218,7 +218,7 @@ export default class Game {
 			player.doSwing()
 			return
 		}
-		switch (powerUp.type()) {
+		switch (powerUp.type) {
 		case PowerType.ARROW:
 			player.usePowerUp(powerUp)
 			this.entities().shootArrow(player)
@@ -246,5 +246,5 @@ export default class Game {
 		}
 	}
 
-	public static getNow = Date.now
+	public static getNow = () => Date.now()
 }

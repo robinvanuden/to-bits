@@ -15,7 +15,11 @@ export default class PlayerSocket {
 
 	constructor(game: Game, server: ModServer<unknown, unknown>, code: number) {
 		this.game = game
-		this.io = new Server(server)
+		this.io = new Server(server, {
+			allowUpgrades: true,
+			connectTimeout: 10_000,
+			upgradeTimeout: 5_000
+		})
 
 		this.io.on("connection", client => {
 			client.emit("build", code)
@@ -24,13 +28,15 @@ export default class PlayerSocket {
 			const cookies = cookie.parse(client.handshake.headers.cookie || "")
 			const uuid = cookies[COOKIE_PLAYER_ID] || ""
 			if (uuid.length === 0) {
-				client.disconnect()
+				console.log("Error: Can't add player without UUID")
 				client.emit("nope", true)
+				client.disconnect()
 				return
 			}
 			if (!this.game.addPlayer(uuid, client.id)) {
-				client.disconnect()
+				console.log("Error: Can't add player")
 				client.emit("nope", true)
+				client.disconnect()
 				return
 			}
 
@@ -49,7 +55,7 @@ export default class PlayerSocket {
 				if (!this.game) {
 					return
 				}
-				console.log("User timeDisconnected", uuid)
+				console.log("User disconnected", uuid)
 				const player = this.game.players().getById(uuid)
 				if (player) player.disconnect()
 			})

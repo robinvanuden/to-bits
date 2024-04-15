@@ -7,13 +7,23 @@ export default class PowerUp {
 
 	private readonly _id: string
 	private readonly _type: PowerType
+	private _uses: number
 
-	private constructor(type: PowerType) {
+	private constructor(type: PowerType, uses = 0) {
 		this._id = v4()
 		this._type = type
+		this._uses = uses
 	}
 
-	public type = () => this._type
+	get type() {
+		return this._type
+	}
+
+	get uses() {
+		return this._uses
+	}
+
+	public usePower = () => this._uses--
 
 	public equals = (powerUp: PowerUp) => powerUp._id === this._id
 
@@ -28,11 +38,25 @@ export default class PowerUp {
 		return Math.round(Math.random() * (index.length - 1)) as PowerType
 	}
 
-	public static random = () => new PowerUp(PowerUp.randomType())
+	public static random = () => {
+		const type = PowerUp.randomType()
+		let uses = 0
+		switch (type) {
+		case PowerType.SWORD:
+		case PowerType.BOOMERANG:
+			uses = 3
+			break
+		case PowerType.HAMMER:
+			uses = 2
+			break
+		}
+		return new PowerUp(type, uses)
+	}
 
-	public static toModel = (power: PowerUp): PowerUpModel => ({
-		id: power._id,
-		t: power.typeToString(),
+	public toModel = (): PowerUpModel => ({
+		id: this._id,
+		t: this.typeToString(),
+		u: this.uses
 	})
 }
 

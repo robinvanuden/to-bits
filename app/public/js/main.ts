@@ -4,6 +4,7 @@ import Images from "./images"
 import Data from "./data"
 import Hud from "./hud"
 import Canvas from "./canvas"
+import {TileLayerModel} from "./model/TileModel"
 
 (() => {
 
@@ -11,24 +12,28 @@ import Canvas from "./canvas"
 		.href = "/favicon.ico?t=" + Date.now()
 
 	const host = new URL(location.toString())
-	const secure = (location.protocol === "wss:" || location.protocol === "https:")
+	const secure = location.protocol === "https:"
 	host.protocol = secure ? "https:" : "http:"
 	host.pathname = "/"
 
 	const origin = new URL(host)
-	origin.pathname = "/game/"
+	origin.protocol = secure ? "wss:" : "ws:"
 
 	const socket = io({
-		"transports": ["websocket"],
-		host: origin.toString(),
+		host: origin.host,
+		hostname: origin.hostname,
+		port: origin.port,
+		transports: ["websocket"],
 		upgrade: true,
 		ackTimeout: 2000,
 		autoConnect: true,
 		secure: secure,
-		reconnection: true,
-		timeout: 10000,
+		reconnection: false,
 		forceNew: true
 	})
+	socket.connect()
+
+	socket.on("connect_error", err => console.log("Error conn:", err))
 
 	let BUILD = 0
 
@@ -67,7 +72,8 @@ import Canvas from "./canvas"
 
 	socket.on("nope", () => hud.setNope(true))
 
-	socket.on("map_layer", map_data => {
+	socket.on("map_layer", (map_data: TileLayerModel) => {
+		console.log("layer", map_data.n)
 		data.setMapLayer(map_data)
 		hud.setLoading(false)
 	})

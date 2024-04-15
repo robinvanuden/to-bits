@@ -11,7 +11,7 @@ export default class PlayerRepository {
 
 	alive = () => this.players.filter(p => p.isAlive())
 
-	disconnected = () => this.players.filter(p => p.isDisconnected())
+	disconnected = () => this.players.filter(p => p.isTimedOut())
 
 	respawns = () => this.players.filter(p => p.isRespawnAble())
 

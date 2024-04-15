@@ -62,7 +62,7 @@ export default class MapTile extends Entity {
 		sp: this.layer === "spawn",
 		wa: this.isSemiSolid(),
 		so: !this.isSemiSolid(),
-		pu: this.power_up ? PowerUp.toModel(this.power_up) : undefined
+		pu: this.power_up ? this.power_up.toModel() : undefined
 	})
 
 }
