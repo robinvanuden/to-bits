@@ -28,7 +28,7 @@ import {TileLayerModel} from "./model/TileModel"
 		ackTimeout: 2000,
 		autoConnect: true,
 		secure: secure,
-		reconnection: false,
+		reconnection: true,
 		forceNew: true
 	})
 	socket.connect()

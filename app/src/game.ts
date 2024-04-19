@@ -147,7 +147,7 @@ export default class Game {
 					player.grounded = true
 				}
 
-				for (const other of this.players().others(player)) {
+				for (const other of this.players().othersAlive(player)) {
 					player.hits(other)
 				}
 

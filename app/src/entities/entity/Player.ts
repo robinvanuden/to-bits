@@ -122,6 +122,7 @@ export default class Player extends Entity {
 		if (power_up.uses > 0) {
 			return
 		}
+		this.resetDamagePoints()
 		this.power_ups = this.power_ups.filter(power.notEquals)
 	}
 
@@ -157,7 +158,7 @@ export default class Player extends Entity {
 	}
 
 	damageFall = (vy: number) => {
-		const part = -5 + vy
+		const part = -7 + vy
 		const damage = Math.ceil(part / this.healthPointsMax * 100)
 		if (damage <= 0) {
 			return
@@ -166,7 +167,8 @@ export default class Player extends Entity {
 	}
 
 	hits = (player: Player) => {
-		if (this.isSwung() && player.collidesWith(this.hit_box())) {
+		if (this.isSwung() && player.isAlive() && player.collidesWith(this.hit_box())) {
+			console.log("swung", this.damagePoints)
 			this.timeSwung = 0
 			player.damage(this.damagePoints)
 			const power = this.getFirstPowerUp()
@@ -194,7 +196,9 @@ export default class Player extends Entity {
 
 	doSwing = () => this.timeSwung = this.getNow()
 
-	setDamagePoints = (number: number) => this.damagePoints *= number
+	setDamagePoints = (number: number) => {
+		this.damagePoints = this.damagePoints * number
+	}
 
 	resetDamagePoints = () => this.damagePoints = this.damagePointsDefault
 
