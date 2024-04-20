@@ -46,8 +46,7 @@ export default class Player extends Entity {
 	private timeDamaged: number
 
 	private timeSwung: number
-	private damagePoints: number
-	private readonly damagePointsDefault: number
+	private readonly damagePoints: number
 
 	public look: Direction
 	public move: Direction
@@ -64,7 +63,6 @@ export default class Player extends Entity {
 		this.healthPointsMax = PLAYER_MAX_HEALTH
 		this.healthPoints = this.healthPointsMax
 		this.damagePoints = PLAYER_DAMAGE
-		this.damagePointsDefault = PLAYER_DAMAGE
 		this.timeSwung = 0
 		this.color = randomColor()
 		this.mask = randomMask()
@@ -122,7 +120,6 @@ export default class Player extends Entity {
 		if (power_up.uses > 0) {
 			return
 		}
-		this.resetDamagePoints()
 		this.power_ups = this.power_ups.filter(power.notEquals)
 	}
 
@@ -168,18 +165,21 @@ export default class Player extends Entity {
 
 	hits = (player: Player) => {
 		if (this.isSwung() && player.isAlive() && player.collidesWith(this.hit_box())) {
-			console.log("swung", this.damagePoints)
 			this.timeSwung = 0
-			player.damage(this.damagePoints)
 			const power = this.getFirstPowerUp()
-			if (power) {
-				switch (power.type) {
-				case PowerType.HAMMER:
-				case PowerType.SWORD:
-					this.resetDamagePoints()
-					this.usePowerUp(power)
-					break
-				}
+			if (!power) {
+				player.damage(this.damagePoints)
+				return
+			}
+			switch (power.type) {
+			case PowerType.HAMMER:
+				this.usePowerUp(power)
+				player.damage(this.damagePoints * 2)
+				break
+			case PowerType.SWORD:
+				this.usePowerUp(power)
+				player.damage(this.damagePoints * 1.5)
+				break
 			}
 		}
 	}
@@ -195,12 +195,6 @@ export default class Player extends Entity {
 	isSwung = () => this.getNow() - 150 < this.timeSwung
 
 	doSwing = () => this.timeSwung = this.getNow()
-
-	setDamagePoints = (number: number) => {
-		this.damagePoints = this.damagePoints * number
-	}
-
-	resetDamagePoints = () => this.damagePoints = this.damagePointsDefault
 
 	isWalkingOn = (tile: MapTile): boolean =>
 		this.isWithinX(tile) &&

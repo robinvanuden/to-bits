@@ -77,9 +77,12 @@ import {TileLayerModel} from "./model/TileModel"
 
 	socket.on("textures", async (textures: string[]) => {
 		for (const texture of textures) {
-			console.log("textures", texture)
 			await images.addImage(texture)
 		}
+		await images.addPlayer("damaged", true, true)
+		await images.addPlayer("damaged", true, false)
+		await images.addPlayer("damaged", false, true)
+		await images.addPlayer("damaged", false, false)
 		hud.setLoading(false)
 	})
 

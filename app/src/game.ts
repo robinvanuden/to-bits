@@ -236,11 +236,9 @@ export default class Game {
 			this.entities().throwFireball(player)
 			break
 		case PowerType.SWORD:
-			player.setDamagePoints(1.5)
 			player.doSwing()
 			break
 		case PowerType.HAMMER:
-			player.setDamagePoints(2)
 			player.doSwing()
 			break
 		}
