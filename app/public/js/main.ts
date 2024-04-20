@@ -114,9 +114,6 @@ import {TileLayerModel} from "./model/TileModel"
 		if (!pressed && key === " ") {
 			socket.emit("move.action", pressed)
 		}
-		if (pressed && key === ";") {
-			hud.toggleDebug()
-		}
 	}
 
 	const onMouseRelease = () => {
@@ -135,13 +132,10 @@ import {TileLayerModel} from "./model/TileModel"
 
 	updateFavicon()
 
-	let lastRender = performance.now()
-	const loop = (timestamp: number) => {
+	const loop = () => {
 		canvas.clear()
 		if (!hud.loading()) map.tick()
-		const delta = timestamp - lastRender
-		hud.tick(delta)
-		lastRender = timestamp
+		hud.tick()
 		requestAnimationFrame(loop)
 	}
 	requestAnimationFrame(loop)
