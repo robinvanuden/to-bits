@@ -31,7 +31,6 @@ import {TileLayerModel} from "./model/TileModel"
 		reconnection: true,
 		forceNew: true
 	})
-	socket.connect()
 
 	socket.on("connect_error", err => console.log("Error conn:", err))
 
@@ -84,15 +83,11 @@ import {TileLayerModel} from "./model/TileModel"
 		hud.setLoading(false)
 	})
 
-	socket.on("players", players => {
+	socket.on("players", async players => {
 		data.setPlayers(players)
-
 		// Load textures of players
 		for (const player of players) {
-			for (let i = 0; i < 2; i++) {
-				images.loadImage("/i/p/" + player.uid + "/r-" + i + ".png")
-				images.loadImage("/i/p/" + player.uid + "/l-" + i + ".png")
-			}
+			await images.loadAllPlayer(player.uid)
 		}
 	})
 

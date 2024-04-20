@@ -19,7 +19,7 @@ export default class PlayerRepository {
 
 	remove = (player: Player) => this.players = this.players.filter(p => p.id !== player.id)
 
-	getById = (id: string) => this.players.find(player => player.id === id) ?? null
+	getById = (id: string) => this.players.find(p => p.id === id) ?? null
 
 	getConnected = (id: string) => this.players.find(player => player.id === id && player.isDangling()) ?? null
 

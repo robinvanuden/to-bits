@@ -149,16 +149,15 @@ export default class Map {
 			this.ctx.strokeText(player.n.toLowerCase(), name_x, name_y)
 			this.ctx.fillText(player.n.toLowerCase(), name_x, name_y)
 
-			let image_name = ""
-			if (player.m.u || player.m.d) {
-				image_name = "/i/p/" + player.uid + "/" + (player.l.r ? "r" : "l") + "-1.png"
+			let image = this.images.loadPlayer(player.uid, player.l.l, false)
+			if (player.tdm + 100 > Date.now()) {
+				image = this.images.loadPlayer("damaged", player.l.l, false)
+			} else if (player.m.u || player.m.d) {
+				image = this.images.loadPlayer(player.uid, player.l.l, true)
 			} else if ((player.m.r || player.m.l) && Math.round((Date.now() / 250) % 1) === 0) {
-				image_name = "/i/p/" + player.uid + "/" + (player.l.r ? "r" : "l") + "-1.png"
-			} else {
-				image_name = "/i/p/" + player.uid + "/" + (player.l.r ? "r" : "l") + "-0.png"
+				image = this.images.loadPlayer(player.uid, player.l.l, true)
 			}
 			const sx = player.l.r ? 1 : 2
-			const image = this.images.loadImage(image_name)
 			this.ctx.drawImage(
 				image,
 				sx,
@@ -170,13 +169,13 @@ export default class Map {
 				player_w,
 				player_h
 			)
-			if (player.tdm + 100 > Date.now()) {
-				this.ctx.fillRect(
-					player_x - this.cx,
-					player_y - this.cy,
-					player_w,
-					player_h)
-			}
+			// if (player.tdm + 100 > Date.now()) {
+			// 	this.ctx.fillRect(
+			// 		player_x - this.cx,
+			// 		player_y - this.cy,
+			// 		player_w,
+			// 		player_h)
+			// }
 		}
 	}
 }

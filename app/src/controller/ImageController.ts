@@ -33,11 +33,40 @@ const generateCharacter = async (hsl: string, mask_type: number, walk_type: numb
 	])
 }
 
+const generateDamagedCharacter = async (walk_type: number) => {
+	const body = await loadCharacterBody()
+	const feather = await loadCharacterFeather()
+	const legs = await loadCharacterLegs(walk_type)
+	return body.composite([
+		{
+			input: await feather.grayscale(true).gamma(3).modulate({
+				brightness: 100,
+				lightness: 100
+			}).toBuffer(), left: 1, top: 0
+		},
+		{
+			input: await legs.grayscale(true).gamma(3).modulate({
+				brightness: 100,
+				lightness: 100
+			}).toBuffer(), left: 0, top: 15
+		}
+	]).grayscale(true).gamma(3).modulate({brightness: 100, lightness: 100})
+}
+
 export default function (players: PlayerRepository) {
 
 	const image_router = Router()
 
-	image_router.get("/i/p/:hash/:direction-:walk.png", async (req, res) => {
+	image_router.get("/i/p/:direction/:walk/damaged.png", async (req, res) => {
+		const left = (req.params.direction || "l") === "l"
+		const walk = (req.params.walk || "0") === "0" ? 0 : 1
+		const char = await generateDamagedCharacter(walk)
+		const char_final = sharp(await char.toBuffer()).flop(left)
+		res.contentType("image/png")
+		res.end(await char_final.toBuffer(), "utf-8")
+	})
+
+	image_router.get("/i/p/:direction/:walk/:hash.png", async (req, res) => {
 		const uuid = req.params.hash || undefined
 		if (!uuid) {
 			res.sendStatus(401)
