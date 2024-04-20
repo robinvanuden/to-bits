@@ -33,7 +33,7 @@ export default class Map {
 			switch (entity.t) {
 			case "ARROW":
 				this.ctx.drawImage(
-					this.images.addImage("/img/arrow.png"),
+					this.images.loadImage("/img/arrow.png"),
 					entity.vx <= 0 ? entity.w + 1 : 1,
 					6,
 					entity.w,
@@ -61,7 +61,7 @@ export default class Map {
 					const FRAME_PRIMED2 = 3 + 32
 					const frame = passed_millis <= 1000 ? FRAME_NEUTRAL : (passed % 2) === 0 ? FRAME_PRIMED2 : FRAME_PRIMED
 					this.ctx.drawImage(
-						this.images.addImage("/img/bomb.png"),
+						this.images.loadImage("/img/bomb.png"),
 						frame,
 						2,
 						entity.w,
@@ -76,7 +76,7 @@ export default class Map {
 				break
 			case "BOOMERANG":
 				this.ctx.drawImage(
-					this.images.addImage("/img/boomerang.png"),
+					this.images.loadImage("/img/boomerang.png"),
 					4 + (Math.round(Math.round(Date.now() - entity.s) / 100) % 4 * 16),
 					4,
 					entity.w,
@@ -89,7 +89,7 @@ export default class Map {
 				break
 			case "FIREBALL":
 				this.ctx.drawImage(
-					this.images.addImage("/img/fireball.png"),
+					this.images.loadImage("/img/fireball.png"),
 					4,
 					4,
 					entity.w,
@@ -111,7 +111,7 @@ export default class Map {
 				if (tile.i) {
 					if ((!tile.pu && layer.n === "floor") || (tile.pu && layer.n === "powers")) {
 						this.ctx.drawImage(
-							this.images.addImage(tile.i),
+							this.images.loadImage(tile.i),
 							tile.ox,
 							tile.oy,
 							tile.w,
@@ -151,14 +151,14 @@ export default class Map {
 
 			let image_name = ""
 			if (player.m.u || player.m.d) {
-				image_name = "/image/" + player.uid + (player.l.r ? "r" : "l") + 1 + ".png"
+				image_name = "/i/p/" + player.uid + "/" + (player.l.r ? "r" : "l") + "-1.png"
 			} else if ((player.m.r || player.m.l) && Math.round((Date.now() / 250) % 1) === 0) {
-				image_name = "/image/" + player.uid + (player.l.r ? "r" : "l") + 1 + ".png"
+				image_name = "/i/p/" + player.uid + "/" + (player.l.r ? "r" : "l") + "-1.png"
 			} else {
-				image_name = "/image/" + player.uid + (player.l.r ? "r" : "l") + 0 + ".png"
+				image_name = "/i/p/" + player.uid + "/" + (player.l.r ? "r" : "l") + "-0.png"
 			}
 			const sx = player.l.r ? 1 : 2
-			const image = this.images.addImage(image_name)
+			const image = this.images.loadImage(image_name)
 			this.ctx.drawImage(
 				image,
 				sx,

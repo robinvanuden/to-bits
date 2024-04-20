@@ -18,8 +18,6 @@ export default class Data {
 
 	version = () => this.VERSION
 
-	setMap = (map: TileLayerModel[]) => this._map = map
-
 	setMapLayer = (layer: TileLayerModel) => {
 		this._map = this._map.filter(l => l.n !== layer.n)
 		this._map.push(layer)
@@ -28,8 +26,8 @@ export default class Data {
 	map = () => this._map
 
 	setPlayers = (players: PlayerModel[]) => {
-		const uuids = players.map(p => p.i)
-		this._players = players.filter(p => uuids.includes(p.i))
+		const uuids = players.map(p => p.uid)
+		this._players = players.filter(p => uuids.includes(p.uid))
 	}
 
 	players = () => this._players

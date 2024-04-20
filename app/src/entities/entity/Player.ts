@@ -221,8 +221,6 @@ export default class Player extends Entity {
 		h: this.height,
 		x: this.x,
 		y: this.y,
-		vx: this.vx,
-		vy: this.vy,
 		tdm: this.timeDamaged,
 		tod: this.timeDied,
 		tdc: this.timeDisconnected,

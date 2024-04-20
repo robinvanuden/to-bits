@@ -37,17 +37,19 @@ export default function (players: PlayerRepository) {
 
 	const image_router = Router()
 
-	image_router.get("/image/:hash.png", async (req, res) => {
-		const hash = req.params.hash || ""
-		const uuid = hash.substring(0, hash.length - 2)
+	image_router.get("/i/p/:hash/:direction-:walk.png", async (req, res) => {
+		const uuid = req.params.hash || undefined
+		if (!uuid) {
+			res.sendStatus(401)
+			return
+		}
+		const left = (req.params.direction || "l") === "l"
+		const walk = (req.params.walk || "0") === "0" ? 0 : 1
 		const player = players.getById(uuid)
 		if (!player) {
 			res.sendStatus(404)
 			return
 		}
-		const direction = (hash.substring(hash.length - 2, hash.length - 1) || "r") === "r" ? "r" : "l"
-		const walk = (hash.substring(hash.length - 1, hash.length) || "0") === "0" ? 0 : 1
-		const left = direction.toLowerCase() === "l"
 		const char = await generateCharacter(player.color, player.mask, walk)
 		const char_final = sharp(await char.toBuffer()).flop(left)
 		res.contentType("image/png")

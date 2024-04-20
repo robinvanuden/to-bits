@@ -1,8 +1,8 @@
 import PowerUpModel from "./PowerUpModel"
 
 export default interface PlayerModel {
-  i: string // id
-  uid: string // client-id
+  i: string // client-id
+  uid: string // id
   n: string // name
   c: string // color
   hp: number // health
@@ -10,8 +10,6 @@ export default interface PlayerModel {
   h: number // height
   x: number // x-coord
   y: number // y-coord
-  vx: number // x-coord
-  vy: number // y-coord
   tdm: number // time damaged
   tod: number // time of death
   tdc: number // timeDisconnected
