@@ -21,7 +21,7 @@ const randomName = () => uniqueNamesGenerator({length: 1, dictionaries: [names]}
 
 const randomColor = () => `hsl(${Math.round(360 * Math.random())}, 74%, 58%)`
 
-const randomMask = () => Math.round(Math.random() * 3) + 1
+const randomMask = () => Math.round(Math.random() * 7) + 1
 
 export default class Player extends Entity {
 	// ID
@@ -78,7 +78,7 @@ export default class Player extends Entity {
 			u: false,
 			d: false,
 			l: false,
-			r: false
+			r: true
 		}
 		this.move = {
 			u: false,
@@ -215,6 +215,8 @@ export default class Player extends Entity {
 		h: this.height,
 		x: this.x,
 		y: this.y,
+		vx: this.vx,
+		vy: this.vy,
 		tdm: this.timeDamaged,
 		tod: this.timeDied,
 		tdc: this.timeDisconnected,

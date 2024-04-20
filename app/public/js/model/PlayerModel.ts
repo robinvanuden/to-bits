@@ -10,6 +10,8 @@ export default interface PlayerModel {
   h: number // height
   x: number // x-coord
   y: number // y-coord
+  vx: number // x-coord
+  vy: number // y-coord
   tdm: number // time damaged
   tod: number // time of death
   tdc: number // timeDisconnected
