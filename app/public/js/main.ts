@@ -79,10 +79,6 @@ import {TileLayerModel} from "./model/TileModel"
 		for (const texture of textures) {
 			await images.addImage(texture)
 		}
-		await images.addPlayer("damaged", true, true)
-		await images.addPlayer("damaged", true, false)
-		await images.addPlayer("damaged", false, true)
-		await images.addPlayer("damaged", false, false)
 		hud.setLoading(false)
 	})
 

@@ -28,8 +28,8 @@ const generateCharacter = async (hsl: string, mask_type: number, walk_type: numb
 	return body.composite([
 		{input: await feather.toBuffer(), left: 1, top: 0},
 		{input: await feather_tint.toBuffer(), left: 2, top: 1},
-		{input: await mask.toBuffer(), left: 5, top: 5},
-		{input: await legs.toBuffer(), left: 0, top: 15}
+		{input: await mask.toBuffer(), left: 6, top: 6},
+		{input: await legs.toBuffer(), left: 0, top: 0}
 	])
 }
 
@@ -85,15 +85,63 @@ export default function (players: PlayerRepository) {
 		res.end(await char_final.toBuffer(), "utf-8")
 	})
 
+	image_router.get("/i/p/:direction/:hash.png", async (req, res) => {
+		const uuid = req.params.hash || undefined
+		if (!uuid) {
+			res.sendStatus(401)
+			return
+		}
+		const left = (req.params.direction || "l") === "l"
+		const player = players.getById(uuid)
+		if (!player) {
+			res.sendStatus(404)
+			return
+		}
+		const char1 = await generateCharacter(player.color, player.mask, 0)
+		const char2 = await generateCharacter(player.color, player.mask, 1)
+		const char3 = await generateCharacter(player.color, player.mask, 2)
+		const char4 = await generateDamagedCharacter(0)
+		const char5 = await generateDamagedCharacter(1)
+		const char6 = await generateDamagedCharacter(2)
+		const canvas = sharp({
+			create: {
+				width: 48,
+				height: 32,
+				channels: 4,
+				background: {r: 0, g: 0, b: 0, alpha: 0}
+			},
+		}).png().composite([
+			{
+				input: await sharp(await char1.toBuffer()).flop(left).toBuffer(), top: 0, left: 0
+			},
+			{
+				input: await sharp(await char2.toBuffer()).flop(left).toBuffer(), top: 0, left: 16
+			},
+			{
+				input: await sharp(await char3.toBuffer()).flop(left).toBuffer(), top: 0, left: 32
+			},
+			{
+				input: await sharp(await char4.toBuffer()).flop(left).toBuffer(), top: 16, left: 0
+			},
+			{
+				input: await sharp(await char5.toBuffer()).flop(left).toBuffer(), top: 16, left: 16
+			},
+			{
+				input: await sharp(await char6.toBuffer()).flop(left).toBuffer(), top: 16, left: 32
+			}
+		])
+		res.contentType("image/png")
+		res.end(await canvas.toBuffer(), "utf-8")
+	})
+
 	image_router.get("/favicon.ico", async (req, res) => {
 		const uuid = req.cookies[COOKIE_PLAYER_ID] || ""
 		const player = players.getById(uuid)
 		const mask = player?.mask || 1
 		const color = player?.color || "hsl(0, 55%, 55%)"
 		const char = await generateCharacter(color, mask, 0)
-		const char_final = sharp(await char.toBuffer())
 		res.contentType("image/x-icon")
-		res.end(await char_final.toBuffer(), "utf-8")
+		res.end(await char.toBuffer(), "utf-8")
 	})
 
 	return image_router
