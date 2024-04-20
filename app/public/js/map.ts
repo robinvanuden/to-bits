@@ -139,13 +139,13 @@ export default class Map {
 			const player_y = this.canvas.tile(player.y)
 
 			const name_x = player_x - this.cx + player_w * .5
-			const name_y = player_y - this.cy - this.canvas.size(12)
+			const name_y = player_y - this.cy - this.canvas.tile(3)
 
 			this.ctx.font = this.canvas.font(1)
 			this.ctx.textAlign = "center"
 			this.ctx.fillStyle = "#FFF"
 			this.ctx.strokeStyle = "#000"
-			this.ctx.lineWidth = this.canvas.size(8)
+			this.ctx.lineWidth = this.canvas.tile(2)
 			this.ctx.strokeText(player.n.toLowerCase(), name_x, name_y)
 			this.ctx.fillText(player.n.toLowerCase(), name_x, name_y)
 

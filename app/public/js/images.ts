@@ -11,10 +11,8 @@ export default class Images {
 		if (this.images[file_path]) {
 			return this.images[file_path]
 		}
-		const url = new URL(this.host.toString())
-		url.pathname = file_path
 		const image = new Image()
-		image.src = url.toString()
+		image.src = file_path
 		this.images[file_path] = image
 		return image
 	}

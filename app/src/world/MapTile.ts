@@ -1,9 +1,9 @@
 import {PROP_SEMI_SOLID, TiledTile, TiledTileSetProperty} from "../types/TiledTileSet"
 import {TiledWorldLayer} from "../types/TiledWorld"
 import MapTileModel from "../types/model/MapTileModel"
-import path from "path"
 import PowerUp from "../entities/PowerUp"
 import Entity from "../entities/Entity"
+import path from "path"
 
 export default class MapTile extends Entity {
 	name: string
@@ -43,11 +43,7 @@ export default class MapTile extends Entity {
 		if (!this.hasPowerUp()) this.power_up = PowerUp.random()
 	}
 
-	private generateTextureUrl = () => {
-		const body = [path.basename(this.source), this.seed]
-		const hash = Buffer.from(JSON.stringify(body), "utf-8").toString("base64url")
-		return "/texture/set/" + hash + path.extname(this.source)
-	}
+	private generateTextureUrl = () => "/texture/set/" + path.basename(this.source)
 
 	public toModel = (): MapTileModel => ({
 		x: this.x,

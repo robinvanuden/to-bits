@@ -29,25 +29,14 @@ const generateTexture = (source_path: string, x: number, y: number, width: numbe
 export default function () {
 	const router = Router()
 
-	router.get("/texture/set/:hash.:ext", async (req, res) => {
-		const hash = req?.params?.hash || ""
-		if (hash.length <= 0) {
+	router.get("/texture/set/:name.:ext", async (req, res) => {
+		const source = req?.params?.name || ""
+		if (source.length <= 0) {
 			return res.sendStatus(400)
 		}
-		const decrypted_raw = Buffer.from(hash, "base64url").toString("utf-8")
-		if (decrypted_raw.length <= 0) {
+		console.log(source)
+		if (source.length <= 0) {
 			return res.sendStatus(400)
-		}
-		const decrypted = JSON.parse(decrypted_raw)
-		if (!decrypted) {
-			return res.sendStatus(400)
-		}
-		const [source, seed] = decrypted || ["", ""]
-		if (source.length <= 0 || seed.length <= 0) {
-			return res.sendStatus(400)
-		}
-		if (world1.seed() !== seed) {
-			return res.sendStatus(404)
 		}
 		const set = world1.findSetByName(source)
 		if (!set) {
