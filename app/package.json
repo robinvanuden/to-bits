@@ -8,11 +8,11 @@
     "url": "https://www.robinvanuden.com"
   },
   "scripts": {
-    "clean": "rm -r dist & rm -r .parcel-cache || echo 'nope'",
+    "clean": "rm -r dist && rm -r .parcel-cache || echo 'nope'",
     "clean:fake": "mkdir dist & mkdir .parcel-cache || echo 'nope'",
     "dev:server": "nodemon --watch src -e ts,json src/index.ts",
     "dev:client": "parcel public/main.html --port=3001",
-    "dev": "npm run dev:client & npm run dev:server",
+    "dev": "npm run clean && npm run dev:client & npm run dev:server",
     "build": "parcel build public/main.html",
     "start": "ts-node src/index.ts",
     "test": "eslint src/*/**.ts public/*/**.ts"

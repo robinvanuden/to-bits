@@ -73,9 +73,15 @@ import {TileLayerModel} from "./model/TileModel"
 	socket.on("nope", () => hud.setNope(true))
 
 	socket.on("map_layer", (map_data: TileLayerModel) => {
-		console.log("layer", map_data.n)
 		data.setMapLayer(map_data)
 		hud.setLoading(false)
+	})
+
+	socket.on("textures", (textures: string[]) => {
+		for (const texture of textures) {
+			console.log("textures", texture)
+			images.addImage(texture)
+		}
 	})
 
 	socket.on("players", players => {
@@ -84,8 +90,8 @@ import {TileLayerModel} from "./model/TileModel"
 		// Load textures of players
 		for (const player of players) {
 			for (let i = 0; i < 2; i++) {
-				images.addImage("image/" + player.uid + "r" + i + ".png")
-				images.addImage("image/" + player.uid + "l" + i + ".png")
+				images.addImage("/image/" + player.uid + "r" + i + ".png")
+				images.addImage("/image/" + player.uid + "l" + i + ".png")
 			}
 		}
 	})

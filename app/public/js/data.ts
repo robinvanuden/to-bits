@@ -29,13 +29,7 @@ export default class Data {
 
 	setPlayers = (players: PlayerModel[]) => {
 		const uuids = players.map(p => p.i)
-		this._players = this._players.filter(p => uuids.includes(p.i))
-		for (const p in players) {
-			const player = players[p]
-			const PLAYER = this._players[p] || null
-			player.a = PLAYER?.a || 0
-			this._players[p] = player
-		}
+		this._players = players.filter(p => uuids.includes(p.i))
 	}
 
 	players = () => this._players

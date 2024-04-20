@@ -1,10 +1,6 @@
-import {Router} from "express"
-import {useWorld1} from "../world/WorldLoader"
+import express, {Router} from "express"
 import sharp from "sharp"
 import path from "path"
-import fs from "fs"
-
-const world1 = useWorld1()
 
 const webpOptions = (): sharp.WebpOptions => ({
 	quality: 100,
@@ -29,27 +25,7 @@ const generateTexture = (source_path: string, x: number, y: number, width: numbe
 export default function () {
 	const router = Router()
 
-	router.get("/texture/set/:name.:ext", async (req, res) => {
-		const source = req?.params?.name || ""
-		if (source.length <= 0) {
-			return res.sendStatus(400)
-		}
-		console.log(source)
-		if (source.length <= 0) {
-			return res.sendStatus(400)
-		}
-		const set = world1.findSetByName(source)
-		if (!set) {
-			return res.sendStatus(404)
-		}
-
-		const source_path = path.resolve(__dirname, "wow", set.source())
-		if (!fs.existsSync(source_path)) {
-			return res.sendStatus(404)
-		}
-		res.contentType("image/" + path.extname(source_path))
-		return res.sendFile(source_path)
-	})
+	router.use("/texture/set/", express.static(path.resolve(__dirname, "../assets/map/")))
 
 	router.get("/texture/test.webp", async (req, res) => {
 		const source_path = path.resolve(__dirname, "../assets/map/stone.jpg")

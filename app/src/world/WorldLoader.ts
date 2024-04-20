@@ -61,6 +61,8 @@ export default class WorldLoader {
 		}
 	}
 
+	tileSources = () => this.sets.map(s => "/texture/set/" + path.basename(s.source()))
+
 	loadJsonMap = (name: string): TiledWorld => JSON.parse(fs.readFileSync(path.resolve(__dirname, "../map/", name)).toString("utf-8"))
 
 	pickRandomSpawnPoint = (): MapTile | undefined => {

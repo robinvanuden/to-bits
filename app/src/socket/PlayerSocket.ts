@@ -40,6 +40,7 @@ export default class PlayerSocket {
 				return
 			}
 
+			client.emit("textures", this.game.world().tileSources())
 			client.emit("map_layer", this.game.world().floor().toModel())
 
 			client.on("move.left", (bool: boolean) => this.onMovement(uuid, "move.left", bool))
