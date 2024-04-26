@@ -4,7 +4,7 @@
 
 The HUD update. More coming soon!
 
-## 0.6
+## 0.7
 
 The player update!
 
@@ -28,6 +28,11 @@ The player update!
 - [ ] Double jumps
 - [ ] Knight feather helicopter
 - [ ] Player can stoop when holding down
+- [ ] Interface elements for the player.
+    - [ ] The players name
+    - [ ] Inventory items
+    - [ ] All players
+- [ ] Added lobbies instead of a fixed world.
 
 ### Changed
 
@@ -37,76 +42,102 @@ The player update!
     - Players join/leave
 -
 
-## 0.5
+## 0.6
 
 The Item update.
 
 ### Added
 
-- [x] Entity class for entities other than players.
-- [ ] Added lobbies instead of a fixed world.
-- [ ] Added melee logic to punch other players
-- [ ] Added damage attribute to players (no instant kills)
-- [ ] Interface elements for the player.
-    - [ ] The players name
-    - [ ] Inventory items
-    - [ ] All players
+- [x] Projectile class for entities other than players.
+- [x] Added melee logic to punch other players
+- [x] Added damage attribute to players (no instant kills)
+- [ ] Add uses to items
 - [ ] More powers:
     - [ ] Bow
-        - [ ] Item texture
+        - [x] Item texture
         - [ ] Player holding
-        - [ ] Projectile texture for the arrow
-        - [ ] Logic to shoot an arrow
+        - [x] ItemProjectile texture for the arrow
+            - [x] Logic to shoot an arrow
     - [ ] Fireball
-        - [ ] Item texture
+        - [x] Item texture
         - [ ] Player holding
-        - [ ] Projectile texture
-        - [ ] Logic to shoot a fireball
+        - [x] ItemProjectile texture
+            - [x] Logic to shoot a fireball
     - [ ] Bomb
-        - [ ] Item texture
+        - [x] Item texture
         - [ ] Player holding
-        - [ ] Projectile texture
-        - [ ] Logic to drop a bomb and it explodes
+        - [x] ItemProjectile texture
+            - [x] Logic to drop a bomb and it explodes
     - [ ] Boomerang
-        - [ ] Item texture
+        - [x] Item texture
         - [ ] Player holding
-        - [ ] Projectile texture
-        - [ ] Logic to throw a rotating boomerang and it comes back
+        - [x] ItemProjectile texture
+            - [x] Logic to throw a rotating boomerang and it comes back
     - [ ] Sword
         - [ ] Item texture
         - [ ] Player holding
-        - [ ] Projectile texture
-        - [ ] Logic to damage a player
+      - [ ] ItemProjectile texture
+          - [x] Logic to deal damage another player
+    - [ ] Hammer
+        - [ ] Item texture
+        - [ ] Player holding
+      - [ ] ItemProjectile texture
+          - [x] Logic to deal more damage another player
     - [ ] Lightsaber
         - [ ] Item texture
         - [ ] Player holding
-        - [ ] Projectile texture
-        - [ ] Logic to damage a player
+      - [ ] ItemProjectile texture
+          - [ ] Logic to damage a player
     - [ ] Magic Wand
         - [ ] Item texture
         - [ ] Player holding
-        - [ ] Projectile texture for the magic bolt
-        - [ ] Logic to shoot a bolt that follows the mouse
+      - [ ] ItemProjectile texture for the magic bolt
+          - [ ] Logic to shoot a bolt that follows the player slowly
     - [ ] Mjolnir
         - [ ] Item texture
         - [ ] Player holding
-        - [ ] Projectile texture for the thunderbolt
-        - [ ] Logic to shoot a thunderbolt on the mouse
+      - [ ] ItemProjectile texture for the thunderbolt
+          - [ ] Logic to shoot a thunderbolt in front of the player
     - [ ] Shield
         - [ ] Item texture
         - [ ] Player holding
-        - [ ] Projectile texture
-        - [ ] Logic to shield a player from damage
+      - [ ] ItemProjectile texture
+          - [ ] Logic to shield a player from damage
 
 ### Changed
 
 - [ ] Moved player-items to their own repository.
-- [ ] Moved player and projectile loop methods to a separate file
+- [ ] Moved player loop methods to a separate file
 - [ ] The background of the player name-tags is now totally black.
 - [ ] Player color picking now checks existing player colors
     - Before some players had the same color which could be confusing
 - [ ] Moved the world to the lobby
-- [ ] Players can now drop down semi-solid blocks.
+
+## 0.5
+
+The unpredicted map updated
+
+### Added
+
+- [x] Created an entity class which acts as a base for all tiles
+- [x] Added projectiles
+
+### Changed
+
+- [x] Moved projectile loop methods to a separate file
+- [x] Merged all duplicate logic in the entity class
+- [x] Changed sizes of the tiles to 16x16 and adjusted the jumping and velocity
+- [x] Updated gravity logic
+
+### Removed
+
+- [x] Removed radians and degrees when clicking the mouse.
+    - Players now only shoot items with the space-bar
+
+### Fixed
+
+- [x] Players can now drop down semi-solid tiles.
+- [x] PLayers don't fall through semi-solid tiles
 
 ## 0.4
 

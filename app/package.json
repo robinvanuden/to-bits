@@ -1,6 +1,6 @@
 {
   "name": "to-bits",
-  "version": "0.5.6",
+  "version": "0.6.5",
   "private": true,
   "author": {
     "name": "Robin van Uden",
@@ -8,12 +8,14 @@
     "url": "https://www.robinvanuden.com"
   },
   "scripts": {
-    "test": "eslint src/*/**.ts public/*/**.ts",
-    "clean": "rm -r dist & rm -r .parcel-cache || echo 'nope'",
-    "dev:server": "nodemon --watch src",
-    "dev:client": "npm run clean && parcel public/main.html --port=3001",
-    "dev": "bun run dev:client & bun run dev:server",
-    "start": "parcel build public/main.html && ts-node src/index.ts"
+    "clean": "rm -r dist && rm -r .parcel-cache || echo 'nope'",
+    "clean:fake": "mkdir dist & mkdir .parcel-cache || echo 'nope'",
+    "dev:server": "nodemon --watch src -e ts,json src/index.ts",
+    "dev:client": "parcel public/main.html --port=3001",
+    "dev": "npm run clean && npm run dev:client & npm run dev:server",
+    "build": "parcel build public/main.html",
+    "start": "ts-node src/index.ts",
+    "test": "eslint src/*/**.ts public/*/**.ts"
   },
   "dependencies": {
     "express": "^4.19",
@@ -29,14 +31,14 @@
     "@types/cookie-parser": "^1.4",
     "@types/express": "^4.17",
     "@types/uuid": "^9.0",
-    "@typescript-eslint/eslint-plugin": "^7.4",
-    "@typescript-eslint/parser": "^7.4",
+    "@typescript-eslint/eslint-plugin": "^7.6",
+    "@typescript-eslint/parser": "^7.6",
     "buffer": "^6.0",
     "cookie-parser": "^1.4",
     "eslint": "^8.57",
     "nodemon": "^3.1",
     "parcel": "^2.12",
-    "sass": "^1.72",
+    "sass": "^1.75",
     "ts-node": "^10.9",
     "typescript": "^5.4"
   }

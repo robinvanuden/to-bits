@@ -1,12 +1,12 @@
 import MapTile from "./MapTile"
-import World, {WorldLayer} from "../types/World"
+import TiledWorld, {TiledWorldLayer} from "../types/TiledWorld"
 import TileSetLoader from "./TileSetLoader"
-import {TileLayerModel} from "../types/MapTileModel"
+import {TileLayerModel} from "../types/model/MapTileModel"
 
 export default class LayerLoader {
 
 	private _map_tiles: MapTile[] = []
-	private readonly _layer: WorldLayer
+	private readonly _layer: TiledWorldLayer
 
 	public tiles = (): MapTile[] => this._map_tiles || []
 
@@ -18,7 +18,7 @@ export default class LayerLoader {
 
 	public semis = (): MapTile[] => this.tiles().filter(t => t.isSemiSolid())
 
-	constructor(world: World, layer: WorldLayer, sets: TileSetLoader[], seed: string) {
+	constructor(world: TiledWorld, layer: TiledWorldLayer, sets: TileSetLoader[], seed: string) {
 		this._layer = layer
 		let c = 0
 		for (let y = 0; y < world.height; y++) {
@@ -26,9 +26,11 @@ export default class LayerLoader {
 				const tile_x = x * world.tilewidth
 				const tile_y = y * world.tileheight
 				const id = layer.data[c]
-				const item = sets.find(s => id >= s.firstId() && s.getTileById(id))?.getTileById(id)
-				if (item) {
-					this._map_tiles.push(new MapTile(id, tile_x, tile_y, seed, layer, item))
+				if (id) {
+					const item = sets.find(s => id >= s.firstId() && s.getTileById(id))?.getTileById(id)
+					if (item) {
+						this._map_tiles.push(new MapTile(id, tile_x, tile_y, seed, layer, item))
+					}
 				}
 				c++
 			}
@@ -38,6 +40,6 @@ export default class LayerLoader {
 
 	public toModel = (): TileLayerModel => ({
 		n: this.name(),
-		ls: this.tiles().map(MapTile.toModel)
+		ls: this.tiles().map(t => t.toModel())
 	})
 }

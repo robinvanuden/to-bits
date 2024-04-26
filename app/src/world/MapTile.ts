@@ -1,42 +1,30 @@
-import {PROP_SEMI_SOLID, Tile, TileSetProperty} from "../types/TileSet"
-import {WorldLayer} from "../types/World"
-import MapTileModel from "../types/MapTileModel"
-import path from "path"
+import {PROP_SEMI_SOLID, TiledTile, TiledTileSetProperty} from "../types/TiledTileSet"
+import {TiledWorldLayer} from "../types/TiledWorld"
+import MapTileModel from "../types/model/MapTileModel"
 import PowerUp from "../entities/PowerUp"
+import Entity from "../entities/Entity"
+import path from "path"
 
-export default class MapTile {
-	id: number
-	x: number
-	y: number
+export default class MapTile extends Entity {
 	name: string
 	seed: string
 	source: string
 	offset_x: number
 	offset_y: number
-	tileheight: number
-	tilewidth: number
 	type: string
 	version: string
 	tiledversion: string
-	height: number
-	width: number
 	layer: string
 	power_up: PowerUp | undefined
-	properties: TileSetProperty[]
+	properties: TiledTileSetProperty[]
 
-	constructor(id: number, x: number, y: number, seed: string, layer: WorldLayer, item: Tile) {
-		this.id = id
+	constructor(id: number, x: number, y: number, seed: string, layer: TiledWorldLayer, item: TiledTile) {
+		super(x, y, item.tilewidth, item.tileheight, String(id))
 		this.seed = seed
-		this.x = x
-		this.y = y
 		this.name = item.name
 		this.source = item.source
 		this.offset_x = item.offset_x
 		this.offset_y = item.offset_y
-		this.width = item.tilewidth
-		this.height = item.tileheight
-		this.tilewidth = item.tilewidth
-		this.tileheight = item.tileheight
 		this.type = item.type
 		this.version = item.version
 		this.tiledversion = item.tiledversion
@@ -55,26 +43,21 @@ export default class MapTile {
 		if (!this.hasPowerUp()) this.power_up = PowerUp.random()
 	}
 
-	private generateTextureUrl = () => {
-		const body = [path.basename(this.source), this.seed]
-		const hash = Buffer.from(JSON.stringify(body), "utf-8").toString("base64url")
-		return "/texture/set/" + hash + path.extname(this.source)
-	}
+	private generateTextureUrl = () => "/texture/set/" + path.basename(this.source)
 
-	static toModel = (tile: MapTile): MapTileModel => ({
-		x: tile.x,
-		y: tile.y,
-		ox: tile.offset_x,
-		oy: tile.offset_y,
-		w: tile.width,
-		h: tile.height,
-		t: tile.id,
-		i: tile.generateTextureUrl(),
-		d: 0,
-		sp: tile.layer === "spawn",
-		wa: tile.isSemiSolid(),
-		so: !tile.isSemiSolid(),
-		pu: tile.power_up ? PowerUp.toModel(tile.power_up) : undefined
+	public toModel = (): MapTileModel => ({
+		x: this.x,
+		y: this.y,
+		w: this.width,
+		h: this.height,
+		p: this.power_up ? this.power_up.toModel() : undefined,
+		t: {
+			i: this.generateTextureUrl(),
+			w: this.width,
+			h: this.height,
+			x: this.offset_x,
+			y: this.offset_y,
+		}
 	})
 
 }

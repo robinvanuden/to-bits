@@ -1,16 +1,17 @@
-import World from "../types/World"
+import TiledWorld from "../types/TiledWorld"
 import * as path from "path"
 import * as fs from "fs"
 import MapTile from "./MapTile"
-import Player from "../entities/Player"
+import Player from "../entities/entity/Player"
 import TileSetLoader from "./TileSetLoader"
 import LayerLoader from "./LayerLoader"
 import {v4} from "uuid"
-import Entity from "../entities/Entity"
+import Projectile from "../entities/Projectile"
 
 export default class WorldLoader {
 
-	private world: World
+	private readonly isDev: boolean
+	private world: TiledWorld
 	private sets: TileSetLoader[] = []
 
 	private readonly _seed!: string
@@ -39,6 +40,7 @@ export default class WorldLoader {
 	}
 
 	constructor(name: string) {
+		this.isDev = (process.env?.NODE_ENV || "development") === "development"
 		this._seed = v4()
 		this.world = this.loadJsonMap(name + ".json")
 		for (const set of this.world.tilesets) {
@@ -59,7 +61,9 @@ export default class WorldLoader {
 		}
 	}
 
-	loadJsonMap = (name: string): World => JSON.parse(fs.readFileSync(path.resolve(__dirname, "../map/", name)).toString("utf-8"))
+	tileSources = () => this.sets.map(s => "/texture/set/" + path.basename(s.source()))
+
+	loadJsonMap = (name: string): TiledWorld => JSON.parse(fs.readFileSync(path.resolve(__dirname, "../map/", name)).toString("utf-8"))
 
 	pickRandomSpawnPoint = (): MapTile | undefined => {
 		const spawns = this.spawns().tiles().filter(t => t !== undefined)
@@ -68,7 +72,7 @@ export default class WorldLoader {
 	}
 
 	public spawnPowerUp = () => {
-		if (Math.round(Math.random() * 500) !== 1) {
+		if (!this.isDev && Math.round(Math.random() * 500) !== 1) {
 			return
 		}
 		const airs = this.powers().tiles()
@@ -89,7 +93,7 @@ export default class WorldLoader {
 
 	isPlayerInVoid = (player: Player): boolean => (player.y + player.height) > (this.world.height * this.world.tileheight)
 
-	isEntityInVoid = (entity: Entity): boolean => (entity.y + entity.height) > (this.world.height * this.world.tileheight)
+	isEntityInVoid = (entity: Projectile): boolean => (entity.y + entity.height) > (this.world.height * this.world.tileheight)
 }
 
 let world1: WorldLoader | undefined = undefined

@@ -1,0 +1,80 @@
+import ItemProjectile from "../ItemProjectile"
+import Player, {PLAYER_MAX_HEALTH} from "../entity/Player"
+import {GRAVITY} from "../../constants"
+import Projectile from "../Projectile"
+import MapTile from "../../world/MapTile"
+import Bomb from "../entity/Bomb"
+import Fireball from "./Fireball"
+
+export const BOOMERANG_SIZE = 8
+export const BOOMERANG_SPEED = 10
+export const BOOMERANG_GRAVITY = GRAVITY * .2
+export const BOOMERANG_DAMAGE = PLAYER_MAX_HEALTH * .4
+
+export default class Boomerang extends ItemProjectile {
+
+	dx: number = 0
+	dy: number = 0
+
+	timeReturn: number = 350
+
+	constructor(player: Player) {
+		super(player, BOOMERANG_SIZE, BOOMERANG_SIZE, BOOMERANG_GRAVITY, BOOMERANG_DAMAGE, BOOMERANG_SPEED * .5)
+	}
+
+	public shouldReturn = () => this.hasLifetime(this.timeReturn)
+
+	public loopGravity = (delta: number) => {
+		if (this.shouldReturn()) {
+			this.x += this.dx * this.speed
+			this.y += this.dy * this.speed
+		} else {
+			super.loopGravity(delta)
+		}
+	}
+
+	public loopPlayer(player: Player): void {
+		super.loopPlayer(player)
+		if (this.hasLifetime(this.timeReturn) && this.isOwner(player)) {
+			const dx = player.x - this.x
+			const dy = player.y - this.y
+
+			// Calculate the distance between this and player
+			const distance = Math.sqrt(dx * dx + dy * dy)
+
+			// Normalize the direction
+			this.dx = dx / distance
+			this.dy = dy / distance
+		}
+		if (this.hasLeftPlayer && this.isOwner(player) && this.collidesWith(player)) {
+			this.remove()
+			return
+		}
+		if (!this.isOwner(player) && this.collidesWith(player)) {
+			player.damage(this.damage)
+			this.remove()
+			return
+		}
+	}
+
+	public loopEntity = (entity: Projectile): void => {
+		if (!this.collidesWith(entity)) {
+			return
+		}
+		if (entity instanceof Bomb) {
+			return
+		}
+		if (entity instanceof Fireball) {
+			this.remove()
+		} else {
+			entity.remove()
+		}
+	}
+
+	public loopTile = (tile: MapTile): void => {
+		if (tile.isSolid() && this.collidesWith(tile)) {
+			this.timeReturn = this.getNow() - this.timeSpawned
+		}
+	}
+
+}

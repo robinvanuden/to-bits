@@ -1,5 +1,5 @@
 const FONT_TEXT = "Goodbye Despair"
-const FONT_SIZE = 20
+const FONT_SIZE = 5
 
 export default class Canvas {
 
@@ -26,7 +26,7 @@ export default class Canvas {
 
 	tile = (n: number) => this.size(n) * 4
 
-	rem = (n: number) => this.size(Math.round(FONT_SIZE * n))
+	rem = (n: number) => this.tile(Math.round(FONT_SIZE * n))
 
 	width = () => this.__width
 
@@ -36,7 +36,7 @@ export default class Canvas {
 		this.__width = this.__canvas.width = this.size(width)
 		this.__height = this.__canvas.height = this.size(height)
 
-		this.ctx.textRendering = "geometricPrecision"
+		this.ctx.textRendering = "optimizeSpeed"
 		this.ctx.fontKerning = "normal"
 		this.ctx.imageSmoothingEnabled = false
 		this.ctx.imageSmoothingQuality = "low"

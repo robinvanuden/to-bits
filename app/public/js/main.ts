@@ -4,6 +4,7 @@ import Images from "./images"
 import Data from "./data"
 import Hud from "./hud"
 import Canvas from "./canvas"
+import {TileLayerModel} from "./model/TileModel"
 
 (() => {
 
@@ -11,24 +12,27 @@ import Canvas from "./canvas"
 		.href = "/favicon.ico?t=" + Date.now()
 
 	const host = new URL(location.toString())
-	const secure = (location.protocol === "wss:" || location.protocol === "https:")
+	const secure = location.protocol === "https:"
 	host.protocol = secure ? "https:" : "http:"
 	host.pathname = "/"
 
 	const origin = new URL(host)
-	origin.pathname = "/game/"
+	origin.protocol = secure ? "wss:" : "ws:"
 
 	const socket = io({
-		"transports": ["websocket"],
-		host: origin.toString(),
+		host: origin.host,
+		hostname: origin.hostname,
+		port: origin.port,
+		transports: ["websocket"],
 		upgrade: true,
 		ackTimeout: 2000,
 		autoConnect: true,
 		secure: secure,
 		reconnection: true,
-		timeout: 10000,
 		forceNew: true
 	})
+
+	socket.on("connect_error", err => console.log("Error conn:", err))
 
 	let BUILD = 0
 
@@ -67,20 +71,22 @@ import Canvas from "./canvas"
 
 	socket.on("nope", () => hud.setNope(true))
 
-	socket.on("map_layer", map_data => {
+	socket.on("map_layer", (map_data: TileLayerModel) => {
 		data.setMapLayer(map_data)
+	})
+
+	socket.on("textures", async (textures: string[]) => {
+		for (const texture of textures) {
+			await images.addImage(texture)
+		}
 		hud.setLoading(false)
 	})
 
-	socket.on("players", players => {
+	socket.on("players", async players => {
 		data.setPlayers(players)
-
 		// Load textures of players
 		for (const player of players) {
-			for (let i = 0; i < 2; i++) {
-				images.addImage("image/" + player.uid + "r" + i + ".png")
-				images.addImage("image/" + player.uid + "l" + i + ".png")
-			}
+			await images.loadAllPlayer(player.uid)
 		}
 	})
 
@@ -105,34 +111,17 @@ import Canvas from "./canvas"
 		} else if (key === "s") {
 			socket.emit("move.down", pressed)
 		}
-		if (key === " ") {
-			socket.emit("move.jump", pressed)
-		}
-		if (pressed && key === ";") {
-			hud.toggleDebug()
+		if (!pressed && key === " ") {
+			socket.emit("move.action", pressed)
 		}
 	}
 
-	const getRotationDegrees = (x1: number, y1: number, x2: number, y2: number) => {
-		const deltaX = x2 - x1
-		const deltaY = y2 - y1
-		const radians = Math.atan2(deltaY, deltaX)
-		const degrees = (radians * 180) / Math.PI
-		return (degrees + 360) % 360
-	}
-
-	const onMouseRelease = (ev: MouseEvent) => {
+	const onMouseRelease = () => {
 		const you = map.you()
 		if (!you) {
 			return
 		}
-		const ratio = canvas.ratio
-		socket.emit("radius", getRotationDegrees(
-			window.innerWidth / 2 * ratio,
-			window.innerHeight / 2 * ratio,
-			ev.clientX * ratio,
-			ev.clientY * ratio
-		))
+		socket.emit("radius")
 	}
 
 
@@ -143,13 +132,10 @@ import Canvas from "./canvas"
 
 	updateFavicon()
 
-	let lastRender = performance.now()
-	const loop = (timestamp: number) => {
+	const loop = () => {
 		canvas.clear()
 		if (!hud.loading()) map.tick()
-		const delta = timestamp - lastRender
-		hud.tick(delta)
-		lastRender = timestamp
+		hud.tick()
 		requestAnimationFrame(loop)
 	}
 	requestAnimationFrame(loop)

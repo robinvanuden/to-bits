@@ -1,4 +1,4 @@
-import TileSet, {Tile} from "../types/TileSet"
+import TiledTileSet, {TiledTile} from "../types/TiledTileSet"
 import path from "path"
 import fs from "fs"
 
@@ -6,8 +6,8 @@ export default class TileSetLoader {
 
 	private readonly _name: string
 	private readonly _first_id: number
-	private _set: TileSet
-	private _tiles: Tile[] = []
+	private _set: TiledTileSet
+	private _tiles: TiledTile[] = []
 
 	public name = () => this._name
 
@@ -15,7 +15,7 @@ export default class TileSetLoader {
 
 	public firstId = () => this._first_id
 
-	private loadJsonTileSet = (name: string): TileSet => JSON.parse(fs.readFileSync(path.resolve(__dirname, "../map/", name)).toString("utf-8"))
+	private loadJsonTileSet = (name: string): TiledTileSet => JSON.parse(fs.readFileSync(path.resolve(__dirname, "../map/", name)).toString("utf-8"))
 
 	public getTileById = (id: number) => this._tiles.find(t => t.tile_id === id)
 
