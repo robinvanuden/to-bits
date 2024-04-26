@@ -150,7 +150,6 @@ export default class Map {
 
 			let x = 0
 			let y = 0
-			let image = this.images.loadPlayer(player.uid, player.l.l)
 			if (player.tdm + 100 > Date.now()) {
 				y = 16
 			}
@@ -165,7 +164,7 @@ export default class Map {
 			}
 			const sx = player.l.r ? 1 : 2
 			this.ctx.drawImage(
-				image,
+				this.images.loadPlayer(player.uid, player.l.l),
 				sx + x,
 				y,
 				13,
