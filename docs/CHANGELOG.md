@@ -76,8 +76,8 @@ The Item update.
     - [ ] Sword
         - [ ] Item texture
         - [ ] Player holding
-        - [ ] ItemProjectile texture
-            - [x] Logic to deal damage another player
+      - [ ] ItemProjectile texture
+          - [x] Logic to deal damage another player
     - [ ] Hammer
         - [ ] Item texture
         - [ ] Player holding

@@ -7,16 +7,16 @@
     - [x]  Move logic in separate files
 - [x]  Fix boomerang angels (do math)
 - [ ]  More items
-   - [x]  Sword
-   - [x]  Bombs
-   - [x]  Boomerangs
-   - [x]  Fireballs
+    - [x]  Sword
+    - [x]  Bombs
+    - [x]  Boomerangs
+    - [x]  Fireballs
     - [ ]  Traps
     - [ ]  Shield
     - [ ]  Grabbing hook
     - [ ]  Coins
-   - [x]  Bows
-   - [ ]  Cross bows
+    - [x]  Bows
+    - [ ]  Cross bows
     - [ ]  Lances
 - [ ]  Night mode / blindness
 - [ ]  Map objects for navigating

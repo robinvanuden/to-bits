@@ -2,14 +2,14 @@ export default interface TiledWorld {
   compressionlevel: number
   height: number
   infinite: boolean
-  layers: TiledWorldLayer[]
+	layers: TiledWorldLayer[]
   nextlayerid: number
   nextobjectid: number
   orientation: string
   renderorder: string
   tiledversion: string
   tileheight: number
-  tilesets: TiledWorldTileSet[]
+	tilesets: TiledWorldTileSet[]
   tilewidth: number
   type: string
   version: string
