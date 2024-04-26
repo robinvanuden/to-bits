@@ -48,17 +48,16 @@ export default class MapTile extends Entity {
 	public toModel = (): MapTileModel => ({
 		x: this.x,
 		y: this.y,
-		ox: this.offset_x,
-		oy: this.offset_y,
 		w: this.width,
 		h: this.height,
-		t: Number(this.id),
-		i: this.generateTextureUrl(),
-		d: 0,
-		sp: this.layer === "spawn",
-		wa: this.isSemiSolid(),
-		so: !this.isSemiSolid(),
-		pu: this.power_up ? this.power_up.toModel() : undefined
+		p: this.power_up ? this.power_up.toModel() : undefined,
+		t: {
+			i: this.generateTextureUrl(),
+			w: this.width,
+			h: this.height,
+			x: this.offset_x,
+			y: this.offset_y,
+		}
 	})
 
 }

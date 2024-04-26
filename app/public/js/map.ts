@@ -107,15 +107,14 @@ export default class Map {
 		}
 		for (const layer of this.data.map()) {
 			for (const tile of layer.ls) {
-				this.ctx.fillStyle = tile.c || "#000"
-				if (tile.i) {
-					if ((!tile.pu && layer.n === "floor") || (tile.pu && layer.n === "powers")) {
+				if (tile.t.i) {
+					if ((!tile.p && layer.n === "floor") || (tile.p && layer.n === "powers")) {
 						this.ctx.drawImage(
-							this.images.loadImage(tile.i),
-							tile.ox,
-							tile.oy,
-							tile.w,
-							tile.h,
+							this.images.loadImage(tile.t.i),
+							tile.t.x,
+							tile.t.y,
+							tile.t.w,
+							tile.t.h,
 							this.canvas.tile(tile.x) - this.cx,
 							this.canvas.tile(tile.y) - this.cy,
 							this.canvas.tile(tile.w),
