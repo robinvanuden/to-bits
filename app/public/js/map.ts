@@ -174,6 +174,21 @@ export default class Map {
 				player_w,
 				player_h
 			)
+			if (player.pu[0]) {
+				const power = player.pu[0]
+
+				this.ctx.drawImage(
+					this.images.loadImage(power.t.i),
+					0,
+					0,
+					this.canvas.tile(power.t.w),
+					this.canvas.tile(power.t.h),
+					player_x - this.cx,
+					player_y - this.cy,
+					this.canvas.tile(power.t.w),
+					this.canvas.tile(power.t.h)
+				)
+			}
 		}
 	}
 }

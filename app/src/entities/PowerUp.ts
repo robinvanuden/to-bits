@@ -53,10 +53,23 @@ export default class PowerUp {
 		return new PowerUp(type, uses)
 	}
 
+	private image = () => {
+		switch (this.type) {
+		default:
+			return "/img/bomb.png"
+		}
+	}
+
 	public toModel = (): PowerUpModel => ({
 		id: this._id,
-		t: this.typeToString(),
-		u: this.uses
+		u: this.uses,
+		t: {
+			i: this.image(),
+			w: 8,
+			h: 8,
+			x: 4,
+			y: 4
+		}
 	})
 }
 
