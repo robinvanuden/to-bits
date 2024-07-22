@@ -1,5 +1,7 @@
+import TextureModel from "./TextureModel"
+
 export interface PowerUpModel {
   id: string
-  t: string | undefined
 	u: number
+	t: TextureModel
 }
