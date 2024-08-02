@@ -1,6 +1,7 @@
 import Images from "./images"
 import Data from "./data"
 import Canvas from "./canvas"
+import {PowerType} from "./model/PowerUpModel"
 
 export default class Map {
 
@@ -174,19 +175,51 @@ export default class Map {
 				player_w,
 				player_h
 			)
-			if (player.pu[0]) {
-				const power = player.pu[0]
+			if (player.pu[player.ps]) {
+				const power = player.pu[player.ps]
+
+				let ix = 0, iy = 0
+				switch (power.ty) {
+				case PowerType.BOMB:
+					ix = 0
+					iy = 0
+					break
+				case PowerType.SWORD:
+					ix = 0
+					iy = 16
+					break
+				case PowerType.ARROW:
+					ix = 0
+					iy = 32
+					break
+				case PowerType.BOOMERANG:
+					ix = 0
+					iy = 48
+					break
+				case PowerType.FIREBALL:
+					ix = 0
+					iy = 64
+					break
+				case PowerType.HEALTH:
+					ix = 0
+					iy = 80
+					break
+				default:
+					ix = -16
+					iy = -16
+					break
+				}
 
 				this.ctx.drawImage(
-					this.images.loadImage(power.t.i),
-					0,
-					0,
-					this.canvas.tile(power.t.w),
-					this.canvas.tile(power.t.h),
+					this.images.loadImage("/img/items.png"),
+					ix,
+					iy,
+					16,
+					16,
 					player_x - this.cx,
 					player_y - this.cy,
-					this.canvas.tile(power.t.w),
-					this.canvas.tile(power.t.h)
+					this.canvas.tile(16),
+					this.canvas.tile(16)
 				)
 			}
 		}

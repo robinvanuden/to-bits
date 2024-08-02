@@ -1,7 +1,7 @@
 import {v4} from "uuid"
 import {PowerUpModel} from "../types/model/PowerUpModel"
 
-export enum PowerType {ARROW, BOOMERANG, BOMB, FIREBALL, SWORD, HAMMER, HEALTH}
+export enum PowerType {ARROW, BOOMERANG, BOMB, FIREBALL, SWORD, HEALTH}
 
 export default class PowerUp {
 
@@ -40,14 +40,11 @@ export default class PowerUp {
 
 	public static random = () => {
 		const type = PowerUp.randomType()
-		let uses = 0
+		let uses = 1
 		switch (type) {
 		case PowerType.SWORD:
 		case PowerType.BOOMERANG:
 			uses = 3
-			break
-		case PowerType.HAMMER:
-			uses = 2
 			break
 		}
 		return new PowerUp(type, uses)
@@ -56,13 +53,14 @@ export default class PowerUp {
 	private image = () => {
 		switch (this.type) {
 		default:
-			return "/img/bomb.png"
+			return "/img/items.png"
 		}
 	}
 
 	public toModel = (): PowerUpModel => ({
 		id: this._id,
 		u: this.uses,
+		ty: this.type.valueOf(),
 		t: {
 			i: this.image(),
 			w: 8,

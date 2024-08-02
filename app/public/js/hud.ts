@@ -1,5 +1,6 @@
 import Data from "./data"
 import Canvas from "./canvas"
+import {PowerType} from "./model/PowerUpModel"
 
 export default class Hud {
 
@@ -83,9 +84,39 @@ export default class Hud {
 		this.ctx.fillText(line, x, y)
 	}
 
+	drawInventory = () => {
+		const you = this.you()
+		if (!you) {
+			return
+		}
+		let x = this.canvas.size(8)
+		let y = this.canvas.size(16)
+		this.ctx.font = this.canvas.font(1)
+		this.ctx.strokeStyle = this.COLOR_BLACK
+		this.ctx.fillStyle = this.COLOR_WHITE
+		this.ctx.lineWidth = this.canvas.size(8)
+		this.ctx.textAlign = "left"
+		this.ctx.strokeText(you.n, x, y)
+		this.ctx.fillText(you.n, x, y)
+		y += this.canvas.size(16)
+		this.ctx.strokeText("HP:" + you.hp, x, y)
+		this.ctx.fillText("HP:" + you.hp, x, y)
+
+		for (let p = 0; p < you.pu.length; p++) {
+			const power = you.pu[p]
+			this.ctx.fillStyle = p === you.ps ? "#bfb8b8" : this.COLOR_WHITE
+			const i = Number(p) + 1
+			y += this.canvas.size(16)
+			this.ctx.strokeText(i + ". " + PowerType[power.ty] + " " + power.u + "x", x, y)
+			this.ctx.fillText(i + ". " + PowerType[power.ty] + " " + power.u + "x", x, y)
+		}
+
+	}
+
 	tick = () => {
 		this.drawMessage()
 		this.drawVersion()
+		this.drawInventory()
 		if (this.loading()) this.drawLoading()
 		if (this.nope()) this.drawNope()
 	}
