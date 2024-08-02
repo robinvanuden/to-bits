@@ -213,7 +213,7 @@ export default class Game {
 		if (!player || !player.isAlive()) {
 			return
 		}
-		const powerUp = player.getFirstPowerUp()
+		const powerUp = player.getSelectedPowerUp()
 		if (!powerUp) {
 			player.doSwing()
 			return
@@ -236,9 +236,6 @@ export default class Game {
 			this.entities().throwFireball(player)
 			break
 		case PowerType.SWORD:
-			player.doSwing()
-			break
-		case PowerType.HAMMER:
 			player.doSwing()
 			break
 		}

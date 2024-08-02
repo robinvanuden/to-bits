@@ -25,4 +25,5 @@ export default interface PlayerModel {
   l: Direction
   m: Direction
   pu: PowerUpModel[]
+	ps: number
 }

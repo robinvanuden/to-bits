@@ -18,6 +18,7 @@ export default interface PlayerModel {
   l: Direction // looking
   m: Direction // moving
   pu: PowerUpModel[]
+  ps: number
 }
 
 interface Direction {

@@ -12,7 +12,7 @@ const PLAYER_WIDTH = 13
 const PLAYER_HEIGHT = 16
 const PLAYER_SPEED_WALK = 2
 const PLAYER_SPEED_JUMP = 4
-const PLAYER_MAX_POWER_UP = 5
+const PLAYER_MAX_POWER_UP = 3
 export const PLAYER_MAX_HEALTH = 100
 export const PLAYER_DAMAGE = PLAYER_MAX_HEALTH * .30
 export const PLAYER_GRAVITY = GRAVITY
@@ -52,6 +52,7 @@ export default class Player extends Entity {
 	public move: Direction
 
 	private power_ups: PowerUp[] = []
+	private power_selected: number = 0
 
 	constructor(id: string, socket: string, spawn: MapTile) {
 		super(spawn.x, spawn.y, PLAYER_WIDTH, PLAYER_HEIGHT, id)
@@ -91,6 +92,22 @@ export default class Player extends Entity {
 
 	isAlive = (): boolean => this.timeDied < 0
 
+	hasPowerUps = (): boolean => this.power_ups.length > 0
+
+	itemNext = () => {
+		this.power_selected++
+		if (this.power_selected >= this.power_ups.length) {
+			this.power_selected = this.power_ups.length - 1
+		}
+	}
+
+	itemPrev = () => {
+		this.power_selected--
+		if (this.power_selected < 0) {
+			this.power_selected = 0
+		}
+	}
+
 	// +1 checks 1 row of pixels below player_id
 	canJump = (): boolean => this.grounded && this.vy >= 0 && this.vy < 1
 
@@ -109,7 +126,7 @@ export default class Player extends Entity {
 		return true
 	}
 
-	getFirstPowerUp = () => this.power_ups[0] || undefined
+	getSelectedPowerUp = () => this.power_ups[this.power_selected] || undefined
 
 	usePowerUp = (power: PowerUp) => {
 		const power_up = this.power_ups.find(power.equals)
@@ -121,6 +138,9 @@ export default class Player extends Entity {
 			return
 		}
 		this.power_ups = this.power_ups.filter(power.notEquals)
+		if (this.power_selected >= this.power_ups.length) {
+			this.power_selected = this.power_ups.length - 1
+		}
 	}
 
 	respawn = (spawn: Entity) => {
@@ -166,16 +186,12 @@ export default class Player extends Entity {
 	hits = (player: Player) => {
 		if (this.isSwung() && player.isAlive() && player.collidesWith(this.hit_box())) {
 			this.timeSwung = 0
-			const power = this.getFirstPowerUp()
+			const power = this.getSelectedPowerUp()
 			if (!power) {
 				player.damage(this.damagePoints)
 				return
 			}
 			switch (power.type) {
-			case PowerType.HAMMER:
-				this.usePowerUp(power)
-				player.damage(this.damagePoints * 2)
-				break
 			case PowerType.SWORD:
 				this.usePowerUp(power)
 				player.damage(this.damagePoints * 1.5)
@@ -222,7 +238,8 @@ export default class Player extends Entity {
 		tdc: this.timeDisconnected,
 		l: this.look,
 		m: this.move,
-		pu: this.power_ups.map(p => p.toModel())
+		pu: this.power_ups.map(p => p.toModel()),
+		ps: this.power_selected
 	})
 
 	isConnected = () => this.timeDisconnected < 0

@@ -48,6 +48,9 @@ export default class PlayerSocket {
 			client.on("move.up", (bool: boolean) => this.onMovement(uuid, "move.up", bool))
 			client.on("move.down", (bool: boolean) => this.onMovement(uuid, "move.down", bool))
 
+			client.on("item.left", (bool: boolean) => this.onItemSelection(uuid, "item.left", bool))
+			client.on("item.right", (bool: boolean) => this.onItemSelection(uuid, "item.right", bool))
+
 			client.on("move.action", (bool: boolean) => {
 				if (!bool) this.onAction(uuid)
 			})
@@ -94,6 +97,24 @@ export default class PlayerSocket {
 		case "move.down":
 			player.move.d = button_down
 			player.look.d = button_down
+			break
+		}
+	}
+
+	onItemSelection = (uuid: string, direction: string, button_down: boolean) => {
+		if (!this.game) {
+			return
+		}
+		const player = this.game.players().getById(uuid)
+		if (!player || !player.isAlive() || !player.hasPowerUps() || !button_down) {
+			return
+		}
+		switch (direction) {
+		case "item.left":
+			player.itemPrev()
+			break
+		case "item.right":
+			player.itemNext()
 			break
 		}
 	}
