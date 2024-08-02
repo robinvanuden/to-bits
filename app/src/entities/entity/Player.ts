@@ -141,6 +141,9 @@ export default class Player extends Entity {
 		if (this.power_selected >= this.power_ups.length) {
 			this.power_selected = this.power_ups.length - 1
 		}
+		if (this.power_selected < 0) {
+			this.power_selected = 0
+		}
 	}
 
 	respawn = (spawn: Entity) => {

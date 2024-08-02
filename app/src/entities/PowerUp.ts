@@ -29,8 +29,6 @@ export default class PowerUp {
 
 	public notEquals = (powerUp: PowerUp) => powerUp._id !== this._id
 
-	public typeToString = () => PowerUp.toString(this._type)
-
 	public static toString = (type: PowerType) => PowerType[type].toString()
 
 	private static randomType = (): PowerType => {
@@ -50,24 +48,10 @@ export default class PowerUp {
 		return new PowerUp(type, uses)
 	}
 
-	private image = () => {
-		switch (this.type) {
-		default:
-			return "/img/items.png"
-		}
-	}
-
 	public toModel = (): PowerUpModel => ({
 		id: this._id,
 		u: this.uses,
-		ty: this.type.valueOf(),
-		t: {
-			i: this.image(),
-			w: 8,
-			h: 8,
-			x: 4,
-			y: 4
-		}
+		t: this.type.valueOf()
 	})
 }
 

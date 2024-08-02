@@ -107,8 +107,8 @@ export default class Hud {
 			this.ctx.fillStyle = p === you.ps ? "#bfb8b8" : this.COLOR_WHITE
 			const i = Number(p) + 1
 			y += this.canvas.size(16)
-			this.ctx.strokeText(i + ". " + PowerType[power.ty] + " " + power.u + "x", x, y)
-			this.ctx.fillText(i + ". " + PowerType[power.ty] + " " + power.u + "x", x, y)
+			this.ctx.strokeText(i + ". " + PowerType[power.t] + " " + power.u + "x", x, y)
+			this.ctx.fillText(i + ". " + PowerType[power.t] + " " + power.u + "x", x, y)
 		}
 
 	}

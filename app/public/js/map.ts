@@ -179,7 +179,7 @@ export default class Map {
 				const power = player.pu[player.ps]
 
 				let ix = 0, iy = 0
-				switch (power.ty) {
+				switch (power.t) {
 				case PowerType.BOMB:
 					ix = 0
 					iy = 0
