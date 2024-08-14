@@ -40,7 +40,10 @@ export default class PowerUp {
 		const type = PowerUp.randomType()
 		let uses = 1
 		switch (type) {
-		case PowerType.SWORD:
+		case PowerType.ARROW:
+		case PowerType.FIREBALL:
+			uses = 2
+			break
 		case PowerType.BOOMERANG:
 			uses = 3
 			break
