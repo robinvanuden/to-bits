@@ -179,29 +179,28 @@ export default class Map {
 				const power = player.pu[player.ps]
 
 				let ix = 0, iy = 0
+
+				ix = 0
+				if (player.l.l) {
+					ix = 19
+				}
 				switch (power.t) {
 				case PowerType.BOMB:
-					ix = 0
 					iy = 0
 					break
 				case PowerType.SWORD:
-					ix = 0
 					iy = 16
 					break
 				case PowerType.ARROW:
-					ix = 0
 					iy = 32
 					break
 				case PowerType.BOOMERANG:
-					ix = 0
 					iy = 48
 					break
 				case PowerType.FIREBALL:
-					ix = 0
 					iy = 64
 					break
 				case PowerType.HEALTH:
-					ix = 0
 					iy = 80
 					break
 				default:
@@ -209,7 +208,6 @@ export default class Map {
 					iy = -16
 					break
 				}
-
 				this.ctx.drawImage(
 					this.images.loadImage("/img/items.png"),
 					ix,
