@@ -1,6 +1,6 @@
 # To-Bits ChangeLog
 
-## 0.7
+## 0.8
 
 The HUD update. More coming soon!
 
