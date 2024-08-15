@@ -44,7 +44,7 @@ import {TileLayerModel} from "./model/TileModel"
 
 	const map = new Map(canvas, data, images)
 
-	const hud = new Hud(canvas, data)
+	const hud = new Hud(canvas, data, images)
 
 	socket.on("version", version => {
 		if (data.version() === "") {
