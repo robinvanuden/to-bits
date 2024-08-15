@@ -17,7 +17,11 @@ export const PLAYER_MAX_HEALTH = 100
 export const PLAYER_DAMAGE = PLAYER_MAX_HEALTH * .30
 export const PLAYER_GRAVITY = GRAVITY
 
-const randomName = () => uniqueNamesGenerator({length: 1, dictionaries: [names]})
+const randomName = () => uniqueNamesGenerator({
+	length: 1,
+	dictionaries: [names],
+	style: "lowerCase"
+})
 
 const randomColor = () => `hsl(${Math.round(360 * Math.random())}, 74%, 58%)`
 
@@ -230,6 +234,7 @@ export default class Player extends Entity {
 		n: this.name,
 		c: this.color,
 		hp: this.healthPoints,
+		hpm: this.healthPointsMax,
 		w: this.width,
 		h: this.height,
 		x: this.x,

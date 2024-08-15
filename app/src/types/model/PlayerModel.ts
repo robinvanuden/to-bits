@@ -14,6 +14,7 @@ export default interface PlayerModel {
   c: string // color
   w: number // width
 	hp: number // healthPoints
+	hpm: number // healthPointsMax
   h: number // height
   x: number // x-coord
   y: number // y-coord
