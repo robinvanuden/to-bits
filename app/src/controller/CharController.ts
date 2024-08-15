@@ -9,7 +9,7 @@ const loadLetter = async (letter: string | undefined) => {
 		return undefined
 	}
 	const letters = loadFont("letters.png")
-	const alphabet = "abcdefghijklmnopqrstuvwxyz1234567890-."
+	const alphabet = "abcdefghijklmnopqrstuvwxyz1234567890-.:!"
 	const position = alphabet.indexOf(letter)
 	if (position < 0) {
 		return undefined
@@ -17,7 +17,7 @@ const loadLetter = async (letter: string | undefined) => {
 	const top = position * 7
 	let left = 0
 	let width = 7
-	if (letter === "i") {
+	if (letter === "i" || letter === "!") {
 		left = 2
 		width = 3
 	} else if (letter === ".") {
@@ -28,15 +28,15 @@ const loadLetter = async (letter: string | undefined) => {
 	return sharp(await buffer.toBuffer())
 }
 
-const loadBlank = () => loadFont("unknown.png")
+const loadBlank = (transparent: boolean) => loadFont(transparent ? "blank.png" : "blank.jpg")
 
-const loadChar = async (char: string | undefined) => {
+const loadChar = async (char: string | undefined, transparent: boolean) => {
 	if (char == undefined) {
-		return loadBlank()
+		return loadBlank(transparent)
 	}
 	let image = await loadLetter(char)
 	if (!image) {
-		image = loadBlank()
+		image = loadBlank(transparent)
 	}
 	return image
 }
@@ -65,7 +65,7 @@ export default function () {
 
 		for (let i = 0; i < word.length; i++) {
 			const char = word[i]
-			const char_image = await loadChar(char)
+			const char_image = await loadChar(char, isTransparent)
 			const char_image_meta = await char_image?.metadata()
 			const char_width = char === "i" ? 3 : char_image_meta?.width || 1
 			if (char_image != undefined && char_image_meta != undefined) options.push({
