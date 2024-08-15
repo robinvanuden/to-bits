@@ -25,8 +25,8 @@ export default class Map {
 
 		const playerToFocus = this.you()
 		if (playerToFocus && playerToFocus.tod < 0) {
-			this.cx = Math.round((this.canvas.tile(playerToFocus.x) + this.canvas.tile(playerToFocus.w) * .5) - this.canvas.width() * .5)
-			this.cy = Math.round((this.canvas.tile(playerToFocus.y) + this.canvas.tile(playerToFocus.h) * .5) - this.canvas.height() * .5)
+			this.cx = Math.round((this.canvas.size(playerToFocus.x) + this.canvas.size(playerToFocus.w) * .5) - this.canvas.width() * .5)
+			this.cy = Math.round((this.canvas.size(playerToFocus.y) + this.canvas.size(playerToFocus.h) * .5) - this.canvas.height() * .5)
 		}
 
 		this.ctx.lineWidth = this.canvas.size(8)
@@ -39,20 +39,20 @@ export default class Map {
 					6,
 					entity.w,
 					entity.h,
-					this.canvas.tile(entity.x) - this.cx,
-					this.canvas.tile(entity.y) - this.cy,
-					this.canvas.tile(entity.w),
-					this.canvas.tile(entity.h)
+					this.canvas.size(entity.x) - this.cx,
+					this.canvas.size(entity.y) - this.cy,
+					this.canvas.size(entity.w),
+					this.canvas.size(entity.h)
 				)
 				break
 			case "BOMB":
 				if (entity.e) {
 					this.ctx.fillStyle = "#FFF"
 					this.ctx.fillRect(
-						this.canvas.tile(entity.e.x) - this.cx,
-						this.canvas.tile(entity.e.y) - this.cy,
-						this.canvas.tile(entity.e.w),
-						this.canvas.tile(entity.e.h)
+						this.canvas.size(entity.e.x) - this.cx,
+						this.canvas.size(entity.e.y) - this.cy,
+						this.canvas.size(entity.e.w),
+						this.canvas.size(entity.e.h)
 					)
 				} else {
 					const passed_millis = Math.round((Date.now() - entity.s))
@@ -67,10 +67,10 @@ export default class Map {
 						2,
 						entity.w,
 						entity.h,
-						this.canvas.tile(entity.x) - this.cx,
-						this.canvas.tile(entity.y) - this.cy,
-						this.canvas.tile(entity.w),
-						this.canvas.tile(entity.h)
+						this.canvas.size(entity.x) - this.cx,
+						this.canvas.size(entity.y) - this.cy,
+						this.canvas.size(entity.w),
+						this.canvas.size(entity.h)
 					)
 
 				}
@@ -82,10 +82,10 @@ export default class Map {
 					4,
 					entity.w,
 					entity.h,
-					this.canvas.tile(entity.x) - this.cx,
-					this.canvas.tile(entity.y) - this.cy,
-					this.canvas.tile(entity.w),
-					this.canvas.tile(entity.h)
+					this.canvas.size(entity.x) - this.cx,
+					this.canvas.size(entity.y) - this.cy,
+					this.canvas.size(entity.w),
+					this.canvas.size(entity.h)
 				)
 				break
 			case "FIREBALL":
@@ -95,10 +95,10 @@ export default class Map {
 					4,
 					entity.w,
 					entity.h,
-					this.canvas.tile(entity.x) - this.cx,
-					this.canvas.tile(entity.y) - this.cy,
-					this.canvas.tile(entity.w),
-					this.canvas.tile(entity.h)
+					this.canvas.size(entity.x) - this.cx,
+					this.canvas.size(entity.y) - this.cy,
+					this.canvas.size(entity.w),
+					this.canvas.size(entity.h)
 				)
 				break
 			default:
@@ -116,10 +116,10 @@ export default class Map {
 							tile.t.y,
 							tile.t.w,
 							tile.t.h,
-							this.canvas.tile(tile.x) - this.cx,
-							this.canvas.tile(tile.y) - this.cy,
-							this.canvas.tile(tile.w),
-							this.canvas.tile(tile.h)
+							this.canvas.size(tile.x) - this.cx,
+							this.canvas.size(tile.y) - this.cy,
+							this.canvas.size(tile.w),
+							this.canvas.size(tile.h)
 						)
 					}
 				}
@@ -133,21 +133,10 @@ export default class Map {
 
 			this.ctx.globalAlpha = player.tdc < 0 ? 1 : 0.5
 
-			const player_w = this.canvas.tile(player.w)
-			const player_h = this.canvas.tile(player.h)
-			const player_x = this.canvas.tile(player.x)
-			const player_y = this.canvas.tile(player.y)
-
-			const name_x = player_x - this.cx + player_w * .5
-			const name_y = player_y - this.cy - this.canvas.tile(3)
-
-			this.ctx.font = this.canvas.font(1)
-			this.ctx.textAlign = "center"
-			this.ctx.fillStyle = "#FFF"
-			this.ctx.strokeStyle = "#000"
-			this.ctx.lineWidth = this.canvas.tile(2)
-			this.ctx.strokeText(player.n.toLowerCase(), name_x, name_y)
-			this.ctx.fillText(player.n.toLowerCase(), name_x, name_y)
+			const player_w = this.canvas.size(player.w)
+			const player_h = this.canvas.size(player.h)
+			const player_x = this.canvas.size(player.x)
+			const player_y = this.canvas.size(player.y)
 
 			let x = 0
 			let y = 0
@@ -216,8 +205,8 @@ export default class Map {
 					16,
 					player_x - this.cx,
 					player_y - this.cy,
-					this.canvas.tile(16),
-					this.canvas.tile(16)
+					this.canvas.size(16),
+					this.canvas.size(16)
 				)
 			}
 		}
