@@ -14,27 +14,22 @@ export default class Canvas {
 		this.ctx = canvas.getContext("2d") as CanvasRenderingContext2D
 		this.ratio = window.devicePixelRatio || 1
 
-		window.addEventListener("resize", this.updateWindowSize)
-		this.updateWindowSize()
+		this.setDimensions()
 	}
-
-	updateWindowSize = () => this.setDimensions(window.innerWidth, window.innerHeight)
 
 	font = (size: number, family: string = FONT_TEXT) => `${this.rem(size)}px ${family}`
 
 	size = (n: number) => n * this.ratio
 
-	tile = (n: number) => this.size(n) * 4
-
-	rem = (n: number) => this.tile(Math.round(FONT_SIZE * n))
+	rem = (n: number) => this.size(Math.round(FONT_SIZE * n))
 
 	width = () => this.__width
 
 	height = () => this.__height
 
-	setDimensions = (width: number, height: number) => {
-		this.__width = this.__canvas.width = this.size(width)
-		this.__height = this.__canvas.height = this.size(height)
+	private setDimensions = () => {
+		this.__width = this.__canvas.width = 480
+		this.__height = this.__canvas.height = 360
 
 		this.ctx.textRendering = "optimizeSpeed"
 		this.ctx.fontKerning = "normal"
