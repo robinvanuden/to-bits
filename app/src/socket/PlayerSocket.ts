@@ -120,6 +120,7 @@ export default class PlayerSocket {
 	}
 
 	private toModel = (entity: Projectile) => {
+		// TODO: Improve ugly fix
 		return entity instanceof Bomb ? entity.toModel(entity.getExplosion()) : entity.toModel()
 	}
 

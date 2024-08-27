@@ -1,4 +1,3 @@
-import {names, uniqueNamesGenerator} from "unique-names-generator"
 import PowerUp, {PowerType} from "../PowerUp"
 import MapTile from "../../world/MapTile"
 import {GRAVITY} from "../../constants"
@@ -17,20 +16,10 @@ export const PLAYER_MAX_HEALTH = 100
 export const PLAYER_DAMAGE = PLAYER_MAX_HEALTH * .30
 export const PLAYER_GRAVITY = GRAVITY
 
-const randomName = () => uniqueNamesGenerator({
-	length: 1,
-	dictionaries: [names],
-	style: "lowerCase"
-})
-
-const randomColor = () => `hsl(${Math.round(360 * Math.random())}, 74%, 58%)`
-
-const randomMask = () => Math.round(Math.random() * 7) + 1
-
 export default class Player extends Entity {
 	// ID
 	private socket_id: string
-	private readonly name: string
+	public readonly name: string
 	public readonly color: string
 	public readonly mask: number
 	public speedWalking: number
@@ -58,7 +47,7 @@ export default class Player extends Entity {
 	private power_ups: PowerUp[] = []
 	private power_selected: number = 0
 
-	constructor(id: string, socket: string, spawn: MapTile) {
+	constructor(id: string, socket: string, name: string, color: string, mask: number, spawn: MapTile) {
 		super(spawn.x, spawn.y, PLAYER_WIDTH, PLAYER_HEIGHT, id)
 
 		this.socket_id = socket
@@ -69,9 +58,9 @@ export default class Player extends Entity {
 		this.healthPoints = this.healthPointsMax
 		this.damagePoints = PLAYER_DAMAGE
 		this.timeSwung = 0
-		this.color = randomColor()
-		this.mask = randomMask()
-		this.name = randomName()
+		this.color = color
+		this.mask = mask
+		this.name = name
 
 		this.vx = 0
 		this.vy = 0
