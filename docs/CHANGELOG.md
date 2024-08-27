@@ -2,19 +2,13 @@
 
 ## 0.8
 
-The HUD update. More coming soon!
-
-## 0.7
-
-The player update!
+The environment update. More coming soon!
 
 ### Added
 
-- [ ] Backend event separation
-    - [ ] Events for joining or disconnecting players.
-    - [ ] Events for projectiles
-    - [ ] Events for player movement
-- [ ] Event messages on screen (join, death, etc)
+- [ ] Dashing movement for player by double-pressing a direction
+- [ ] Double jumps
+- [ ] Knight feather helicopter
 - [ ] Background textures for the map
 - [ ] Cave map blocks
     - [ ] Stone
@@ -24,23 +18,41 @@ The player update!
     - [ ] Torches
     - [ ] Crystals
     - [ ] Lava
-- [ ] Dashing movement for player by double-pressing a direction
-- [ ] Double jumps
-- [ ] Knight feather helicopter
 - [ ] Player can stoop when holding down
-- [ ] Interface elements for the player.
-    - [ ] The players name
-    - [ ] Inventory items
-    - [ ] All players
+
+### Changed
+
+- [ ] ~~Moved player-items to their own repository.~~
+- [ ] Moved the world to the lobby
+
+## 0.7
+
+The HUD update!
+
+### Added
+
+- [x] Interface elements for the player.
+    - [x] The players name
+    - [x] Inventory items
+- [ ] Backend event separation
+    - [ ] Events for joining or disconnecting players.
+    - [ ] Events for projectiles
+    - [ ] Events for player movement
+- [ ] Event messages on screen (join, death, etc)
 - [ ] Added lobbies instead of a fixed world.
 
 ### Changed
 
+- [x] Player color picking now checks existing player colors
+    - Before some players had the same color which could be confusing
 - [ ] Update only the movement of players but not all the player data.
 - [ ] Update only tiles that are affected to change, not the entire map layer
 - [ ] Events are more separated. Only push small updates
     - Players join/leave
--
+
+### Removed
+
+- [x] The player name-tag is now gone.
 
 ## 0.6
 
@@ -51,67 +63,58 @@ The Item update.
 - [x] Projectile class for entities other than players.
 - [x] Added melee logic to punch other players
 - [x] Added damage attribute to players (no instant kills)
-- [ ] Add uses to items
-- [ ] More powers:
-    - [ ] Bow
+- [x] Add uses to items
+- [x] More powers:
+    - [x] Bow
         - [x] Item texture
-        - [ ] Player holding
+      - [x] Player holding
         - [x] ItemProjectile texture for the arrow
             - [x] Logic to shoot an arrow
-    - [ ] Fireball
+    - [x] Fireball
         - [x] Item texture
-        - [ ] Player holding
+      - [x] Player holding
         - [x] ItemProjectile texture
             - [x] Logic to shoot a fireball
-    - [ ] Bomb
+    - [x] Bomb
         - [x] Item texture
-        - [ ] Player holding
+      - [x] Player holding
         - [x] ItemProjectile texture
             - [x] Logic to drop a bomb and it explodes
-    - [ ] Boomerang
+    - [x] Boomerang
         - [x] Item texture
-        - [ ] Player holding
+      - [x] Player holding
         - [x] ItemProjectile texture
             - [x] Logic to throw a rotating boomerang and it comes back
-    - [ ] Sword
-        - [ ] Item texture
-        - [ ] Player holding
-      - [ ] ItemProjectile texture
+    - [x] Sword
+        - [x] Item texture
+        - [x] Player holding
+        - [x] ItemProjectile texture
           - [x] Logic to deal damage another player
-    - [ ] Hammer
-        - [ ] Item texture
-        - [ ] Player holding
-      - [ ] ItemProjectile texture
-          - [x] Logic to deal more damage another player
-    - [ ] Lightsaber
-        - [ ] Item texture
-        - [ ] Player holding
-      - [ ] ItemProjectile texture
-          - [ ] Logic to damage a player
-    - [ ] Magic Wand
-        - [ ] Item texture
-        - [ ] Player holding
-      - [ ] ItemProjectile texture for the magic bolt
-          - [ ] Logic to shoot a bolt that follows the player slowly
-    - [ ] Mjolnir
-        - [ ] Item texture
-        - [ ] Player holding
-      - [ ] ItemProjectile texture for the thunderbolt
-          - [ ] Logic to shoot a thunderbolt in front of the player
-    - [ ] Shield
-        - [ ] Item texture
-        - [ ] Player holding
-      - [ ] ItemProjectile texture
-          - [ ] Logic to shield a player from damage
-
-### Changed
-
-- [ ] Moved player-items to their own repository.
-- [ ] Moved player loop methods to a separate file
-- [ ] The background of the player name-tags is now totally black.
-- [ ] Player color picking now checks existing player colors
-    - Before some players had the same color which could be confusing
-- [ ] Moved the world to the lobby
+    - ~~Hammer.~~
+        - ~~Item texture.~~
+        - ~~Player holding.~~
+        - ~~ItemProjectile texture.~~
+            - ~~Logic to deal more damage another player.~~
+    - ~~Lightsaber.~~
+        - ~~Item texture.~~
+        - ~~Player holding.~~
+        - ~~ItemProjectile texture.~~
+            - ~~Logic to damage a player.~~
+    - ~~Magic Wand.~~
+        - ~~Item texture.~~
+        - ~~Player holding.~~
+        - ~~ItemProjectile texture for the magic bolt.~~
+            - ~~Logic to shoot a bolt that follows the player slowly.~~
+    - ~~Mjolnir.~~
+        - ~~Item texture.~~
+        - ~~Player holding.~~
+        - ~~ItemProjectile texture for the thunderbolt.~~
+            - ~~Logic to shoot a thunderbolt in front of the player.~~
+    - ~~Shield.~~
+        - ~~Item texture.~~
+        - ~~Player holding.~~
+        - ~~ItemProjectile texture.~~
+            - ~~Logic to shield a player from damage.~~
 
 ## 0.5
 
