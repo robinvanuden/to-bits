@@ -90,7 +90,7 @@ export default function () {
 			}
 		})
 
-		let word_image = canvas.resize({
+		const word_image = canvas.resize({
 			width,
 			height: 7,
 			fit: "contain",

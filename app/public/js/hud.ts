@@ -61,12 +61,12 @@ export default class Hud {
 
 		const seconds_left = Math.round(((you.tod + 5000) - now) / 1000)
 
-		const respawn_5 = this.images.loadImage(`/word/respawn in: 5.png`)
-		const respawn_4 = this.images.loadImage(`/word/respawn in: 4.png`)
-		const respawn_3 = this.images.loadImage(`/word/respawn in: 3.png`)
-		const respawn_2 = this.images.loadImage(`/word/respawn in: 2.png`)
-		const respawn_1 = this.images.loadImage(`/word/respawn in: 1.png`)
-		const respawn_0 = this.images.loadImage(`/word/respawn in: 0.png`)
+		const respawn_5 = this.images.loadImage("/word/respawn in: 5.png")
+		const respawn_4 = this.images.loadImage("/word/respawn in: 4.png")
+		const respawn_3 = this.images.loadImage("/word/respawn in: 3.png")
+		const respawn_2 = this.images.loadImage("/word/respawn in: 2.png")
+		const respawn_1 = this.images.loadImage("/word/respawn in: 1.png")
+		const respawn_0 = this.images.loadImage("/word/respawn in: 0.png")
 		let respawn: HTMLImageElement
 		if (seconds_left >= 5) {
 			respawn = respawn_5
