@@ -152,7 +152,6 @@ export default class Hud {
 				this.canvas.size(16)
 			)
 			if (power) {
-				const i = Number(p) + 1
 				let imageItem: CanvasImageSource
 				switch (power.t) {
 				case PowerType.ARROW:
@@ -186,6 +185,22 @@ export default class Hud {
 					this.canvas.size(16),
 					this.canvas.size(16)
 				)
+
+
+				if (power.u > 1) {
+					const uses = this.images.loadImage(`/word/${power.u}.png`)
+					this.ctx.drawImage(
+						uses,
+						0,
+						0,
+						7,
+						7,
+						x + 18,
+						y + 18,
+						this.canvas.size(7),
+						this.canvas.size(7)
+					)
+				}
 			}
 			x += this.canvas.size(17)
 
@@ -196,7 +211,7 @@ export default class Hud {
 		this.ctx.fillRect(this.canvas.size(1), y, this.canvas.size(16 * 3 + 2), this.canvas.size(7))
 		this.ctx.fillStyle = "#2b2929"
 		this.ctx.fillRect(this.canvas.size(2), y + this.canvas.size(1), this.canvas.size(16 * 3), this.canvas.size(5))
-		this.ctx.fillStyle = "#dd1818"
+		this.ctx.fillStyle = "#ea3636"
 		const health_width = this.canvas.size(16 * 3) * (you.hp / you.hpm)
 		this.ctx.fillRect(this.canvas.size(2), y + this.canvas.size(1), health_width, this.canvas.size(5))
 

@@ -12,7 +12,7 @@ export default class Canvas {
 	constructor(canvas: HTMLCanvasElement) {
 		this.__canvas = canvas
 		this.ctx = canvas.getContext("2d") as CanvasRenderingContext2D
-		this.ratio = window.devicePixelRatio || 1
+		this.ratio = (window.devicePixelRatio || 1) * 2
 
 		this.setDimensions()
 	}
