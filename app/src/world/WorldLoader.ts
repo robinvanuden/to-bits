@@ -11,33 +11,22 @@ import Projectile from "../entities/Projectile"
 export default class WorldLoader {
 
 	private readonly isDev: boolean
-	private world: TiledWorld
+	private readonly world: TiledWorld
 	private sets: TileSetLoader[] = []
 
 	private readonly _seed!: string
 	private readonly _spawns!: LayerLoader
-	private readonly _powers!: LayerLoader
-	private readonly _floor!: LayerLoader
+	private readonly _items!: LayerLoader
+	private readonly _terrain!: LayerLoader
+	private readonly _danger!: LayerLoader
+	private readonly _decor!: LayerLoader
 
 	public seed = () => this._seed
 	public spawns = () => this._spawns
-	public powers = () => this._powers
-	public floor = () => this._floor
-
-	public findSetByName = (name: string) => this.sets.find(s => {
-		return path.basename(name).replace(path.extname(name), "") === path.basename(s.source()).replace(path.extname(s.source()), "")
-	}) || undefined
-
-	public findLayerByName = (name: string) => {
-		switch (name) {
-		case "floor":
-			return this.floor()
-		case "powers":
-			return this.powers()
-		case "spawns":
-			return this.spawns()
-		}
-	}
+	public items = () => this._items
+	public terrain = () => this._terrain
+	public danger = () => this._danger
+	public decor = () => this._decor
 
 	constructor(name: string) {
 		this.isDev = (process.env?.NODE_ENV || "development") === "development"
@@ -48,11 +37,17 @@ export default class WorldLoader {
 		}
 		for (const layer of this.world.layers) {
 			switch (layer.name) {
-			case "floor":
-				this._floor = new LayerLoader(this.world, layer, this.sets, this.seed())
+			case "decor":
+				this._decor = new LayerLoader(this.world, layer, this.sets, this.seed())
 				break
-			case "powers":
-				this._powers = new LayerLoader(this.world, layer, this.sets, this.seed())
+			case "danger":
+				this._danger = new LayerLoader(this.world, layer, this.sets, this.seed())
+				break
+			case "terrain":
+				this._terrain = new LayerLoader(this.world, layer, this.sets, this.seed())
+				break
+			case "items":
+				this._items = new LayerLoader(this.world, layer, this.sets, this.seed())
 				break
 			case "spawns":
 				this._spawns = new LayerLoader(this.world, layer, this.sets, this.seed())
@@ -75,7 +70,7 @@ export default class WorldLoader {
 		if (!this.isDev && Math.round(Math.random() * 500) !== 1) {
 			return
 		}
-		const airs = this.powers().tiles()
+		const airs = this.items().tiles()
 		const index = Math.round(Math.random() * (airs.length - 1))
 		const tile: MapTile | undefined = airs[index] || undefined
 		if (!tile) {
@@ -85,7 +80,7 @@ export default class WorldLoader {
 	}
 
 	clearPowerUps = () => {
-		for (const tile of this.powers().tiles()) {
+		for (const tile of this.items().tiles()) {
 			tile.power_up = undefined
 		}
 		console.log("Cleared power-ups")

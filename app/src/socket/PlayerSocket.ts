@@ -41,7 +41,9 @@ export default class PlayerSocket {
 			}
 
 			client.emit("textures", this.game.world().tileSources())
-			client.emit("map_layer", this.game.world().floor().toModel())
+			client.emit("map_layer", this.game.world().terrain().toModel())
+			client.emit("map_layer", this.game.world().decor().toModel())
+			client.emit("map_layer", this.game.world().danger().toModel())
 
 			client.on("move.left", (bool: boolean) => this.onMovement(uuid, "move.left", bool))
 			client.on("move.right", (bool: boolean) => this.onMovement(uuid, "move.right", bool))
@@ -132,6 +134,6 @@ export default class PlayerSocket {
 		const projectiles = this.game?.entities().list().map(this.toModel) ?? []
 		this.io.emit("projectiles", projectiles)
 
-		this.io.emit("map_layer", this.game.world().powers().toModel())
+		this.io.emit("map_layer", this.game.world().items().toModel())
 	}
 }

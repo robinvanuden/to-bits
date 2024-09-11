@@ -67,10 +67,11 @@ export default class Game {
 	}
 
 	private checkPlayerPosition = (delta: number) => {
-		const floor = this.world().floor().tiles()
-		const solids = this.world().floor().solids()
-		const semi_solids = this.world().floor().semis()
-		const power_up_spawns = this.world().powers().tiles()
+		const dangers = this.world().danger().tiles()
+		const floor = this.world().terrain().tiles()
+		const solids = this.world().terrain().solids()
+		const semi_solids = this.world().terrain().semis()
+		const power_up_spawns = this.world().items().tiles()
 		this.world().spawnPowerUp()
 
 		for (const entity of this.entities().list()) {
@@ -117,8 +118,11 @@ export default class Game {
 				player.y += player.vy
 
 
+				const danger = dangers.find(t => player.collidesWith(t))
 				const solid = solids.find(t => player.collidesWith(t))
-				if (solid && player.vy > 0 && player.isWalkingOn(solid)) {
+				if (danger && player.isWalkingOn(danger)) {
+					player.damage(10000)
+				} else if (solid && player.vy > 0 && player.isWalkingOn(solid)) {
 					player.damageFall(player.vy)
 					player.y = solid.y - player.height
 					player.vy = 0

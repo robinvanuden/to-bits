@@ -109,7 +109,7 @@ export default class Map {
 		for (const layer of this.data.map()) {
 			for (const tile of layer.ls) {
 				if (tile.t.i) {
-					if ((!tile.p && layer.n === "floor") || (tile.p && layer.n === "powers")) {
+					if ((!tile.p && layer.n === "terrain") || (!tile.p && layer.n === "danger") || (tile.p && layer.n === "items")) {
 						this.ctx.drawImage(
 							this.images.loadImage(tile.t.i),
 							tile.t.x,
