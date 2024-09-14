@@ -1,11 +1,10 @@
-@use "font"
 *
   box-sizing: border-box
+  image-rendering: pixelated
 
 html, body
-  font-family: "Goodbye Despair", "Monospaced", "sans-serif"
+  font-family: monospace, "sans-serif"
   font-size: 16px
-  image-rendering: pixelated
   text-rendering: auto
 
 body
@@ -21,5 +20,7 @@ canvas
   background-color: #2DA3D2
   background-size: cover
   display: block
-  image-rendering: high-quality
-  scale: 1.5
+  height: 100%
+  max-width: 100vw
+  max-height: 100vh
+  scale: 2
