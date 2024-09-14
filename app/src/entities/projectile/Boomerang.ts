@@ -1,15 +1,16 @@
 import ItemProjectile from "../ItemProjectile"
-import Player, {PLAYER_MAX_HEALTH} from "../entity/Player"
+import Player from "../entity/Player"
 import {GRAVITY} from "../../constants"
 import Projectile from "../Projectile"
 import MapTile from "../../world/MapTile"
 import Bomb from "../entity/Bomb"
 import Fireball from "./Fireball"
+import {DamageCause} from "../entity/Damage"
 
 export const BOOMERANG_SIZE = 8
 export const BOOMERANG_SPEED = 10
 export const BOOMERANG_GRAVITY = GRAVITY * .2
-export const BOOMERANG_DAMAGE = PLAYER_MAX_HEALTH * .4
+export const BOOMERANG_DAMAGE = 40
 
 export default class Boomerang extends ItemProjectile {
 
@@ -51,7 +52,7 @@ export default class Boomerang extends ItemProjectile {
 			return
 		}
 		if (!this.isOwner(player) && this.collidesWith(player)) {
-			player.damage(this.damage)
+			player.damage(this.damage, DamageCause.ITEM, {projectile: this})
 			this.remove()
 			return
 		}

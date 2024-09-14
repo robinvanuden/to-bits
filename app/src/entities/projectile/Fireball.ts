@@ -1,14 +1,15 @@
 import ItemProjectile from "../ItemProjectile"
-import Player, {PLAYER_MAX_HEALTH} from "../entity/Player"
+import Player from "../entity/Player"
 import {GRAVITY} from "../../constants"
 import Projectile from "../Projectile"
 import Bomb from "../entity/Bomb"
 import MapTile from "../../world/MapTile"
+import {DamageCause} from "../entity/Damage"
 
 export const FIREBALL_SIZE = 14
 export const FIREBALL_SPEED = 7.5
 export const FIREBALL_GRAVITY = GRAVITY * .1
-export const FIREBALL_DAMAGE = PLAYER_MAX_HEALTH * .4
+export const FIREBALL_DAMAGE = 50
 
 export default class Fireball extends ItemProjectile {
 
@@ -19,7 +20,7 @@ export default class Fireball extends ItemProjectile {
 	public loopPlayer(player: Player): void {
 		super.loopPlayer(player)
 		if (this.hasLeftPlayer && this.collidesWith(player)) {
-			player.damage(this.damage)
+			player.damage(this.damage, DamageCause.ITEM, {projectile: this})
 			this.remove()
 		}
 	}

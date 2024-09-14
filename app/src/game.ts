@@ -4,6 +4,7 @@ import WorldLoader, {useWorld1} from "./world/WorldLoader"
 import EntityRepository from "./repository/EntityRepository"
 import {PowerType} from "./entities/PowerUp"
 import {TICKS} from "./constants"
+import {DamageCause} from "./entities/entity/Damage"
 
 export default class Game {
 
@@ -92,7 +93,7 @@ export default class Game {
 		for (const player of this.players().alive()) {
 			// Player loop
 			if (this.world().isPlayerInVoid(player)) {
-				player.damage(100)
+				player.damage(100, DamageCause.FALL)
 			} else {
 				if (player.move.l && !player.look.l) {
 					player.look.l = true
@@ -118,11 +119,8 @@ export default class Game {
 				player.y += player.vy
 
 
-				const danger = dangers.find(t => player.collidesWith(t))
 				const solid = solids.find(t => player.collidesWith(t))
-				if (danger && player.isWalkingOn(danger)) {
-					player.damage(10000)
-				} else if (solid && player.vy > 0 && player.isWalkingOn(solid)) {
+				if (solid && player.vy > 0 && player.isWalkingOn(solid)) {
 					player.damageFall(player.vy)
 					player.y = solid.y - player.height
 					player.vy = 0
@@ -161,6 +159,10 @@ export default class Game {
 					if (player.isTouching(power_tile) && player.addPowerUp(power_tile.power_up)) {
 						power_tile.power_up = undefined
 					}
+				}
+				const danger = dangers.find(t => player.collidesWith(t))
+				if (danger) {
+					player.damage(10, DamageCause.BLOCK, {tile: danger})
 				}
 			}
 		}

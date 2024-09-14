@@ -1,4 +1,5 @@
 import {PowerUpModel} from "./PowerUpModel"
+import {DamageModel} from "../../entities/entity/Damage"
 
 export interface Direction {
   u: boolean // up
@@ -20,7 +21,7 @@ export default interface PlayerModel {
   y: number // y-coord
 	vx: number // x-coord
 	vy: number // y-coord
-	tdm: number // time damaged
+	dmg?: DamageModel // time damaged
 	tod: number // time of death
 	tdc: number // timeDisconnected
   l: Direction

@@ -101,10 +101,12 @@ import {TileLayerModel} from "./model/TileModel"
 			return
 		}
 		const key = ev.key.toLowerCase()
-		if (key === "q") {
-			socket.emit("item.left", pressed)
-		} else if (key === "e") {
-			socket.emit("item.right", pressed)
+		if (key === "1") {
+			socket.emit("item.1", pressed)
+		} else if (key === "2") {
+			socket.emit("item.2", pressed)
+		} else if (key === "3") {
+			socket.emit("item.3", pressed)
 		}
 		if (key === "d") {
 			socket.emit("move.right", pressed)

@@ -50,8 +50,9 @@ export default class PlayerSocket {
 			client.on("move.up", (bool: boolean) => this.onMovement(uuid, "move.up", bool))
 			client.on("move.down", (bool: boolean) => this.onMovement(uuid, "move.down", bool))
 
-			client.on("item.left", (bool: boolean) => this.onItemSelection(uuid, "item.left", bool))
-			client.on("item.right", (bool: boolean) => this.onItemSelection(uuid, "item.right", bool))
+			client.on("item.1", (bool: boolean) => this.onItemSelection(uuid, 0, bool))
+			client.on("item.2", (bool: boolean) => this.onItemSelection(uuid, 1, bool))
+			client.on("item.3", (bool: boolean) => this.onItemSelection(uuid, 2, bool))
 
 			client.on("move.action", (bool: boolean) => {
 				if (!bool) this.onAction(uuid)
@@ -103,7 +104,7 @@ export default class PlayerSocket {
 		}
 	}
 
-	onItemSelection = (uuid: string, direction: string, button_down: boolean) => {
+	onItemSelection = (uuid: string, index: number, button_down: boolean) => {
 		if (!this.game) {
 			return
 		}
@@ -111,19 +112,12 @@ export default class PlayerSocket {
 		if (!player || !player.isAlive() || !player.hasPowerUps() || !button_down) {
 			return
 		}
-		switch (direction) {
-		case "item.left":
-			player.itemPrev()
-			break
-		case "item.right":
-			player.itemNext()
-			break
-		}
+		player.itemIndex(index)
 	}
 
-	private toModel = (entity: Projectile) => {
+	private toModel = (projectile: Projectile) => {
 		// TODO: Improve ugly fix
-		return entity instanceof Bomb ? entity.toModel(entity.getExplosion()) : entity.toModel()
+		return projectile instanceof Bomb ? projectile.toModel(projectile.getExplosion()) : projectile.toModel()
 	}
 
 	emitProjectiles = () => {

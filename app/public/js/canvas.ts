@@ -1,4 +1,3 @@
-const FONT_TEXT = "Goodbye Despair"
 const FONT_SIZE = 5
 
 export default class Canvas {
@@ -13,11 +12,11 @@ export default class Canvas {
 		this.__canvas = canvas
 		this.ctx = canvas.getContext("2d") as CanvasRenderingContext2D
 		this.ratio = (window.devicePixelRatio || 1) * 2
+		this.ctx.imageSmoothingQuality = "low"
+		this.ctx.imageSmoothingEnabled = false
 
 		this.setDimensions()
 	}
-
-	font = (size: number, family: string = FONT_TEXT) => `${this.rem(size)}px ${family}`
 
 	size = (n: number) => n * this.ratio
 

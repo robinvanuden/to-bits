@@ -4,6 +4,7 @@ import {GRAVITY} from "../../constants"
 import PlayerModel, {Direction} from "../../types/model/PlayerModel"
 import Entity from "../Entity"
 import HitBox from "./HitBox"
+import Damage, {DamageCause, DamageContext, damageToModel} from "./Damage"
 
 const PLAYER_TIMEOUT = 10_000
 
@@ -12,11 +13,12 @@ const PLAYER_HEIGHT = 16
 const PLAYER_SPEED_WALK = 2
 const PLAYER_SPEED_JUMP = 4
 const PLAYER_MAX_POWER_UP = 3
-export const PLAYER_MAX_HEALTH = 100
-export const PLAYER_DAMAGE = PLAYER_MAX_HEALTH * .30
-export const PLAYER_GRAVITY = GRAVITY
+const PLAYER_MAX_HEALTH = 100
+const PLAYER_DAMAGE = PLAYER_MAX_HEALTH * .30
+const PLAYER_GRAVITY = GRAVITY
 
 export default class Player extends Entity {
+
 	// ID
 	private socket_id: string
 	public readonly name: string
@@ -36,10 +38,10 @@ export default class Player extends Entity {
 
 	private timeDisconnected: number
 	private timeDied: number
-	private timeDamaged: number
+	private damageTaken: Damage | undefined
 
-	private timeSwung: number
-	private readonly damagePoints: number
+	private hitTime: number
+	private readonly hitPoints: number
 
 	public look: Direction
 	public move: Direction
@@ -53,11 +55,11 @@ export default class Player extends Entity {
 		this.socket_id = socket
 		this.timeDisconnected = -1
 		this.timeDied = -1
-		this.timeDamaged = -1
+		this.damageTaken = undefined
 		this.healthPointsMax = PLAYER_MAX_HEALTH
 		this.healthPoints = this.healthPointsMax
-		this.damagePoints = PLAYER_DAMAGE
-		this.timeSwung = 0
+		this.hitPoints = PLAYER_DAMAGE
+		this.hitTime = 0
 		this.color = color
 		this.mask = mask
 		this.name = name
@@ -87,16 +89,11 @@ export default class Player extends Entity {
 
 	hasPowerUps = (): boolean => this.power_ups.length > 0
 
-	itemNext = () => {
-		this.power_selected++
+	itemIndex = (index: number) => {
+		this.power_selected = index
 		if (this.power_selected >= this.power_ups.length) {
 			this.power_selected = this.power_ups.length - 1
-		}
-	}
-
-	itemPrev = () => {
-		this.power_selected--
-		if (this.power_selected < 0) {
+		} else if (this.power_selected < 0) {
 			this.power_selected = 0
 		}
 	}
@@ -141,6 +138,7 @@ export default class Player extends Entity {
 
 	respawn = (spawn: Entity) => {
 		this.timeDied = -1
+		this.damageTaken = undefined
 		this.healthPoints = this.healthPointsMax
 		this.x = spawn.x
 		this.y = spawn.y
@@ -164,9 +162,23 @@ export default class Player extends Entity {
 		if (this.healthPoints >= this.healthPointsMax) this.healthPoints = this.healthPointsMax
 	}
 
-	damage = (damage: number) => {
-		this.timeDamaged = this.getNow()
-		this.healthPoints -= Math.max(damage, 0)
+	damage = (value: number, cause: DamageCause, context: DamageContext = {
+		player: undefined,
+		projectile: undefined,
+		tile: undefined
+	}) => {
+		if (this.damageTaken && (this.damageTaken.timestamp + 500) > this.getNow()) {
+			return
+		}
+		this.damageTaken = {
+			cause: cause,
+			value: value,
+			player: context.player,
+			projectile: context.projectile,
+			tile: context.tile,
+			timestamp: this.getNow()
+		}
+		this.healthPoints -= Math.max(value, 0)
 		if (this.healthPoints <= 0) this.kill()
 	}
 
@@ -176,21 +188,23 @@ export default class Player extends Entity {
 		if (damage <= 0) {
 			return
 		}
-		this.damage(damage)
+		this.damage(damage, DamageCause.FALL)
 	}
+
+	damaged = () => this.damageTaken
 
 	hits = (player: Player) => {
 		if (this.isSwung() && player.isAlive() && player.collidesWith(this.hit_box())) {
-			this.timeSwung = 0
+			this.hitTime = 0
 			const power = this.getSelectedPowerUp()
 			if (!power) {
-				player.damage(this.damagePoints)
+				player.damage(this.hitPoints, DamageCause.PLAYER, {player: this})
 				return
 			}
 			switch (power.type) {
 			case PowerType.SWORD:
 				this.usePowerUp(power)
-				player.damage(this.damagePoints * 1.5)
+				player.damage(this.hitPoints * 1.5, DamageCause.PLAYER, {player: this})
 				break
 			}
 		}
@@ -204,9 +218,9 @@ export default class Player extends Entity {
 		return new HitBox(x, y, width, height)
 	}
 
-	isSwung = () => this.getNow() - 150 < this.timeSwung
+	isSwung = () => this.getNow() - 150 < this.hitTime
 
-	doSwing = () => this.timeSwung = this.getNow()
+	doSwing = () => this.hitTime = this.getNow()
 
 	isWalkingOn = (tile: MapTile): boolean =>
 		this.isWithinX(tile) &&
@@ -230,7 +244,7 @@ export default class Player extends Entity {
 		y: this.y,
 		vx: this.vx,
 		vy: this.vy,
-		tdm: this.timeDamaged,
+		dmg: damageToModel(this.damageTaken),
 		tod: this.timeDied,
 		tdc: this.timeDisconnected,
 		l: this.look,

@@ -1,15 +1,16 @@
 import ItemProjectile from "../ItemProjectile"
-import Player, {PLAYER_MAX_HEALTH} from "../entity/Player"
+import Player from "../entity/Player"
 import {GRAVITY} from "../../constants"
 import Projectile from "../Projectile"
 import MapTile from "../../world/MapTile"
 import Bomb from "../entity/Bomb"
+import {DamageCause} from "../entity/Damage"
 
 export const ARROW_WIDTH = 14
 export const ARROW_HEIGHT = 5
 export const ARROW_SPEED = 4
 export const ARROW_GRAVITY = GRAVITY * .2
-export const ARROW_DAMAGE = PLAYER_MAX_HEALTH * .65
+export const ARROW_DAMAGE = 65
 
 export default class Arrow extends ItemProjectile {
 
@@ -23,7 +24,7 @@ export default class Arrow extends ItemProjectile {
 			return
 		}
 		if (this.collidesWith(player)) {
-			player.damage(this.damage)
+			player.damage(this.damage, DamageCause.ITEM, {projectile: this})
 			this.remove()
 			return
 		}

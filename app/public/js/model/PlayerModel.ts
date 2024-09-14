@@ -1,4 +1,5 @@
 import PowerUpModel from "./PowerUpModel"
+import {DamageModel} from "./DamageModel"
 
 export default interface PlayerModel {
   i: string // client-id
@@ -13,7 +14,7 @@ export default interface PlayerModel {
   y: number // y-coord
   vx: number // x-coord
   vy: number // y-coord
-  tdm: number // time damaged
+  dmg?: DamageModel // time damaged
   tod: number // time of death
   tdc: number // timeDisconnected
   l: Direction // looking

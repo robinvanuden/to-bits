@@ -140,7 +140,7 @@ export default class Map {
 
 			let x = 0
 			let y = 0
-			if (player.tdm + 100 > Date.now()) {
+			if ((player.dmg?.tme || -1) + 100 > Date.now()) {
 				y = 16
 			}
 			if (player.vy < 0) {
