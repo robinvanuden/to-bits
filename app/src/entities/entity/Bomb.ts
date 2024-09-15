@@ -2,15 +2,12 @@ import Projectile from "../Projectile"
 import Player from "./Player"
 import {GRAVITY} from "../../constants"
 import {ExplosionModel} from "../../types/model/ProjectileModel"
-import MapTile from "../../world/MapTile"
-import Fireball from "../projectile/Fireball"
-import Arrow from "../projectile/Arrow"
 import Entity from "../Entity"
 import Explosion from "./Explosion"
 import {DamageCause} from "./Damage"
 
 export const BOMB_EXPLOSION_SIZE = 48
-export const BOMB_DAMAGE = 90
+export const BOMB_DAMAGE = 100
 export const BOMB_GRAVITY = GRAVITY
 
 export default class Bomb extends Projectile {
@@ -27,9 +24,9 @@ export default class Bomb extends Projectile {
 		this.explosion = undefined
 	}
 
-	private isExplosionHit = (p: Player): boolean => this.explosion?.collidesWith(p) || false
+	public isExplosionHit = (p: Player): boolean => this.explosion?.collidesWith(p) || false
 
-	private isInOtherExplosion = (other: Bomb): boolean => other.explosion?.collidesWith(this) || false
+	public isInOtherExplosion = (other: Bomb): boolean => other.explosion?.collidesWith(this) || false
 
 	public explode = () => {
 		if (this.explosion) {
@@ -59,36 +56,6 @@ export default class Bomb extends Projectile {
 		} else if (!this.isOwner(player) && this.collidesWith(player)) {
 			player.damage(this.damage, DamageCause.ITEM, {projectile: this})
 			this.explode()
-		}
-	}
-
-	public loopEntity = (other: Projectile): void => {
-		if (other instanceof Bomb && this.isInOtherExplosion(other)) {
-			this.explode()
-			return
-		}
-		if (!this.collidesWith(other)) {
-			return
-		}
-		if (other instanceof Fireball || other instanceof Arrow) {
-			this.explode()
-			other.remove()
-		}
-	}
-
-	public loopTile = (tile: MapTile): void => {
-		if (!this.isWalkingOn(tile)) {
-			return
-		}
-		if (tile.isSemiSolid() && this.vy > 0) {
-			this.y = tile.y - this.height
-			this.vx = 0
-			this.vy = 0
-		}
-		if (tile.isSolid() && this.vy > 0) {
-			this.y = tile.y - this.height
-			this.vx = 0
-			this.vy = 0
 		}
 	}
 

@@ -1,9 +1,6 @@
 import ItemProjectile from "../ItemProjectile"
 import Player from "../entity/Player"
 import {GRAVITY} from "../../constants"
-import Projectile from "../Projectile"
-import MapTile from "../../world/MapTile"
-import Bomb from "../entity/Bomb"
 import {DamageCause} from "../entity/Damage"
 
 export const ARROW_WIDTH = 14
@@ -27,24 +24,6 @@ export default class Arrow extends ItemProjectile {
 			player.damage(this.damage, DamageCause.ITEM, {projectile: this})
 			this.remove()
 			return
-		}
-	}
-
-	public loopEntity = (entity: Projectile): void => {
-		if (!this.collidesWith(entity)) {
-			return
-		}
-		this.remove()
-		if (entity instanceof Bomb) {
-			entity.explode()
-		} else {
-			entity.remove()
-		}
-	}
-
-	public loopTile = (tile: MapTile): void => {
-		if (tile.isSolid() && this.collidesWith(tile)) {
-			this.remove()
 		}
 	}
 

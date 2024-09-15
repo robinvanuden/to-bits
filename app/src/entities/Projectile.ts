@@ -45,10 +45,6 @@ export default abstract class Projectile extends Entity {
 
 	public abstract loopPlayer(player: Player): void
 
-	public abstract loopEntity(entity: Projectile): void
-
-	public abstract loopTile(entity: MapTile): void
-
 	public loopGravity(delta: number) {
 		this.vy += this.gravity * delta
 		this.x += this.vx

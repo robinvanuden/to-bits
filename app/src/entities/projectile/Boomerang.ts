@@ -1,10 +1,6 @@
 import ItemProjectile from "../ItemProjectile"
 import Player from "../entity/Player"
 import {GRAVITY} from "../../constants"
-import Projectile from "../Projectile"
-import MapTile from "../../world/MapTile"
-import Bomb from "../entity/Bomb"
-import Fireball from "./Fireball"
 import {DamageCause} from "../entity/Damage"
 
 export const BOOMERANG_SIZE = 8
@@ -24,6 +20,10 @@ export default class Boomerang extends ItemProjectile {
 	}
 
 	public shouldReturn = () => this.hasLifetime(this.timeReturn)
+
+	public retrieve = () => {
+		this.timeReturn = this.getNow() - this.timeSpawned
+	}
 
 	public loopGravity = (delta: number) => {
 		if (this.shouldReturn()) {
@@ -55,26 +55,6 @@ export default class Boomerang extends ItemProjectile {
 			player.damage(this.damage, DamageCause.ITEM, {projectile: this})
 			this.remove()
 			return
-		}
-	}
-
-	public loopEntity = (entity: Projectile): void => {
-		if (!this.collidesWith(entity)) {
-			return
-		}
-		if (entity instanceof Bomb) {
-			return
-		}
-		if (entity instanceof Fireball) {
-			this.remove()
-		} else {
-			entity.remove()
-		}
-	}
-
-	public loopTile = (tile: MapTile): void => {
-		if (tile.isSolid() && this.collidesWith(tile)) {
-			this.timeReturn = this.getNow() - this.timeSpawned
 		}
 	}
 

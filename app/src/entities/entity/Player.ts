@@ -91,8 +91,8 @@ export default class Player extends Entity {
 
 	itemIndex = (index: number) => {
 		this.power_selected = index
-		if (this.power_selected >= this.power_ups.length) {
-			this.power_selected = this.power_ups.length - 1
+		if (this.power_selected > PLAYER_MAX_POWER_UP) {
+			this.power_selected = PLAYER_MAX_POWER_UP - 1
 		} else if (this.power_selected < 0) {
 			this.power_selected = 0
 		}
@@ -128,12 +128,6 @@ export default class Player extends Entity {
 			return
 		}
 		this.power_ups = this.power_ups.filter(power.notEquals)
-		if (this.power_selected >= this.power_ups.length) {
-			this.power_selected = this.power_ups.length - 1
-		}
-		if (this.power_selected < 0) {
-			this.power_selected = 0
-		}
 	}
 
 	respawn = (spawn: Entity) => {
@@ -155,6 +149,7 @@ export default class Player extends Entity {
 		this.move = {u: false, d: false, l: false, r: false}
 		// Clear items
 		this.power_ups = []
+		this.power_selected = 0
 	}
 
 	heal = (damage: number) => {
@@ -167,7 +162,7 @@ export default class Player extends Entity {
 		projectile: undefined,
 		tile: undefined
 	}) => {
-		if (this.damageTaken && (this.damageTaken.timestamp + 500) > this.getNow()) {
+		if (this.damageTaken && (this.damageTaken.timestamp + 333) > this.getNow()) {
 			return
 		}
 		this.damageTaken = {
