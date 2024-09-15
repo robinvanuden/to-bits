@@ -17,26 +17,48 @@ const loadLetter = async (letter: string | undefined) => {
 	const top = position * 7
 	let left = 0
 	let width = 7
-	if (letter === "i" || letter === "!") {
+	switch (letter) {
+	case "!":
+	case "i":
+	case ":":
+	case "-":
 		left = 2
 		width = 3
-	} else if (letter === ".") {
+		break
+	case ".":
 		width = 3
 		left = 0
+		break
 	}
 	const buffer = letters.extract({top, left, width, height: 7})
 	return sharp(await buffer.toBuffer())
 }
 
-const loadBlank = (transparent: boolean) => loadFont(transparent ? "blank.png" : "blank.jpg")
+const loadSpace = async (transparent: boolean) => {
+	const width = 4
+	const height = 7
+	const channels = 4
+	const background = transparent ? 0x00000000 : 0xFF000000
+	const canvas = sharp(Buffer.alloc(width * height * channels, background), {
+		raw: {
+			width,
+			height,
+			channels
+		}
+	})
+	return transparent ? canvas.png() : canvas.jpeg()
+}
 
 const loadChar = async (char: string | undefined, transparent: boolean) => {
 	if (char == undefined) {
-		return loadBlank(transparent)
+		return loadSpace(transparent)
+	}
+	if (char === " ") {
+		return loadSpace(transparent)
 	}
 	let image = await loadLetter(char)
 	if (!image) {
-		image = loadBlank(transparent)
+		image = await loadSpace(transparent)
 	}
 	return image
 }
@@ -57,7 +79,7 @@ export default function () {
 	char_router.get("/word/:word.:extension", async (req, res) => {
 		const extension = req.params.extension || "png"
 		const isTransparent = extension === "png"
-		const word = req.params.word || "none"
+		const word = (req.params.word || "none").trim()
 
 		const options: sharp.OverlayOptions[] = []
 
@@ -67,7 +89,8 @@ export default function () {
 			const char = word[i]
 			const char_image = await loadChar(char, isTransparent)
 			const char_image_meta = await char_image?.metadata()
-			const char_width = char === "i" ? 3 : char_image_meta?.width || 1
+			const char_width = char_image_meta?.width || 3
+			console.log(`char: '${char}' ${char_width}`)
 			if (char_image != undefined && char_image_meta != undefined) options.push({
 				input: await char_image.toBuffer(),
 				top: 0,

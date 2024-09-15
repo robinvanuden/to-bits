@@ -75,9 +75,9 @@ export default class WorldLoader {
 		if (!this.isDev && Math.round(Math.random() * 500) !== 1) {
 			return
 		}
-		const airs = this.items().tiles()
-		const index = Math.round(Math.random() * (airs.length - 1))
-		const tile: MapTile | undefined = airs[index] || undefined
+		const item_spawns = this.items().tiles()
+		const index = Math.round(Math.random() * (item_spawns.length - 1))
+		const tile: MapTile | undefined = item_spawns[index] || undefined
 		if (!tile) {
 			return
 		}

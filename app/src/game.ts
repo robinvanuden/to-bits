@@ -5,6 +5,10 @@ import EntityRepository from "./repository/EntityRepository"
 import {PowerType} from "./entities/PowerUp"
 import {TICKS} from "./constants"
 import {DamageCause} from "./entities/entity/Damage"
+import Bomb from "./entities/entity/Bomb"
+import Arrow from "./entities/projectile/Arrow"
+import Boomerang from "./entities/projectile/Boomerang"
+import Fireball from "./entities/projectile/Fireball"
 
 export default class Game {
 
@@ -67,9 +71,8 @@ export default class Game {
 		return false
 	}
 
-	private checkPlayerPosition = (delta: number) => {
+	private updateTerrain = (delta: number) => {
 		const dangers = this.world().danger().tiles()
-		const floor = this.world().solids().tiles()
 		const solids = this.world().solids().tiles()
 		const semi_solids = this.world().semiSolids().tiles()
 		const power_up_spawns = this.world().items().tiles()
@@ -84,9 +87,47 @@ export default class Game {
 
 				entity.loop()
 
-				for (const entity2 of this.entities().exclude(entity)) entity.loopEntity(entity2)
+				for (const entity2 of this.entities().exclude(entity)) {
+					if (entity instanceof Bomb && entity2 instanceof Bomb) {
+						if (entity.isInOtherExplosion(entity2)) {
+							entity.explode()
+						}
+					}
+					if (entity.collidesWith(entity2)) {
+						if (entity instanceof Bomb && !(entity2 instanceof Bomb)) {
+							entity.explode()
+							entity2.remove()
+						} else if (entity instanceof Fireball) {
+							if (!(entity2 instanceof Bomb)) {
+								entity2.remove()
+							}
+						}
+					}
+				}
 
-				for (const tile of floor) entity.loopTile(tile)
+				const solid = solids.find(t => entity.collidesWith(t))
+				const semi = semi_solids.find(t => entity.collidesWith(t))
+
+				if (entity instanceof Bomb) {
+					if (solid && entity.isWalkingOn(solid) && entity.vy > 0) {
+						entity.y = solid.y - entity.height
+						entity.vx = 0
+						entity.vy = 0
+					}
+					if (semi && entity.isWalkingOn(semi) && entity.vy > 0) {
+						entity.y = semi.y - entity.height
+						entity.vx = 0
+						entity.vy = 0
+					}
+				} else if (entity instanceof Arrow || entity instanceof Fireball) {
+					if (solid && entity.collidesWith(solid)) {
+						entity.remove()
+					}
+				} else if (entity instanceof Boomerang) {
+					if (solid && entity.collidesWith(solid)) {
+						entity.retrieve()
+					}
+				}
 			}
 		}
 
@@ -184,7 +225,7 @@ export default class Game {
 	}
 
 	private tick = (delta: number) => {
-		this.checkPlayerPosition(delta)
+		this.updateTerrain(delta)
 		this.checkRespawnPlayers()
 		this.checkDisconnectedPlayers()
 	}

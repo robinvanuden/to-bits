@@ -47,6 +47,10 @@ export default class PowerUp {
 		case PowerType.BOOMERANG:
 			uses = 3
 			break
+		case PowerType.BOMB:
+			if (Math.random() * 1_000_000 === 1_000_000)
+				uses = 9
+			break
 		}
 		return new PowerUp(type, uses)
 	}

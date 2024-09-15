@@ -35,7 +35,7 @@ export default class Map {
 			case "ARROW":
 				this.ctx.drawImage(
 					this.images.loadImage("/img/arrow.png"),
-					entity.vx <= 0 ? entity.w + 1 : 1,
+					entity.vx <= 0 ? entity.w + 2 : 1,
 					6,
 					entity.w,
 					entity.h,
@@ -155,8 +155,8 @@ export default class Map {
 			const sx = player.l.r ? 1 : 2
 			this.ctx.drawImage(
 				this.images.loadPlayer(player.uid, player.l.l),
-				sx + x,
-				y,
+				Math.round(sx + x),
+				Math.round(y),
 				13,
 				16,
 				player_x - this.cx,
