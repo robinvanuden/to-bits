@@ -1,49 +1,44 @@
-import {PROP_SEMI_SOLID, TiledTile, TiledTileSetProperty} from "../types/TiledTileSet"
-import {TiledWorldLayer} from "../types/TiledWorld"
+import {TiledTile} from "../types/TiledTileSet"
 import MapTileModel from "../types/model/MapTileModel"
 import PowerUp from "../entities/PowerUp"
 import Entity from "../entities/Entity"
 import path from "path"
 
 export default class MapTile extends Entity {
-	name: string
-	seed: string
-	source: string
-	offset_x: number
-	offset_y: number
-	type: string
-	version: string
-	tiledversion: string
-	layer: string
+	private readonly _source: string
+	private readonly _offset_x: number
+	private readonly _offset_y: number
+	public _damage: number
 	power_up: PowerUp | undefined
-	properties: TiledTileSetProperty[]
 
-	constructor(id: number, x: number, y: number, seed: string, layer: TiledWorldLayer, item: TiledTile) {
+	constructor(id: number, x: number, y: number, item: TiledTile) {
 		super(x, y, item.tilewidth, item.tileheight, String(id))
-		this.seed = seed
-		this.name = item.name
-		this.source = item.source
-		this.offset_x = item.offset_x
-		this.offset_y = item.offset_y
-		this.type = item.type
-		this.version = item.version
-		this.tiledversion = item.tiledversion
-		this.layer = layer.name
+		this._source = item.source
+		this._offset_x = item.offset_x
+		this._offset_y = item.offset_y
 		this.power_up = undefined
-		this.properties = item.properties || []
+		this._damage = 0
+		switch (path.basename(item.source)) {
+		case "spikes.png":
+			this._damage = 33
+			break
+		case "lava.png":
+			this._damage = 55
+			break
+		}
+	}
+
+	public get damage() {
+		return this._damage
 	}
 
 	public hasPowerUp = (): boolean => this.power_up !== undefined
-
-	public isSolid = (): boolean => !this.properties.find(p => p.name === PROP_SEMI_SOLID && p.value)
-
-	public isSemiSolid = (): boolean => this.properties.find(p => p.name === PROP_SEMI_SOLID && p.value) != undefined
 
 	public spawnPower = () => {
 		if (!this.hasPowerUp()) this.power_up = PowerUp.random()
 	}
 
-	private generateTextureUrl = () => "/texture/set/" + path.basename(this.source)
+	private generateTextureUrl = () => "/texture/set/" + path.basename(this._source)
 
 	public toModel = (): MapTileModel => ({
 		x: this.x,
@@ -55,8 +50,8 @@ export default class MapTile extends Entity {
 			i: this.generateTextureUrl(),
 			w: this.width,
 			h: this.height,
-			x: this.offset_x,
-			y: this.offset_y,
+			x: this._offset_x,
+			y: this._offset_y,
 		}
 	})
 

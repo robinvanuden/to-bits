@@ -90,7 +90,6 @@ export default function () {
 			const char_image = await loadChar(char, isTransparent)
 			const char_image_meta = await char_image?.metadata()
 			const char_width = char_image_meta?.width || 3
-			console.log(`char: '${char}' ${char_width}`)
 			if (char_image != undefined && char_image_meta != undefined) options.push({
 				input: await char_image.toBuffer(),
 				top: 0,

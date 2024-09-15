@@ -9,6 +9,7 @@ import Bomb from "./entities/entity/Bomb"
 import Arrow from "./entities/projectile/Arrow"
 import Boomerang from "./entities/projectile/Boomerang"
 import Fireball from "./entities/projectile/Fireball"
+import Player from "./entities/entity/Player"
 
 export default class Game {
 
@@ -49,26 +50,25 @@ export default class Game {
 
 	world = (): WorldLoader => useWorld1()
 
-	addPlayer = (uuid: string, socket_id: string): boolean => {
+	addPlayer = (uuid: string, socket_id: string): Player | null => {
 		const continue_player = this.players().getConnected(uuid)
 		if (continue_player) {
 			// Reconnect
 			console.log("User reconnected", socket_id, uuid)
 			continue_player.reconnect(socket_id)
-			return true
+			return continue_player
 		}
 		const player = this.players().getById(uuid)
 		if (!player) {
 			// New player_id
 			const SPAWN_TILE = this.world().pickRandomSpawnPoint()
 			if (!SPAWN_TILE) {
-				return false
+				return null
 			}
 			console.log("User connected", uuid)
-			this.players().create(SPAWN_TILE, uuid, socket_id)
-			return true
+			return this.players().create(SPAWN_TILE, uuid, socket_id)
 		}
-		return false
+		return null
 	}
 
 	private updateTerrain = (delta: number) => {
@@ -203,7 +203,7 @@ export default class Game {
 				}
 				const danger = dangers.find(t => player.collidesWith(t))
 				if (danger) {
-					player.damage(30, DamageCause.BLOCK, {tile: danger})
+					player.damage(danger.damage, DamageCause.BLOCK, {tile: danger})
 				}
 			}
 		}

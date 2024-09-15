@@ -12,7 +12,7 @@ export default class LayerLoader {
 
 	public name = () => this._layer.name
 
-	constructor(world: TiledWorld, layer: TiledWorldLayer, sets: TileSetLoader[], seed: string) {
+	constructor(world: TiledWorld, layer: TiledWorldLayer, sets: TileSetLoader[]) {
 		this._layer = layer
 		let c = 0
 		for (let y = 0; y < world.height; y++) {
@@ -23,7 +23,7 @@ export default class LayerLoader {
 				if (id) {
 					const item = sets.find(s => id >= s.firstId() && s.getTileById(id))?.getTileById(id)
 					if (item) {
-						this._map_tiles.push(new MapTile(id, tile_x, tile_y, seed, layer, item))
+						this._map_tiles.push(new MapTile(id, tile_x, tile_y, item))
 					}
 				}
 				c++
