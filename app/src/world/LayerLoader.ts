@@ -10,13 +10,7 @@ export default class LayerLoader {
 
 	public tiles = (): MapTile[] => this._map_tiles || []
 
-	public layer = () => this._layer
-
 	public name = () => this._layer.name
-
-	public solids = (): MapTile[] => this.tiles().filter(t => !t.isSemiSolid())
-
-	public semis = (): MapTile[] => this.tiles().filter(t => t.isSemiSolid())
 
 	constructor(world: TiledWorld, layer: TiledWorldLayer, sets: TileSetLoader[], seed: string) {
 		this._layer = layer
