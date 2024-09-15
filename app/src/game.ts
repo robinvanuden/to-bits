@@ -69,9 +69,9 @@ export default class Game {
 
 	private checkPlayerPosition = (delta: number) => {
 		const dangers = this.world().danger().tiles()
-		const floor = this.world().terrain().tiles()
-		const solids = this.world().terrain().solids()
-		const semi_solids = this.world().terrain().semis()
+		const floor = this.world().solids().tiles()
+		const solids = this.world().solids().tiles()
+		const semi_solids = this.world().semiSolids().tiles()
 		const power_up_spawns = this.world().items().tiles()
 		this.world().spawnPowerUp()
 
@@ -162,7 +162,7 @@ export default class Game {
 				}
 				const danger = dangers.find(t => player.collidesWith(t))
 				if (danger) {
-					player.damage(10, DamageCause.BLOCK, {tile: danger})
+					player.damage(30, DamageCause.BLOCK, {tile: danger})
 				}
 			}
 		}

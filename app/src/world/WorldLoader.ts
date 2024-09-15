@@ -17,15 +17,17 @@ export default class WorldLoader {
 	private readonly _seed!: string
 	private readonly _spawns!: LayerLoader
 	private readonly _items!: LayerLoader
-	private readonly _terrain!: LayerLoader
+	private readonly _solids!: LayerLoader
 	private readonly _danger!: LayerLoader
+	private readonly _semiSolids!: LayerLoader
 	private readonly _decor!: LayerLoader
 
 	public seed = () => this._seed
 	public spawns = () => this._spawns
 	public items = () => this._items
-	public terrain = () => this._terrain
+	public solids = () => this._solids
 	public danger = () => this._danger
+	public semiSolids = () => this._semiSolids
 	public decor = () => this._decor
 
 	constructor(name: string) {
@@ -43,11 +45,14 @@ export default class WorldLoader {
 			case "danger":
 				this._danger = new LayerLoader(this.world, layer, this.sets, this.seed())
 				break
-			case "terrain":
-				this._terrain = new LayerLoader(this.world, layer, this.sets, this.seed())
+			case "solids":
+				this._solids = new LayerLoader(this.world, layer, this.sets, this.seed())
 				break
 			case "items":
 				this._items = new LayerLoader(this.world, layer, this.sets, this.seed())
+				break
+			case "semi_solids":
+				this._semiSolids = new LayerLoader(this.world, layer, this.sets, this.seed())
 				break
 			case "spawns":
 				this._spawns = new LayerLoader(this.world, layer, this.sets, this.seed())

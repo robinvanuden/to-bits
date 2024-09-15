@@ -41,7 +41,8 @@ export default class PlayerSocket {
 			}
 
 			client.emit("textures", this.game.world().tileSources())
-			client.emit("map_layer", this.game.world().terrain().toModel())
+			client.emit("map_layer", this.game.world().solids().toModel())
+			client.emit("map_layer", this.game.world().semiSolids().toModel())
 			client.emit("map_layer", this.game.world().decor().toModel())
 			client.emit("map_layer", this.game.world().danger().toModel())
 
