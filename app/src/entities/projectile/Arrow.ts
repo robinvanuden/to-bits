@@ -7,7 +7,7 @@ export const ARROW_WIDTH = 14
 export const ARROW_HEIGHT = 5
 export const ARROW_SPEED = 4
 export const ARROW_GRAVITY = GRAVITY * .2
-export const ARROW_DAMAGE = 65
+export const ARROW_DAMAGE = 40
 
 export default class Arrow extends ItemProjectile {
 

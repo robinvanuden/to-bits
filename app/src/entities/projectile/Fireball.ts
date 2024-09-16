@@ -6,7 +6,7 @@ import {DamageCause} from "../entity/Damage"
 export const FIREBALL_SIZE = 14
 export const FIREBALL_SPEED = 7.5
 export const FIREBALL_GRAVITY = GRAVITY * .1
-export const FIREBALL_DAMAGE = 50
+export const FIREBALL_DAMAGE = 45
 
 export default class Fireball extends ItemProjectile {
 

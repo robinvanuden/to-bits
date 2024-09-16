@@ -40,6 +40,10 @@ export default class Player extends Entity {
 	private timeDied: number
 	private damageTaken: Damage | undefined
 
+	get timeWasDead() {
+		return this.timeDied
+	}
+
 	private hitTime: number
 	private readonly hitPoints: number
 
@@ -162,7 +166,7 @@ export default class Player extends Entity {
 		projectile: undefined,
 		tile: undefined
 	}) => {
-		if (this.damageTaken && (this.damageTaken.timestamp + 333) > this.getNow()) {
+		if (this.damageTaken && (this.damageTaken.timestamp + 500) > this.getNow()) {
 			return
 		}
 		this.damageTaken = {

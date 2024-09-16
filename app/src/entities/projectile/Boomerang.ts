@@ -6,7 +6,7 @@ import {DamageCause} from "../entity/Damage"
 export const BOOMERANG_SIZE = 8
 export const BOOMERANG_SPEED = 10
 export const BOOMERANG_GRAVITY = GRAVITY * .2
-export const BOOMERANG_DAMAGE = 40
+export const BOOMERANG_DAMAGE = 20
 
 export default class Boomerang extends ItemProjectile {
 

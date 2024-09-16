@@ -3,7 +3,7 @@ import {v4, v5} from "uuid"
 import WorldLoader, {useWorld1} from "./world/WorldLoader"
 import EntityRepository from "./repository/EntityRepository"
 import {PowerType} from "./entities/PowerUp"
-import {TICKS} from "./constants"
+import {TICK_SPEED} from "./constants"
 import {DamageCause} from "./entities/entity/Damage"
 import Bomb from "./entities/entity/Bomb"
 import Arrow from "./entities/projectile/Arrow"
@@ -236,7 +236,7 @@ export default class Game {
 		run()
 		this.updated = now
 		if (!this.players().filled()) this.stop()
-		if (this.running) setTimeout(() => this.loop(run), 1000 / TICKS)
+		if (this.running) setTimeout(() => this.loop(run), TICK_SPEED)
 	}
 
 	start = (run: () => void) => {
