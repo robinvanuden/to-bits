@@ -33,7 +33,26 @@ export default class Hud {
 
 	you = () => this.data.players().find(p => p.i === this.data.id()) || undefined
 
-	drawMessage = () => {
+	drawMessages = () => {
+		let message_y = 1
+		for (const message of this.data.messages().filter(m => m.timestamp + 5000 > Date.now())) {
+			const message_text = this.images.loadImage(`/word/${message.value}.png`)
+			const message_width = message_text.width
+			const message_height = message_text.height
+			const message_x = this.canvas.width() - message_width - 1
+
+			this.ctx.drawImage(
+				message_text,
+				message_x,
+				message_y,
+				message_width,
+				message_height
+			)
+			message_y += 8
+		}
+	}
+
+	drawYouDied = () => {
 		const you = this.you()
 		if (!you) {
 			return
@@ -61,12 +80,12 @@ export default class Hud {
 
 		const seconds_left = Math.round(((you.tod + 5000) - now) / 1000)
 
-		const respawn_5 = this.images.loadImage("/word/respawn in: 5.png")
-		const respawn_4 = this.images.loadImage("/word/respawn in: 4.png")
-		const respawn_3 = this.images.loadImage("/word/respawn in: 3.png")
-		const respawn_2 = this.images.loadImage("/word/respawn in: 2.png")
-		const respawn_1 = this.images.loadImage("/word/respawn in: 1.png")
-		const respawn_0 = this.images.loadImage("/word/respawn in: 0.png")
+		const respawn_5 = this.images.loadImage("/word/respawn in: 6.png")
+		const respawn_4 = this.images.loadImage("/word/respawn in: 5.png")
+		const respawn_3 = this.images.loadImage("/word/respawn in: 4.png")
+		const respawn_2 = this.images.loadImage("/word/respawn in: 3.png")
+		const respawn_1 = this.images.loadImage("/word/respawn in: 2.png")
+		const respawn_0 = this.images.loadImage("/word/respawn in: 1.png")
 		let respawn: HTMLImageElement
 		if (seconds_left >= 5) {
 			respawn = respawn_5
@@ -233,7 +252,8 @@ export default class Hud {
 
 	tick = () => {
 		this.drawInventory()
-		this.drawMessage()
+		this.drawMessages()
+		this.drawYouDied()
 		if (this.loading()) this.drawLoading()
 		if (this.nope()) this.drawNope()
 	}

@@ -1,134 +1,128 @@
 import {Server} from "socket.io"
-import Game from "../game"
+import {addPlayer, getWorld, startGame, throwItem} from "../game"
 // @ts-expect-error: Unknown type
 import {Server as ModServer} from "module:tls"
 
 import cookie from "cookie"
-import {COOKIE_PLAYER_ID} from "../constants"
+import {COOKIE_PLAYER_ID, VERSION} from "../constants"
 import Projectile from "../entities/Projectile"
 import Bomb from "../entities/entity/Bomb"
+import {getPlayerRepository} from "../repository/PlayerRepository"
+import {getEntityRepository} from "../repository/EntityRepository"
 
-export default class PlayerSocket {
+let code: number
+let io: Server
 
-	private io: Server
-	private readonly game: Game
+export const startSocketServer = (server: ModServer<unknown, unknown>, codeNum: number) => {
+	code = codeNum
+	io = new Server(server, {
+		allowUpgrades: true,
+		connectTimeout: 10_000,
+		upgradeTimeout: 5_000
+	})
 
-	constructor(game: Game, server: ModServer<unknown, unknown>, code: number) {
-		this.game = game
-		this.io = new Server(server, {
-			allowUpgrades: true,
-			connectTimeout: 10_000,
-			upgradeTimeout: 5_000
+	io.on("connection", client => {
+		client.emit("build", code)
+		client.emit("version", VERSION)
+
+		const cookies = cookie.parse(client.handshake.headers.cookie || "")
+		const uuid = cookies[COOKIE_PLAYER_ID] || ""
+		if (uuid.length === 0) {
+			console.log("Error: Can't add player without UUID")
+			client.emit("nope", true)
+			client.disconnect()
+			return
+		}
+		const player = addPlayer(uuid, client.id)
+		if (!player) {
+			console.log("Error: Can't add player")
+			client.emit("nope", true)
+			client.disconnect()
+			return
+		}
+
+		sendMessage(`${player.name} joined the game.`)
+
+		client.emit("textures", getWorld().tileSources())
+		client.emit("map_layer", getWorld().solids().toModel())
+		client.emit("map_layer", getWorld().semiSolids().toModel())
+		client.emit("map_layer", getWorld().decor().toModel())
+		client.emit("map_layer", getWorld().danger().toModel())
+
+		client.on("move.left", (bool: boolean) => onMovement(uuid, "move.left", bool))
+		client.on("move.right", (bool: boolean) => onMovement(uuid, "move.right", bool))
+		client.on("move.up", (bool: boolean) => onMovement(uuid, "move.up", bool))
+		client.on("move.down", (bool: boolean) => onMovement(uuid, "move.down", bool))
+
+		client.on("item.1", (bool: boolean) => onItemSelection(uuid, 0, bool))
+		client.on("item.2", (bool: boolean) => onItemSelection(uuid, 1, bool))
+		client.on("item.3", (bool: boolean) => onItemSelection(uuid, 2, bool))
+
+		client.on("move.action", (bool: boolean) => {
+			if (!bool) onAction(uuid)
 		})
 
-		this.io.on("connection", client => {
-			client.emit("build", code)
-			client.emit("version", this.game.version())
-
-			const cookies = cookie.parse(client.handshake.headers.cookie || "")
-			const uuid = cookies[COOKIE_PLAYER_ID] || ""
-			if (uuid.length === 0) {
-				console.log("Error: Can't add player without UUID")
-				client.emit("nope", true)
-				client.disconnect()
-				return
+		client.on("disconnect", () => {
+			console.log("User disconnected", uuid)
+			const player = getPlayerRepository().getById(uuid)
+			if (player) {
+				player.disconnect()
+				sendMessage(`${player.name} left the game.`)
 			}
-			if (!this.game.addPlayer(uuid, client.id)) {
-				console.log("Error: Can't add player")
-				client.emit("nope", true)
-				client.disconnect()
-				return
-			}
-
-			client.emit("textures", this.game.world().tileSources())
-			client.emit("map_layer", this.game.world().solids().toModel())
-			client.emit("map_layer", this.game.world().semiSolids().toModel())
-			client.emit("map_layer", this.game.world().decor().toModel())
-			client.emit("map_layer", this.game.world().danger().toModel())
-
-			client.on("move.left", (bool: boolean) => this.onMovement(uuid, "move.left", bool))
-			client.on("move.right", (bool: boolean) => this.onMovement(uuid, "move.right", bool))
-			client.on("move.up", (bool: boolean) => this.onMovement(uuid, "move.up", bool))
-			client.on("move.down", (bool: boolean) => this.onMovement(uuid, "move.down", bool))
-
-			client.on("item.1", (bool: boolean) => this.onItemSelection(uuid, 0, bool))
-			client.on("item.2", (bool: boolean) => this.onItemSelection(uuid, 1, bool))
-			client.on("item.3", (bool: boolean) => this.onItemSelection(uuid, 2, bool))
-
-			client.on("move.action", (bool: boolean) => {
-				if (!bool) this.onAction(uuid)
-			})
-
-			client.on("disconnect", () => {
-				if (!this.game) {
-					return
-				}
-				console.log("User disconnected", uuid)
-				const player = this.game.players().getById(uuid)
-				if (player) player.disconnect()
-			})
-
-			this.game.start(this.emitProjectiles)
 		})
+
+		startGame(emitProjectiles)
+	})
+}
+
+
+export const sendMessage = (message: string) => io?.emit("message", message)
+
+const onAction = (uuid: string) => throwItem(uuid)
+
+const onMovement = (uuid: string, direction: string, button_down: boolean) => {
+	const player = getPlayerRepository().getById(uuid)
+	if (!player || !player.isAlive()) {
+		return
+	}
+	switch (direction) {
+	case "move.left":
+		player.move.l = button_down
+		break
+	case "move.right":
+		player.move.r = button_down
+		break
+	case "move.up":
+		player.move.u = button_down
+		player.look.u = button_down
+		break
+	case "move.down":
+		player.move.d = button_down
+		player.look.d = button_down
+		break
+	}
+}
+
+const onItemSelection = (uuid: string, index: number, button_down: boolean) => {
+	const player = getPlayerRepository().getById(uuid)
+	if (!player || !player.isAlive() || !player.hasPowerUps() || !button_down) {
+		return
+	}
+	player.itemIndex(index)
+}
+
+// TODO: Improve ugly fix
+const toModel = (projectile: Projectile) => projectile instanceof Bomb ? projectile.toModel(projectile.getExplosion()) : projectile.toModel()
+
+const emitProjectiles = () => {
+	// Emit players
+	const players = getPlayerRepository().list().map(p => p.toModel()) ?? []
+	if (players.length > 0) {
+		io.emit("players", players)
 	}
 
-	onAction = (uuid: string) => {
-		if (!this.game) {
-			return
-		}
-		this.game.throwItem(uuid)
-	}
+	const projectiles = getEntityRepository().list().map(toModel) ?? []
+	io.emit("projectiles", projectiles)
 
-	onMovement = (uuid: string, direction: string, button_down: boolean) => {
-		if (!this.game) {
-			return
-		}
-		const player = this.game.players().getById(uuid)
-		if (!player || !player.isAlive()) {
-			return
-		}
-		switch (direction) {
-		case "move.left":
-			player.move.l = button_down
-			break
-		case "move.right":
-			player.move.r = button_down
-			break
-		case "move.up":
-			player.move.u = button_down
-			player.look.u = button_down
-			break
-		case "move.down":
-			player.move.d = button_down
-			player.look.d = button_down
-			break
-		}
-	}
-
-	onItemSelection = (uuid: string, index: number, button_down: boolean) => {
-		if (!this.game) {
-			return
-		}
-		const player = this.game.players().getById(uuid)
-		if (!player || !player.isAlive() || !player.hasPowerUps() || !button_down) {
-			return
-		}
-		player.itemIndex(index)
-	}
-
-	private toModel = (projectile: Projectile) => {
-		// TODO: Improve ugly fix
-		return projectile instanceof Bomb ? projectile.toModel(projectile.getExplosion()) : projectile.toModel()
-	}
-
-	emitProjectiles = () => {
-		// Emit players
-		const players = this.game?.players().list().map(p => p.toModel()) ?? []
-		if (players.length > 0) this.io.emit("players", players)
-
-		const projectiles = this.game?.entities().list().map(this.toModel) ?? []
-		this.io.emit("projectiles", projectiles)
-
-		this.io.emit("map_layer", this.game.world().items().toModel())
-	}
+	io.emit("map_layer", getWorld().items().toModel())
 }

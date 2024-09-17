@@ -1,7 +1,7 @@
-import PlayerRepository from "./repository/PlayerRepository"
+import {getPlayerRepository} from "./repository/PlayerRepository"
 import {v4, v5} from "uuid"
 import WorldLoader, {useWorld1} from "./world/WorldLoader"
-import EntityRepository from "./repository/EntityRepository"
+import {getEntityRepository} from "./repository/EntityRepository"
 import {PowerType} from "./entities/PowerUp"
 import {TICK_SPEED} from "./constants"
 import {DamageCause} from "./entities/entity/Damage"
@@ -10,283 +10,291 @@ import Arrow from "./entities/projectile/Arrow"
 import Boomerang from "./entities/projectile/Boomerang"
 import Fireball from "./entities/projectile/Fireball"
 import Player from "./entities/entity/Player"
+import {sendMessage} from "./socket/PlayerSocket"
 
-export default class Game {
+export const getNow = () => Date.now()
 
-	private readonly VERSION: string = "?.?.?"
+let running = false
+let updated = getNow()
+let seed: string = v4()
 
-	private UUID_SEED: string = ""
+const uuid_seed = () => seed
 
-	private playerRepository!: PlayerRepository
-	private entityRepository!: EntityRepository
+const generateSeed = () => {
+	seed = v4()
+	console.log("Seed generated: ", uuid_seed())
+}
 
-	private running: boolean = false
-	private updated: number
+export const generate_uuid = () => v5(getNow().toString(), uuid_seed())
 
-	constructor(VERSION: string) {
-		this.VERSION = VERSION
-		this.updated = Game.getNow()
-		this.generate_seed()
+export const getWorld = (): WorldLoader => useWorld1()
+
+export const addPlayer = (uuid: string, socket_id: string): Player | null => {
+	const continue_player = getPlayerRepository().getConnected(uuid)
+	if (continue_player) {
+		// Reconnect
+		console.log("User reconnected", socket_id, uuid)
+		continue_player.reconnect(socket_id)
+		return continue_player
 	}
-
-	uuid_seed = () => this.UUID_SEED
-
-	generate_seed = () => {
-		this.UUID_SEED = v4()
-		console.log("Seed generated: ", this.uuid_seed())
-	}
-
-	generate_uuid = () => v5(Game.getNow() + "", this.uuid_seed())
-
-	version = () => this.VERSION
-
-	players = () => this.playerRepository
-
-	setPlayersRepository = (players: PlayerRepository) => this.playerRepository = players
-
-	entities = () => this.entityRepository
-
-	setEntityRepository = (entities: EntityRepository) => this.entityRepository = entities
-
-	world = (): WorldLoader => useWorld1()
-
-	addPlayer = (uuid: string, socket_id: string): Player | null => {
-		const continue_player = this.players().getConnected(uuid)
-		if (continue_player) {
-			// Reconnect
-			console.log("User reconnected", socket_id, uuid)
-			continue_player.reconnect(socket_id)
-			return continue_player
+	const player = getPlayerRepository().getById(uuid)
+	if (!player) {
+		// New player_id
+		const SPAWN_TILE = getWorld().pickRandomSpawnPoint()
+		if (!SPAWN_TILE) {
+			return null
 		}
-		const player = this.players().getById(uuid)
-		if (!player) {
-			// New player_id
-			const SPAWN_TILE = this.world().pickRandomSpawnPoint()
-			if (!SPAWN_TILE) {
-				return null
-			}
-			console.log("User connected", uuid)
-			return this.players().create(SPAWN_TILE, uuid, socket_id)
-		}
-		return null
+		console.log("User connected", uuid)
+		return getPlayerRepository().create(SPAWN_TILE, uuid, socket_id)
 	}
+	return null
+}
 
-	private updateTerrain = (delta: number) => {
-		const dangers = this.world().danger().tiles()
-		const solids = this.world().solids().tiles()
-		const semi_solids = this.world().semiSolids().tiles()
-		const power_up_spawns = this.world().items().tiles()
-		this.world().spawnPowerUp()
+const updateTerrain = (delta: number) => {
+	const dangers = getWorld().danger().tiles()
+	const solids = getWorld().solids().tiles()
+	const semi_solids = getWorld().semiSolids().tiles()
+	const power_up_spawns = getWorld().items().tiles()
+	getWorld().spawnPowerUp()
 
-		for (const entity of this.entities().list()) {
-			// Projectile loop
-			if (entity.isOverdue() || this.world().isEntityInVoid(entity)) {
-				this.entities().remove(entity)
-			} else {
-				entity.loopGravity(delta)
+	for (const entity of getEntityRepository().list()) {
+		// Projectile loop
+		if (entity.isOverdue() || getWorld().isEntityInVoid(entity)) {
+			getEntityRepository().remove(entity)
+		} else {
+			entity.loopGravity(delta)
 
-				entity.loop()
+			entity.loop()
 
-				for (const entity2 of this.entities().exclude(entity)) {
-					if (entity instanceof Bomb && entity2 instanceof Bomb) {
-						if (entity.isInOtherExplosion(entity2)) {
-							entity.explode()
-						}
+			for (const entity2 of getEntityRepository().exclude(entity)) {
+				if (entity instanceof Bomb && entity2 instanceof Bomb) {
+					if (entity.isInOtherExplosion(entity2)) {
+						entity.explode()
 					}
-					if (entity.collidesWith(entity2)) {
-						if (entity instanceof Bomb && !(entity2 instanceof Bomb)) {
-							entity.explode()
+				}
+				if (entity.collidesWith(entity2)) {
+					if (entity instanceof Bomb && !(entity2 instanceof Bomb)) {
+						entity.explode()
+						entity2.remove()
+					} else if (entity instanceof Fireball) {
+						if (!(entity2 instanceof Bomb)) {
 							entity2.remove()
-						} else if (entity instanceof Fireball) {
-							if (!(entity2 instanceof Bomb)) {
-								entity2.remove()
-							}
 						}
 					}
 				}
+			}
 
-				const solid = solids.find(t => entity.collidesWith(t))
-				const semi = semi_solids.find(t => entity.collidesWith(t))
+			const solid = solids.find(t => entity.collidesWith(t))
+			const semi = semi_solids.find(t => entity.collidesWith(t))
 
-				if (entity instanceof Bomb) {
-					if (solid && entity.isWalkingOn(solid) && entity.vy > 0) {
-						entity.y = solid.y - entity.height
-						entity.vx = 0
-						entity.vy = 0
-					}
-					if (semi && entity.isWalkingOn(semi) && entity.vy > 0) {
-						entity.y = semi.y - entity.height
-						entity.vx = 0
-						entity.vy = 0
-					}
-				} else if (entity instanceof Arrow || entity instanceof Fireball) {
-					if (solid && entity.collidesWith(solid)) {
-						entity.remove()
-					}
-				} else if (entity instanceof Boomerang) {
-					if (solid && entity.collidesWith(solid)) {
-						entity.retrieve()
-					}
+			if (entity instanceof Bomb) {
+				if (solid && entity.isWalkingOn(solid) && entity.vy > 0) {
+					entity.y = solid.y - entity.height
+					entity.vx = 0
+					entity.vy = 0
+				}
+				if (semi && entity.isWalkingOn(semi) && entity.vy > 0) {
+					entity.y = semi.y - entity.height
+					entity.vx = 0
+					entity.vy = 0
+				}
+			} else if (entity instanceof Arrow || entity instanceof Fireball) {
+				if (solid && entity.collidesWith(solid)) {
+					entity.remove()
+				}
+			} else if (entity instanceof Boomerang) {
+				if (solid && entity.collidesWith(solid)) {
+					entity.retrieve()
 				}
 			}
 		}
+	}
 
-		for (const player of this.players().alive()) {
-			// Player loop
-			if (this.world().isPlayerInVoid(player)) {
-				player.damage(100, DamageCause.FALL)
-			} else {
-				if (player.move.l && !player.look.l) {
-					player.look.l = true
-					player.look.r = false
-				} else if (player.move.l) {
-					player.x -= player.speedWalking
-					if (solids.find(t => player.collidesWith(t))) player.x += player.speedWalking
-				}
-				if (player.move.r && !player.look.r) {
-					player.look.r = true
-					player.look.l = false
-				} else if (player.move.r) {
-					player.x += player.speedWalking
-					if (solids.find(t => player.collidesWith(t))) player.x -= player.speedWalking
-				}
-				if (player.move.u && player.canJump() && !solids.find(t => player.collidesWith(t))) {
-					player.vy -= player.speedJumping
-					player.grounded = false
-				}
+	for (const player of getPlayerRepository().alive()) {
+		// Player loop
+		if (getWorld().isPlayerInVoid(player)) {
+			player.damage(100, DamageCause.FALL)
+		} else {
+			if (player.move.l && !player.look.l) {
+				player.look.l = true
+				player.look.r = false
+			} else if (player.move.l) {
+				player.x -= player.speedWalking
+				if (solids.find(t => player.collidesWith(t))) player.x += player.speedWalking
+			}
+			if (player.move.r && !player.look.r) {
+				player.look.r = true
+				player.look.l = false
+			} else if (player.move.r) {
+				player.x += player.speedWalking
+				if (solids.find(t => player.collidesWith(t))) player.x -= player.speedWalking
+			}
+			if (player.move.u && player.canJump() && !solids.find(t => player.collidesWith(t))) {
+				player.vy -= player.speedJumping
+				player.grounded = false
+			}
 
+			player.vy += player.gravity * delta
+			player.x += player.vx
+			player.y += player.vy
+
+
+			const solid = solids.find(t => player.collidesWith(t))
+			if (solid && player.vy > 0 && player.isWalkingOn(solid)) {
+				player.damageFall(player.vy)
+				player.y = solid.y - player.height
+				player.vy = 0
+				player.grounded = true
+			} else if (solid && player.vy > 0) {
+				player.damageFall(player.vy)
+				player.y = solid.y - player.height
+				player.vy = 0
+				player.grounded = true
+			} else if (solid && player.vy <= 0) {
+				player.y = solid.y + solid.height
+				player.vy = 0
+				player.grounded = false
+			}
+
+			if (player.move.d && semi_solids.find(t => player.isWalkingOn(t))) {
 				player.vy += player.gravity * delta
-				player.x += player.vx
-				player.y += player.vy
+			}
 
+			const semi_solid = semi_solids.find(t => player.isWalkingOn(t))
+			if (!player.move.d && semi_solid && player.vy > 0) {
+				player.damageFall(player.vy)
+				// If y-velocity is higher than 0 (falling)
+				player.y = semi_solid.y - player.height
+				player.vy = 0
+				player.grounded = true
+			}
 
-				const solid = solids.find(t => player.collidesWith(t))
-				if (solid && player.vy > 0 && player.isWalkingOn(solid)) {
-					player.damageFall(player.vy)
-					player.y = solid.y - player.height
-					player.vy = 0
-					player.grounded = true
-				} else if (solid && player.vy > 0) {
-					player.damageFall(player.vy)
-					player.y = solid.y - player.height
-					player.vy = 0
-					player.grounded = true
-				} else if (solid && player.vy <= 0) {
-					player.y = solid.y + solid.height
-					player.vy = 0
-					player.grounded = false
+			for (const other of getPlayerRepository().othersAlive(player)) {
+				player.hits(other)
+			}
+
+			for (const entity of getEntityRepository().list()) entity.loopPlayer(player)
+
+			for (const power_tile of power_up_spawns) {
+				if (player.isTouching(power_tile) && player.addPowerUp(power_tile.power_up)) {
+					power_tile.power_up = undefined
 				}
-
-				if (player.move.d && semi_solids.find(t => player.isWalkingOn(t))) {
-					player.vy += player.gravity * delta
+			}
+			const danger = dangers.find(t => player.collidesWith(t))
+			if (danger) {
+				player.damage(danger.damage, DamageCause.BLOCK, {tile: danger})
+			}
+		}
+		if (!player.isAlive()) {
+			switch (player.damaged()?.cause || DamageCause.NONE) {
+			case DamageCause.FALL:
+				sendMessage(`${player.name} found the end of the world.`)
+				break
+			case DamageCause.PLAYER:
+				sendMessage(`${player.name} was killed by ${player.damaged()?.player?.name || ""}.`)
+				break
+			case DamageCause.ITEM:
+				if (player.damaged()?.projectile instanceof Bomb) {
+					sendMessage(`${player.name} blew up.`)
+				} else if (player.damaged()?.projectile instanceof Arrow) {
+					sendMessage(`${player.name} is now a hedgehog.`)
+				} else if (player.damaged()?.projectile instanceof Boomerang) {
+					sendMessage(`${player.name} was killed by a boomerang.`)
+				} else if (player.damaged()?.projectile instanceof Fireball) {
+					sendMessage(`${player.name} went up in flames.`)
 				}
-
-				const semi_solid = semi_solids.find(t => player.isWalkingOn(t))
-				if (!player.move.d && semi_solid && player.vy > 0) {
-					player.damageFall(player.vy)
-					// If y-velocity is higher than 0 (falling)
-					player.y = semi_solid.y - player.height
-					player.vy = 0
-					player.grounded = true
+				break
+			case DamageCause.BLOCK:
+				const tile = player.damaged()?.tile
+				if (tile?.name === "spikes") {
+					sendMessage(`${player.name} had a prickly end.`)
+				} else {
+					sendMessage(`${player.name} was crushed ${tile?.name || ""}.`)
 				}
-
-				for (const other of this.players().othersAlive(player)) {
-					player.hits(other)
-				}
-
-				for (const entity of this.entities().list()) entity.loopPlayer(player)
-
-				for (const power_tile of power_up_spawns) {
-					if (player.isTouching(power_tile) && player.addPowerUp(power_tile.power_up)) {
-						power_tile.power_up = undefined
-					}
-				}
-				const danger = dangers.find(t => player.collidesWith(t))
-				if (danger) {
-					player.damage(danger.damage, DamageCause.BLOCK, {tile: danger})
-				}
+				break
+			default:
+				sendMessage(`${player.name} died.`)
+				break
 			}
 		}
 	}
+}
 
-	private checkDisconnectedPlayers = () => {
-		for (const player of this.players().disconnected()) {
-			console.log("Remove player:", player.id)
-			this.players().remove(player)
-		}
+const checkDisconnectedPlayers = () => {
+	for (const player of getPlayerRepository().disconnected()) {
+		console.log("Remove player:", player.id)
+		getPlayerRepository().remove(player)
 	}
+}
 
-	private checkRespawnPlayers = () => {
-		for (const player of this.players().respawns()) {
-			console.log("Respawn player:", player.id)
-			const spawn = this.world().pickRandomSpawnPoint()
-			if (spawn) player.respawn(spawn)
-		}
+const checkRespawnPlayers = () => {
+	for (const player of getPlayerRepository().respawns()) {
+		console.log("Respawn player:", player.id)
+		const spawn = getWorld().pickRandomSpawnPoint()
+		if (spawn) player.respawn(spawn)
 	}
+}
 
-	private tick = (delta: number) => {
-		this.updateTerrain(delta)
-		this.checkRespawnPlayers()
-		this.checkDisconnectedPlayers()
+const tick = (delta: number) => {
+	updateTerrain(delta)
+	checkRespawnPlayers()
+	checkDisconnectedPlayers()
+}
+
+const loop = (run: () => void) => {
+	let now = getNow()
+	tick(now - updated)
+	run()
+	updated = now
+	if (!getPlayerRepository().filled()) stopGame()
+	if (running) setTimeout(() => loop(run), TICK_SPEED)
+}
+
+export const startGame = (run: () => void) => {
+	if (!running) {
+		generateSeed()
+		running = true
+		console.log("Started game loop")
+		updated = getNow()
+		loop(run)
 	}
+}
 
-	private loop = (run: () => void) => {
-		let now = Game.getNow()
-		this.tick(now - this.updated)
-		run()
-		this.updated = now
-		if (!this.players().filled()) this.stop()
-		if (this.running) setTimeout(() => this.loop(run), TICK_SPEED)
+const stopGame = () => {
+	console.log("Stopped game loop")
+	running = false
+	getWorld().clearPowerUps()
+	generateSeed()
+}
+export const throwItem = (uuid: string) => {
+	const player = getPlayerRepository().getById(uuid)
+	if (!player || !player.isAlive()) {
+		return
 	}
-
-	start = (run: () => void) => {
-		if (!this.running) {
-			this.running = true
-			console.log("Started game loop")
-			this.updated = Game.getNow()
-			this.loop(run)
-		}
+	const powerUp = player.getSelectedPowerUp()
+	if (!powerUp) {
+		player.doSwing()
+		return
 	}
-
-	stop = () => {
-		console.log("Stopped game loop")
-		this.running = false
-		this.world().clearPowerUps()
-		this.generate_seed()
+	switch (powerUp.type) {
+	case PowerType.ARROW:
+		player.usePowerUp(powerUp)
+		getEntityRepository().shootArrow(player)
+		break
+	case PowerType.BOMB:
+		player.usePowerUp(powerUp)
+		getEntityRepository().placeBomb(player)
+		break
+	case PowerType.BOOMERANG:
+		player.usePowerUp(powerUp)
+		getEntityRepository().throwBoomerang(player)
+		break
+	case PowerType.FIREBALL:
+		player.usePowerUp(powerUp)
+		getEntityRepository().throwFireball(player)
+		break
+	case PowerType.SWORD:
+		player.doSwing()
+		break
 	}
-
-	throwItem = (uuid: string) => {
-		const player = this.players().getById(uuid)
-		if (!player || !player.isAlive()) {
-			return
-		}
-		const powerUp = player.getSelectedPowerUp()
-		if (!powerUp) {
-			player.doSwing()
-			return
-		}
-		switch (powerUp.type) {
-		case PowerType.ARROW:
-			player.usePowerUp(powerUp)
-			this.entities().shootArrow(player)
-			break
-		case PowerType.BOMB:
-			player.usePowerUp(powerUp)
-			this.entities().placeBomb(player)
-			break
-		case PowerType.BOOMERANG:
-			player.usePowerUp(powerUp)
-			this.entities().throwBoomerang(player)
-			break
-		case PowerType.FIREBALL:
-			player.usePowerUp(powerUp)
-			this.entities().throwFireball(player)
-			break
-		case PowerType.SWORD:
-			player.doSwing()
-			break
-		}
-	}
-
-	public static getNow = () => Date.now()
 }

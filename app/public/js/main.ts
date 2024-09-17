@@ -75,6 +75,10 @@ import {TileLayerModel} from "./model/TileModel"
 		data.setMapLayer(map_data)
 	})
 
+	socket.on("message", (message: string) => {
+		data.addMessage(message)
+	})
+
 	socket.on("textures", async (textures: string[]) => {
 		for (const texture of textures) {
 			await images.addImage(texture)

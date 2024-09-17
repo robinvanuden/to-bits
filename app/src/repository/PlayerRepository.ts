@@ -97,12 +97,17 @@ export default class PlayerRepository {
 
 	alive = () => this.players.filter(p => p.isAlive())
 
+	dead = () => this.players.filter(p => !p.isAlive())
+
 	disconnected = () => this.players.filter(p => p.isTimedOut())
 
 	respawns = () => this.players.filter(p => p.isRespawnAble())
 
-	create = (spawn: MapTile, id: string, socket: string) =>
-		this.players.push(new Player(id, socket, this.randomName(), this.randomColor(), this.randomMask(), spawn))
+	create = (spawn: MapTile, id: string, socket: string) => {
+		const player = new Player(id, socket, this.randomName(), this.randomColor(), this.randomMask(), spawn)
+		this.players.push(player)
+		return player
+	}
 
 	remove = (player: Player) => this.players = this.players.filter(p => p.id !== player.id)
 
@@ -111,4 +116,12 @@ export default class PlayerRepository {
 	getConnected = (id: string) => this.players.find(player => player.id === id && player.isDangling()) ?? null
 
 	othersAlive = (player: Player) => this.players.filter(p => p.id !== player.id && player.isAlive())
+}
+
+let repository: PlayerRepository | undefined
+
+export const getPlayerRepository = () => {
+	if (repository) return repository
+	repository = new PlayerRepository()
+	return repository
 }

@@ -1,7 +1,7 @@
 import {Router} from "express"
 import sharp from "sharp"
 import path from "path"
-import PlayerRepository from "../repository/PlayerRepository"
+import {getPlayerRepository} from "../repository/PlayerRepository"
 import Color from "color"
 import {COOKIE_PLAYER_ID} from "../constants"
 
@@ -53,7 +53,7 @@ const generateDamagedCharacter = async (walk_type: number) => {
 	]).grayscale(true).gamma(3).modulate({brightness: 100, lightness: 100})
 }
 
-export default function (players: PlayerRepository) {
+export default function () {
 
 	const image_router = Router()
 
@@ -74,7 +74,7 @@ export default function (players: PlayerRepository) {
 		}
 		const left = (req.params.direction || "l") === "l"
 		const walk = (req.params.walk || "0") === "0" ? 0 : 1
-		const player = players.getById(uuid)
+		const player = getPlayerRepository().getById(uuid)
 		if (!player) {
 			res.sendStatus(404)
 			return
@@ -92,7 +92,7 @@ export default function (players: PlayerRepository) {
 			return
 		}
 		const left = (req.params.direction || "l") === "l"
-		const player = players.getById(uuid)
+		const player = getPlayerRepository().getById(uuid)
 		if (!player) {
 			res.sendStatus(404)
 			return
@@ -136,7 +136,7 @@ export default function (players: PlayerRepository) {
 
 	image_router.get("/favicon.ico", async (req, res) => {
 		const uuid = req.cookies[COOKIE_PLAYER_ID] || ""
-		const player = players.getById(uuid)
+		const player = getPlayerRepository().getById(uuid)
 		const mask = player?.mask || 1
 		const color = player?.color || "hsl(0, 55%, 55%)"
 		const char = await generateCharacter(color, mask, 0)

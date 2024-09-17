@@ -40,22 +40,22 @@ export default class WorldLoader {
 		for (const layer of this.world.layers) {
 			switch (layer.name) {
 			case "decor":
-				this._decor = new LayerLoader(this.world, layer, this.sets, this.seed())
+				this._decor = new LayerLoader(this.world, layer, this.sets)
 				break
 			case "danger":
-				this._danger = new LayerLoader(this.world, layer, this.sets, this.seed())
+				this._danger = new LayerLoader(this.world, layer, this.sets)
 				break
 			case "solids":
-				this._solids = new LayerLoader(this.world, layer, this.sets, this.seed())
+				this._solids = new LayerLoader(this.world, layer, this.sets)
 				break
 			case "items":
-				this._items = new LayerLoader(this.world, layer, this.sets, this.seed())
+				this._items = new LayerLoader(this.world, layer, this.sets)
 				break
 			case "semi_solids":
-				this._semiSolids = new LayerLoader(this.world, layer, this.sets, this.seed())
+				this._semiSolids = new LayerLoader(this.world, layer, this.sets)
 				break
 			case "spawns":
-				this._spawns = new LayerLoader(this.world, layer, this.sets, this.seed())
+				this._spawns = new LayerLoader(this.world, layer, this.sets)
 				break
 			}
 		}

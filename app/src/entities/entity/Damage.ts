@@ -1,12 +1,11 @@
 import MapTile from "../../world/MapTile"
 import Player from "./Player"
-import PlayerModel from "../../types/model/PlayerModel"
 import ProjectileModel from "../../types/model/ProjectileModel"
 import MapTileModel from "../../types/model/MapTileModel"
 import Projectile from "../Projectile"
 
 
-export enum DamageCause {FALL, PLAYER, ITEM, BLOCK}
+export enum DamageCause {NONE, FALL, PLAYER, ITEM, BLOCK}
 
 
 export default interface Damage {
@@ -27,7 +26,7 @@ export interface DamageContext {
 export interface DamageModel {
 	val: number
 	cau: DamageCause
-	ply: PlayerModel | undefined
+	ply: string
 	ent: ProjectileModel | undefined
 	tle: MapTileModel | undefined
 	tme: number
@@ -40,7 +39,7 @@ export const damageToModel = (damage: Damage | undefined): DamageModel | undefin
 	return {
 		val: damage.value,
 		cau: damage.cause,
-		ply: damage.player?.toModel(),
+		ply: damage.player?.name || "",
 		ent: damage.projectile?.toModel(),
 		tle: damage.tile?.toModel(),
 		tme: damage.timestamp,

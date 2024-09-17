@@ -33,3 +33,11 @@ export default class EntityRepository {
 		this.entities = this.entities.filter(e => !entity.equals(e))
 	}
 }
+
+let repository: EntityRepository | undefined
+
+export const getEntityRepository = () => {
+	if (repository) return repository
+	repository = new EntityRepository()
+	return repository
+}

@@ -5,6 +5,7 @@ import Entity from "../entities/Entity"
 import path from "path"
 
 export default class MapTile extends Entity {
+	private readonly _name: string
 	private readonly _source: string
 	private readonly _offset_x: number
 	private readonly _offset_y: number
@@ -13,6 +14,7 @@ export default class MapTile extends Entity {
 
 	constructor(id: number, x: number, y: number, item: TiledTile) {
 		super(x, y, item.tilewidth, item.tileheight, String(id))
+		this._name = item.name
 		this._source = item.source
 		this._offset_x = item.offset_x
 		this._offset_y = item.offset_y
@@ -26,6 +28,10 @@ export default class MapTile extends Entity {
 			this._damage = 55
 			break
 		}
+	}
+
+	public get name() {
+		return this._name
 	}
 
 	public get damage() {
