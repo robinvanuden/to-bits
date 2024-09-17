@@ -108,8 +108,12 @@ export default class Map {
 		}
 		for (const layer of this.data.map()) {
 			for (const tile of layer.ls) {
-				if (tile.t.i) {
-					if ((!tile.p && layer.n === "solids") || (!tile.p && layer.n === "semi_solids") || (!tile.p && layer.n === "danger") || (tile.p && layer.n === "items")) {
+				if (tile.t.i && !tile.p) {
+					switch (layer.n) {
+					case "solids":
+					case "semi_solids":
+					case "teleports":
+					case "danger":
 						this.ctx.drawImage(
 							this.images.loadImage(tile.t.i),
 							tile.t.x,
@@ -121,7 +125,25 @@ export default class Map {
 							this.canvas.size(tile.w),
 							this.canvas.size(tile.h)
 						)
+						break
 					}
+				}
+			}
+		}
+		for (const layer of this.data.map().filter(l => l.n === "items")) {
+			for (const tileItem of layer.ls) {
+				if (tileItem.t.i && tileItem.p) {
+					this.ctx.drawImage(
+						this.images.loadImage(tileItem.t.i),
+						tileItem.t.x,
+						tileItem.t.y,
+						tileItem.t.w,
+						tileItem.t.h,
+						this.canvas.size(tileItem.x) - this.cx,
+						this.canvas.size(tileItem.y) - this.cy,
+						this.canvas.size(tileItem.w),
+						this.canvas.size(tileItem.h)
+					)
 				}
 			}
 		}

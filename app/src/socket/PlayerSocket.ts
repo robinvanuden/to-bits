@@ -9,6 +9,7 @@ import Projectile from "../entities/Projectile"
 import Bomb from "../entities/entity/Bomb"
 import {getPlayerRepository} from "../repository/PlayerRepository"
 import {getEntityRepository} from "../repository/EntityRepository"
+import {Direction} from "../types/model/PlayerModel"
 
 let code: number
 let io: Server
@@ -46,6 +47,7 @@ export const startSocketServer = (server: ModServer<unknown, unknown>, codeNum: 
 		client.emit("textures", getWorld().tileSources())
 		client.emit("map_layer", getWorld().solids().toModel())
 		client.emit("map_layer", getWorld().semiSolids().toModel())
+		client.emit("map_layer", getWorld().teleports().toModel())
 		client.emit("map_layer", getWorld().decor().toModel())
 		client.emit("map_layer", getWorld().danger().toModel())
 
@@ -53,10 +55,12 @@ export const startSocketServer = (server: ModServer<unknown, unknown>, codeNum: 
 		client.on("move.right", (bool: boolean) => onMovement(uuid, "move.right", bool))
 		client.on("move.up", (bool: boolean) => onMovement(uuid, "move.up", bool))
 		client.on("move.down", (bool: boolean) => onMovement(uuid, "move.down", bool))
+		client.on("move.interact", (bool: boolean) => onMovement(uuid, "move.interact", bool))
 
 		client.on("item.1", (bool: boolean) => onItemSelection(uuid, 0, bool))
 		client.on("item.2", (bool: boolean) => onItemSelection(uuid, 1, bool))
 		client.on("item.3", (bool: boolean) => onItemSelection(uuid, 2, bool))
+
 
 		client.on("move.action", (bool: boolean) => {
 			if (!bool) onAction(uuid)
@@ -85,22 +89,27 @@ const onMovement = (uuid: string, direction: string, button_down: boolean) => {
 	if (!player || !player.isAlive()) {
 		return
 	}
+	const move: Direction = {u: player.move.u, r: player.move.r, d: player.move.d, l: player.move.l}
 	switch (direction) {
 	case "move.left":
-		player.move.l = button_down
+		move.l = button_down
 		break
 	case "move.right":
-		player.move.r = button_down
+		move.r = button_down
 		break
 	case "move.up":
-		player.move.u = button_down
+		move.u = button_down
 		player.look.u = button_down
 		break
 	case "move.down":
-		player.move.d = button_down
+		move.d = button_down
 		player.look.d = button_down
 		break
+	case "move.interact":
+		player.interact = button_down
+		break
 	}
+	player.setMove(move)
 }
 
 const onItemSelection = (uuid: string, index: number, button_down: boolean) => {

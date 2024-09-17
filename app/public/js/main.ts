@@ -122,6 +122,9 @@ import {TileLayerModel} from "./model/TileModel"
 		} else if (key === "s") {
 			socket.emit("move.down", pressed)
 		}
+		if (key === "e") {
+			socket.emit("move.interact", pressed)
+		}
 		if (!pressed && key === " ") {
 			socket.emit("move.action", pressed)
 		}

@@ -55,6 +55,7 @@ const updateTerrain = (delta: number) => {
 	const solids = getWorld().solids().tiles()
 	const semi_solids = getWorld().semiSolids().tiles()
 	const power_up_spawns = getWorld().items().tiles()
+	const teleports = getWorld().teleports().tiles()
 	getWorld().spawnPowerUp()
 
 	for (const entity of getEntityRepository().list()) {
@@ -183,6 +184,14 @@ const updateTerrain = (delta: number) => {
 			const danger = dangers.find(t => player.collidesWith(t))
 			if (danger) {
 				player.damage(danger.damage, DamageCause.BLOCK, {tile: danger})
+			}
+			const teleport = teleports.find(t => player.collidesWith(t))
+			if (teleport && player.interact) {
+				const random = getWorld().pickRandomTeleport()
+				if (random) {
+					player.interact = false
+					player.teleport(random)
+				}
 			}
 		}
 		if (!player.isAlive()) {

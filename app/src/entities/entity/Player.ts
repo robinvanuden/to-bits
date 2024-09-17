@@ -5,6 +5,7 @@ import PlayerModel, {Direction} from "../../types/model/PlayerModel"
 import Entity from "../Entity"
 import HitBox from "./HitBox"
 import Damage, {DamageCause, DamageContext, damageToModel} from "./Damage"
+import {getNow} from "../../game"
 
 const PLAYER_TIMEOUT = 10_000
 
@@ -32,6 +33,7 @@ export default class Player extends Entity {
 
 	public gravity: number
 	public grounded: boolean
+	public interact: boolean
 
 	private healthPoints: number
 	private readonly healthPointsMax: number
@@ -48,7 +50,12 @@ export default class Player extends Entity {
 	private readonly hitPoints: number
 
 	public look: Direction
-	public move: Direction
+	public _move: Direction
+	public _moveTime: number
+
+	get move() {
+		return this._move
+	}
 
 	private power_ups: PowerUp[] = []
 	private power_selected: number = 0
@@ -80,13 +87,15 @@ export default class Player extends Entity {
 			l: false,
 			r: true
 		}
-		this.move = {
-			u: false,
-			d: false,
-			l: false,
-			r: false
-		}
+		this._move = {u: false, d: false, l: false, r: false}
+		this._moveTime = getNow()
+		this.interact = false
 		this.power_ups = []
+	}
+
+	public setMove(direction: Direction) {
+		this._move = direction
+		this._moveTime = getNow()
 	}
 
 	isAlive = (): boolean => this.timeDied < 0
@@ -144,13 +153,18 @@ export default class Player extends Entity {
 		this.look = {u: false, d: false, l: false, r: true}
 	}
 
+	teleport(spawn: MapTile) {
+		this.x = spawn.x
+		this.y = spawn.y
+	}
+
 	private kill = () => {
 		this.timeDied = this.getNow()
 		this.healthPoints = 0
 		this.vx = 0
 		this.vy = 0
 		this.gravity = 0
-		this.move = {u: false, d: false, l: false, r: false}
+		this.setMove({u: false, d: false, l: false, r: false})
 		// Clear items
 		this.power_ups = []
 		this.power_selected = 0
@@ -247,7 +261,7 @@ export default class Player extends Entity {
 		tod: this.timeDied,
 		tdc: this.timeDisconnected,
 		l: this.look,
-		m: this.move,
+		m: this._move,
 		pu: this.power_ups.map(p => p.toModel()),
 		ps: this.power_selected
 	})
@@ -262,12 +276,12 @@ export default class Player extends Entity {
 		console.log("Reconnected", socket_id)
 		this.socket_id = socket_id
 		this.timeDisconnected = -1
-		this.move = {u: false, d: false, l: false, r: false}
+		this.setMove({u: false, d: false, l: false, r: false})
 	}
 
 	disconnect = () => {
 		this.socket_id = ""
 		this.timeDisconnected = this.getNow()
-		this.move = {u: false, d: false, l: false, r: false}
+		this.setMove({u: false, d: false, l: false, r: false})
 	}
 }

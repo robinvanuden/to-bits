@@ -5,7 +5,6 @@ import MapTile from "./MapTile"
 import Player from "../entities/entity/Player"
 import TileSetLoader from "./TileSetLoader"
 import LayerLoader from "./LayerLoader"
-import {v4} from "uuid"
 import Projectile from "../entities/Projectile"
 
 export default class WorldLoader {
@@ -14,17 +13,17 @@ export default class WorldLoader {
 	private readonly world: TiledWorld
 	private sets: TileSetLoader[] = []
 
-	private readonly _seed!: string
 	private readonly _spawns!: LayerLoader
 	private readonly _items!: LayerLoader
+	private readonly _teleports!: LayerLoader
 	private readonly _solids!: LayerLoader
 	private readonly _danger!: LayerLoader
 	private readonly _semiSolids!: LayerLoader
 	private readonly _decor!: LayerLoader
 
-	public seed = () => this._seed
 	public spawns = () => this._spawns
 	public items = () => this._items
+	public teleports = () => this._teleports
 	public solids = () => this._solids
 	public danger = () => this._danger
 	public semiSolids = () => this._semiSolids
@@ -32,7 +31,6 @@ export default class WorldLoader {
 
 	constructor(name: string) {
 		this.isDev = (process.env?.NODE_ENV || "development") === "development"
-		this._seed = v4()
 		this.world = this.loadJsonMap(name + ".json")
 		for (const set of this.world.tilesets) {
 			this.sets.push(new TileSetLoader(set.source, set.firstgid))
@@ -47,6 +45,9 @@ export default class WorldLoader {
 				break
 			case "solids":
 				this._solids = new LayerLoader(this.world, layer, this.sets)
+				break
+			case "teleports":
+				this._teleports = new LayerLoader(this.world, layer, this.sets)
 				break
 			case "items":
 				this._items = new LayerLoader(this.world, layer, this.sets)
@@ -67,6 +68,12 @@ export default class WorldLoader {
 
 	pickRandomSpawnPoint = (): MapTile | undefined => {
 		const spawns = this.spawns().tiles().filter(t => t !== undefined)
+		const picked = Math.ceil(Math.random() * spawns.length) - 1
+		return spawns[picked] || spawns[0] || undefined
+	}
+
+	pickRandomTeleport = (): MapTile | undefined => {
+		const spawns = this.teleports().tiles().filter(t => t !== undefined)
 		const picked = Math.ceil(Math.random() * spawns.length) - 1
 		return spawns[picked] || spawns[0] || undefined
 	}
