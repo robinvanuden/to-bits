@@ -10,7 +10,7 @@ import Arrow from "./entities/projectile/Arrow"
 import Boomerang from "./entities/projectile/Boomerang"
 import Fireball from "./entities/projectile/Fireball"
 import Player from "./entities/entity/Player"
-import {sendMessage} from "./socket/PlayerSocket"
+import {broadcastPlayerAdd, broadcastPlayerRemove, sendMessage} from "./socket/PlayerSocket"
 
 export const getNow = () => Date.now()
 
@@ -225,6 +225,7 @@ const updateTerrain = (delta: number) => {
 				sendMessage(`${player.name} died.`)
 				break
 			}
+			broadcastPlayerAdd(player)
 		}
 	}
 }
@@ -232,6 +233,7 @@ const updateTerrain = (delta: number) => {
 const checkDisconnectedPlayers = () => {
 	for (const player of getPlayerRepository().disconnected()) {
 		console.log("Remove player:", player.id)
+		broadcastPlayerRemove(player)
 		getPlayerRepository().remove(player)
 	}
 }
@@ -240,7 +242,10 @@ const checkRespawnPlayers = () => {
 	for (const player of getPlayerRepository().respawns()) {
 		console.log("Respawn player:", player.id)
 		const spawn = getWorld().pickRandomSpawnPoint()
-		if (spawn) player.respawn(spawn)
+		if (spawn) {
+			player.respawn(spawn)
+			broadcastPlayerAdd(player)
+		}
 	}
 }
 

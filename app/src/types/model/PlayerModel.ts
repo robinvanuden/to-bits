@@ -27,5 +27,20 @@ export default interface PlayerModel {
   l: Direction
   m: Direction
   pu: PowerUpModel[]
-	ps: number
+	ps: number // Power selected
+}
+
+export interface PlayerUpdateModel {
+	uid: string
+	x: number // x-coord
+	y: number // y-coord
+	vx: number // x-coord
+	vy: number // y-coord
+	hp: number // healthPoints
+	hpm: number // healthPointsMax
+	dmg?: DamageModel // time damaged
+	l: Direction
+	m: Direction
+	pu: PowerUpModel[]
+	ps: number // Power selected
 }

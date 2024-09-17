@@ -10,6 +10,7 @@ import Bomb from "../entities/entity/Bomb"
 import {getPlayerRepository} from "../repository/PlayerRepository"
 import {getEntityRepository} from "../repository/EntityRepository"
 import {Direction} from "../types/model/PlayerModel"
+import Player from "../entities/entity/Player"
 
 let code: number
 let io: Server
@@ -44,6 +45,13 @@ export const startSocketServer = (server: ModServer<unknown, unknown>, codeNum: 
 
 		sendMessage(`${player.name} joined the game.`)
 
+		broadcastPlayerAdd(player)
+
+		const players = getPlayerRepository().list().map(p => p.toModel()) ?? []
+		if (players.length > 0) {
+			client.emit("players", players)
+		}
+
 		client.emit("textures", getWorld().tileSources())
 		client.emit("map_layer", getWorld().solids().toModel())
 		client.emit("map_layer", getWorld().semiSolids().toModel())
@@ -61,7 +69,6 @@ export const startSocketServer = (server: ModServer<unknown, unknown>, codeNum: 
 		client.on("item.2", (bool: boolean) => onItemSelection(uuid, 1, bool))
 		client.on("item.3", (bool: boolean) => onItemSelection(uuid, 2, bool))
 
-
 		client.on("move.action", (bool: boolean) => {
 			if (!bool) onAction(uuid)
 		})
@@ -77,6 +84,14 @@ export const startSocketServer = (server: ModServer<unknown, unknown>, codeNum: 
 
 		startGame(emitProjectiles)
 	})
+}
+
+export const broadcastPlayerAdd = (player: Player) => {
+	io?.emit("playerAdd", player.toModel())
+}
+
+export const broadcastPlayerRemove = (player: Player) => {
+	io?.emit("playerRemove", player.uid)
 }
 
 
@@ -125,13 +140,15 @@ const toModel = (projectile: Projectile) => projectile instanceof Bomb ? project
 
 const emitProjectiles = () => {
 	// Emit players
-	const players = getPlayerRepository().list().map(p => p.toModel()) ?? []
+	const players = getPlayerRepository().listActive().map(p => p.toUpdateModel()) ?? []
 	if (players.length > 0) {
-		io.emit("players", players)
+		io.emit("players_update", players)
 	}
 
 	const projectiles = getEntityRepository().list().map(toModel) ?? []
-	io.emit("projectiles", projectiles)
+	if (projectiles.length > 0) {
+		io.emit("projectiles", projectiles)
+	}
 
 	io.emit("map_layer", getWorld().items().toModel())
 }

@@ -94,6 +94,21 @@ import {TileLayerModel} from "./model/TileModel"
 		}
 	})
 
+	socket.on("players_update", async models => {
+		data.updatePlayers(models)
+	})
+
+	socket.on("playerAdd", async player => {
+		console.log("playerAdd")
+		data.addPlayer(player)
+		// Load textures of players
+		await images.loadAllPlayer(player.uid)
+	})
+
+	socket.on("playerRemove", async player => {
+		data.removePlayer(player)
+	})
+
 	socket.on("projectiles", projectiles => {
 		data.setProjectiles(projectiles)
 		// TODO: Add texture load

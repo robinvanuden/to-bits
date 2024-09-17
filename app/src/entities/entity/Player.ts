@@ -1,7 +1,7 @@
 import PowerUp, {PowerType} from "../PowerUp"
 import MapTile from "../../world/MapTile"
 import {GRAVITY} from "../../constants"
-import PlayerModel, {Direction} from "../../types/model/PlayerModel"
+import PlayerModel, {Direction, PlayerUpdateModel} from "../../types/model/PlayerModel"
 import Entity from "../Entity"
 import HitBox from "./HitBox"
 import Damage, {DamageCause, DamageContext, damageToModel} from "./Damage"
@@ -98,7 +98,13 @@ export default class Player extends Entity {
 		this._moveTime = getNow()
 	}
 
+	get uid(): string {
+		return this.socket_id
+	}
+
 	isAlive = (): boolean => this.timeDied < 0
+
+	hasMoved = (): boolean => this._moveTime + 1000 > getNow()
 
 	hasPowerUps = (): boolean => this.power_ups.length > 0
 
@@ -151,6 +157,7 @@ export default class Player extends Entity {
 		this.y = spawn.y
 		this.gravity = PLAYER_GRAVITY
 		this.look = {u: false, d: false, l: false, r: true}
+		this.setMove({u: false, d: false, l: false, r: false})
 	}
 
 	teleport(spawn: MapTile) {
@@ -260,6 +267,21 @@ export default class Player extends Entity {
 		dmg: damageToModel(this.damageTaken),
 		tod: this.timeDied,
 		tdc: this.timeDisconnected,
+		l: this.look,
+		m: this._move,
+		pu: this.power_ups.map(p => p.toModel()),
+		ps: this.power_selected
+	})
+
+	toUpdateModel = (): PlayerUpdateModel => ({
+		uid: this.id,
+		hp: this.healthPoints,
+		hpm: this.healthPointsMax,
+		x: this.x,
+		y: this.y,
+		vx: this.vx,
+		vy: this.vy,
+		dmg: damageToModel(this.damageTaken),
 		l: this.look,
 		m: this._move,
 		pu: this.power_ups.map(p => p.toModel()),

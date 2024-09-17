@@ -19,6 +19,7 @@ The environment update. More coming soon!
     - [ ] Crystals
     - [ ] Lava
 - [ ] Player can stoop when holding down
+- [ ] Added lobbies instead of a fixed world.
 
 ### Changed
 
@@ -35,17 +36,16 @@ The HUD update!
     - [x] The players name
     - [x] Inventory items
 - [ ] Backend event separation
-    - [ ] Events for joining or disconnecting players.
+    - [x] Events for joining or disconnecting players.
     - [ ] Events for projectiles
     - [ ] Events for player movement
-- [ ] Event messages on screen (join, death, etc)
-- [ ] Added lobbies instead of a fixed world.
+- [x] Event messages on screen (join, death, etc)
 
 ### Changed
 
 - [x] Player color picking now checks existing player colors
     - Before some players had the same color which could be confusing
-- [ ] Update only the movement of players but not all the player data.
+- [x] Update only the movement of players but not all the player data.
 - [ ] Update only tiles that are affected to change, not the entire map layer
 - [ ] Events are more separated. Only push small updates
     - Players join/leave

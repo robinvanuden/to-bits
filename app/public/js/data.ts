@@ -1,5 +1,5 @@
 import {TileLayerModel} from "./model/TileModel"
-import PlayerModel from "./model/PlayerModel"
+import PlayerModel, {PlayerUpdateModel} from "./model/PlayerModel"
 import EntityModel from "./model/EntityModel"
 
 interface Message {
@@ -31,9 +31,39 @@ export default class Data {
 
 	map = () => this._map
 
-	setPlayers = (players: PlayerModel[]) => {
-		const uuids = players.map(p => p.uid)
-		this._players = players.filter(p => uuids.includes(p.uid))
+	setPlayers = (models: PlayerModel[]) => {
+		this._players = []
+		this._players.push(...models)
+	}
+
+	updatePlayers = (models: PlayerUpdateModel[]) => {
+		for (const model of models) {
+			for (const player of this._players) {
+				if (player.uid === model.uid) {
+					player.uid = model.uid
+					player.x = model.x
+					player.y = model.y
+					player.vx = model.vx
+					player.vy = model.vy
+					player.hp = model.hp
+					player.hpm = model.hpm
+					player.dmg = model.dmg
+					player.l = model.l
+					player.m = model.m
+					player.pu = model.pu
+					player.ps = model.ps
+				}
+			}
+		}
+	}
+
+	addPlayer = (player: PlayerModel) => {
+		this._players = this._players.filter(p => p.uid !== player.uid)
+		this._players.push(player)
+	}
+
+	removePlayer = (uid: string) => {
+		this._players = this._players.filter(p => p.uid !== uid)
 	}
 
 	players = () => this._players

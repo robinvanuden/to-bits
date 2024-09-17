@@ -93,6 +93,8 @@ export default class PlayerRepository {
 
 	list = () => this.players
 
+	listActive = () => this.players.filter(p => p.hasMoved())
+
 	filled = () => this.players.length > 0
 
 	alive = () => this.players.filter(p => p.isAlive())
