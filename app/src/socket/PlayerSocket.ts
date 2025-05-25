@@ -146,9 +146,7 @@ const emitProjectiles = () => {
 	}
 
 	const projectiles = getEntityRepository().list().map(toModel) ?? []
-	if (projectiles.length > 0) {
-		io.emit("projectiles", projectiles)
-	}
+	io.emit("projectiles", projectiles)
 
 	io.emit("map_layer", getWorld().items().toModel())
 }

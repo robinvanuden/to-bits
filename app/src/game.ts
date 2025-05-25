@@ -174,7 +174,9 @@ const updateTerrain = (delta: number) => {
 				player.hits(other)
 			}
 
-			for (const entity of getEntityRepository().list()) entity.loopPlayer(player)
+			for (const entity of getEntityRepository().list()) {
+				entity.loopPlayer(player)
+			}
 
 			for (const power_tile of power_up_spawns) {
 				if (player.isTouching(power_tile) && player.addPowerUp(power_tile.power_up)) {

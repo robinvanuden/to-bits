@@ -66,8 +66,8 @@ export default class Hud {
 		this.ctx.fillRect(0, 0, this.canvas.width(), this.canvas.height())
 
 		const died = this.images.loadImage("/word/you died!.png")
-		const died_width = died.width * 8
-		const died_height = died.height * 8
+		const died_width = died.width * 4
+		const died_height = died.height * 4
 		const died_x = (this.canvas.width() * .5) - (died_width * .5)
 		const died_y = (this.canvas.height() * .5) - (died_height * .5)
 		this.ctx.drawImage(
@@ -100,8 +100,8 @@ export default class Hud {
 		} else {
 			respawn = respawn_0
 		}
-		const respawn_width = respawn.width * 2
-		const respawn_height = respawn.height * 2
+		const respawn_width = respawn.width
+		const respawn_height = respawn.height
 		const respawn_x = (this.canvas.width() * .5) - (respawn_width * .5)
 		const respawn_y = (this.canvas.height() * .5) - (respawn_height * .5) + this.canvas.size(30)
 		this.ctx.drawImage(
@@ -116,8 +116,8 @@ export default class Hud {
 		this.ctx.fillStyle = this.COLOR_BLACK
 		this.ctx.fillRect(0, 0, this.canvas.width(), this.canvas.height())
 		const loading = this.images.loadImage("/word/loading....jpg")
-		const loading_width = loading.width * 8
-		const loading_height = loading.height * 8
+		const loading_width = loading.width * 4
+		const loading_height = loading.height * 4
 		const x = (this.canvas.width() * .5) - (loading_width * .5)
 		const y = (this.canvas.height() * .5) - (loading_height * .5)
 		this.ctx.drawImage(

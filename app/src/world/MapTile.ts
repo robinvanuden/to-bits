@@ -3,6 +3,7 @@ import MapTileModel from "../types/model/MapTileModel"
 import PowerUp from "../entities/PowerUp"
 import Entity from "../entities/Entity"
 import path from "path"
+import {getNow} from "../game"
 
 export default class MapTile extends Entity {
 	private readonly _name: string
@@ -10,7 +11,8 @@ export default class MapTile extends Entity {
 	private readonly _offset_x: number
 	private readonly _offset_y: number
 	public _damage: number
-	power_up: PowerUp | undefined
+	public power_up: PowerUp | undefined
+	public power_up_spawn: number
 
 	constructor(id: number, x: number, y: number, item: TiledTile) {
 		super(x, y, item.tilewidth, item.tileheight, String(id))
@@ -19,6 +21,7 @@ export default class MapTile extends Entity {
 		this._offset_x = item.offset_x
 		this._offset_y = item.offset_y
 		this.power_up = undefined
+		this.power_up_spawn = -1
 		this._damage = 0
 		switch (path.basename(item.source)) {
 		case "spikes.png":
@@ -40,8 +43,14 @@ export default class MapTile extends Entity {
 
 	public hasPowerUp = (): boolean => this.power_up !== undefined
 
+	public hasRecentSpawned = (): boolean => this.power_up_spawn + 1000 > getNow()
+
 	public spawnPower = () => {
-		if (!this.hasPowerUp()) this.power_up = PowerUp.random()
+		if (this.hasPowerUp()) {
+			return
+		}
+		this.power_up = PowerUp.random()
+		this.power_up_spawn = getNow()
 	}
 
 	private generateTextureUrl = () => "/texture/set/" + path.basename(this._source)
