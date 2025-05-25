@@ -136,8 +136,9 @@ const updateTerrain = (delta: number) => {
 			}
 
 			player.vy += player.gravity * delta
-			player.x += player.vx
-			player.y += player.vy
+			// Math round to fix ending up with decimal pixel positions
+			player.x += Math.round(player.vx)
+			player.y += Math.round(player.vy)
 
 
 			const solid = solids.find(t => player.collidesWith(t))
