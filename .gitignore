@@ -193,3 +193,5 @@ dist
 
 
 *.tiled-*
+
+docker-compose.yml

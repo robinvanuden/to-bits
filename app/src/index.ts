@@ -32,7 +32,7 @@ app.get("/", (req: Request, res: Response) => {
 		// No cookie yet
 		uuid = generate_uuid()
 		console.log("Generated uuid for new player_id", uuid)
-		setUuidCookie(res, uuid).redirect("/")
+		setTimeout(() => setUuidCookie(res, uuid).redirect("/"), 1000)
 		return
 	}
 	if (uuid.length !== 36) {
