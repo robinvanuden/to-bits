@@ -3,7 +3,6 @@ import {addPlayer, getWorld, startGame, throwItem} from "../game"
 // @ts-expect-error: Unknown type
 import {Server as ModServer} from "module:tls"
 
-import cookie from "cookie"
 import {COOKIE_PLAYER_ID, VERSION} from "../constants"
 import Projectile from "../entities/Projectile"
 import Bomb from "../entities/entity/Bomb"
@@ -27,9 +26,16 @@ export const startSocketServer = (server: ModServer<unknown, unknown>, codeNum: 
 		client.emit("build", code)
 		client.emit("version", VERSION)
 
-		const cookies = cookie.parse(client.handshake.headers.cookie || "")
-		const uuid = cookies[COOKIE_PLAYER_ID] || ""
-		if (uuid.length === 0) {
+		const cookieRaw = client?.handshake?.headers?.cookie?.split(";")?.find(c => c.startsWith(COOKIE_PLAYER_ID))
+		if (!cookieRaw) {
+			console.log("Error: Can't add player without cookie")
+			client.emit("nope", true)
+			client.disconnect()
+			return
+		}
+		console.log(cookieRaw)
+		const uuid = cookieRaw.replace(COOKIE_PLAYER_ID + "=", "")
+		if (!uuid || uuid.length === 0) {
 			console.log("Error: Can't add player without UUID")
 			client.emit("nope", true)
 			client.disconnect()

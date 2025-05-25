@@ -70,10 +70,10 @@ export default function () {
 	char_router.get("/letter/:letter.png", async (req, res) => {
 		const letter = (req.params.letter || "a").toLowerCase().substring(0, 1)
 		const letter_image = await loadLetter(letter)
-		if (!letter_image) {
-			return res.sendStatus(400)
+		if (letter_image) {
+			res.end(await letter_image.png().toBuffer(), "utf-8")
 		}
-		res.end(await letter_image.toBuffer(), "utf-8")
+		// return res.status(400).end(await sharp({raw: {width: 7, height: 7, channels: 4}}).png().toBuffer(), "utf-8")
 	})
 
 	char_router.get("/word/:word.:extension", async (req, res) => {
