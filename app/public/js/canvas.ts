@@ -1,5 +1,3 @@
-const FONT_SIZE = 5
-
 export default class Canvas {
 
 	private readonly __canvas: HTMLCanvasElement
@@ -11,25 +9,21 @@ export default class Canvas {
 	constructor(canvas: HTMLCanvasElement) {
 		this.__canvas = canvas
 		this.ctx = canvas.getContext("2d") as CanvasRenderingContext2D
-		this.ratio = (window.devicePixelRatio || 1) * 2
+		this.ratio = window.devicePixelRatio || 1
 		this.ctx.imageSmoothingQuality = "low"
 		this.ctx.imageSmoothingEnabled = false
-
 		this.setDimensions()
 	}
 
 	size = (n: number) => n * this.ratio
-
-	rem = (n: number) => this.size(Math.round(FONT_SIZE * n))
 
 	width = () => this.__width
 
 	height = () => this.__height
 
 	private setDimensions = () => {
-		this.__width = this.__canvas.width = 480
-		this.__height = this.__canvas.height = 360
-
+		this.__width = this.__canvas.width = 240
+		this.__height = this.__canvas.height = 180
 		this.ctx.textRendering = "optimizeSpeed"
 		this.ctx.fontKerning = "normal"
 		this.ctx.imageSmoothingEnabled = false
