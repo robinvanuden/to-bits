@@ -13,7 +13,7 @@ const PLAYER_WIDTH = 13
 const PLAYER_HEIGHT = 16
 const PLAYER_SPEED_WALK = 2
 const PLAYER_SPEED_JUMP = 4
-const PLAYER_MAX_POWER_UP = 3
+const PLAYER_MAX_POWER_UP = 1
 const PLAYER_MAX_HEALTH = 100
 const PLAYER_DAMAGE = PLAYER_MAX_HEALTH * .30
 const PLAYER_GRAVITY = GRAVITY
@@ -260,8 +260,8 @@ export default class Player extends Entity {
 		hpm: this.healthPointsMax,
 		w: this.width,
 		h: this.height,
-		x: this.x,
-		y: this.y,
+		x: Math.round(this.x),
+		y: Math.round(this.y),
 		vx: this.vx,
 		vy: this.vy,
 		dmg: damageToModel(this.damageTaken),
@@ -277,8 +277,8 @@ export default class Player extends Entity {
 		uid: this.id,
 		hp: this.healthPoints,
 		hpm: this.healthPointsMax,
-		x: this.x,
-		y: this.y,
+		x: Math.round(this.x),
+		y: Math.round(this.y),
 		vx: this.vx,
 		vy: this.vy,
 		dmg: damageToModel(this.damageTaken),

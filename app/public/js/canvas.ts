@@ -15,7 +15,7 @@ export default class Canvas {
 		this.setDimensions()
 	}
 
-	size = (n: number) => n * this.ratio
+	size = (n: number) => Math.round(n * this.ratio)
 
 	width = () => this.__width
 

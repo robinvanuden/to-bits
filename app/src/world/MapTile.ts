@@ -56,8 +56,8 @@ export default class MapTile extends Entity {
 	private generateTextureUrl = () => "/texture/set/" + path.basename(this._source)
 
 	public toModel = (): MapTileModel => ({
-		x: this.x,
-		y: this.y,
+		x: Math.round(this.x),
+		y: Math.round(this.y),
 		w: this.width,
 		h: this.height,
 		p: this.power_up ? this.power_up.toModel() : undefined,

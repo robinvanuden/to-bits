@@ -137,8 +137,8 @@ const updateTerrain = (delta: number) => {
 
 			player.vy += player.gravity * delta
 			// Math round to fix ending up with decimal pixel positions
-			player.x += Math.round(player.vx)
-			player.y += Math.round(player.vy)
+			player.x += player.vx
+			player.y += player.vy
 
 
 			const solid = solids.find(t => player.collidesWith(t))
@@ -200,7 +200,7 @@ const updateTerrain = (delta: number) => {
 		if (!player.isAlive()) {
 			switch (player.damaged()?.cause || DamageCause.NONE) {
 			case DamageCause.FALL:
-				sendMessage(`${player.name} found the end of the world.`)
+				sendMessage(`${player.name} fell of the world.`)
 				break
 			case DamageCause.PLAYER:
 				sendMessage(`${player.name} was killed by ${player.damaged()?.player?.name || ""}.`)

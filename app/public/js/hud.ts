@@ -68,8 +68,8 @@ export default class Hud {
 		const died = this.images.loadImage("/word/you died!.png")
 		const died_width = died.width * 4
 		const died_height = died.height * 4
-		const died_x = (this.canvas.width() * .5) - (died_width * .5)
-		const died_y = (this.canvas.height() * .5) - (died_height * .5)
+		const died_x = Math.round(this.canvas.width() * .5) - Math.round(died_width * .5)
+		const died_y = Math.round(this.canvas.height() * .5) - Math.round(died_height * .5)
 		this.ctx.drawImage(
 			died,
 			died_x,
@@ -102,8 +102,8 @@ export default class Hud {
 		}
 		const respawn_width = respawn.width
 		const respawn_height = respawn.height
-		const respawn_x = (this.canvas.width() * .5) - (respawn_width * .5)
-		const respawn_y = (this.canvas.height() * .5) - (respawn_height * .5) + this.canvas.size(30)
+		const respawn_x = Math.round(this.canvas.width() * .5) - Math.round(respawn_width * .5)
+		const respawn_y = Math.round(this.canvas.height() * .5) - Math.round(respawn_height * .5) + this.canvas.size(30)
 		this.ctx.drawImage(
 			respawn,
 			respawn_x,
@@ -155,7 +155,7 @@ export default class Hud {
 		let x = this.canvas.size(1)
 		let y = this.canvas.size(1)
 
-		for (let p = 0; p < 3; p++) {
+		for (let p = 0; p < 1; p++) {
 			const power = you.pu[p]
 			const selected = p === you.ps
 
@@ -214,8 +214,8 @@ export default class Hud {
 						0,
 						7,
 						7,
-						x + 18,
-						y + 18,
+						x + 9,
+						y + 9,
 						this.canvas.size(7),
 						this.canvas.size(7)
 					)
@@ -224,15 +224,19 @@ export default class Hud {
 			x += this.canvas.size(17)
 
 		}
-		y += this.canvas.size(17)
+		x = this.canvas.size(18)
+		y = this.canvas.size(1)
 
+		// Health bar background
 		this.ctx.fillStyle = this.COLOR_BLACK
-		this.ctx.fillRect(this.canvas.size(1), y, this.canvas.size(16 * 3 + 2), this.canvas.size(7))
+		this.ctx.fillRect(x, y, this.canvas.size(16 * 3 + 2), this.canvas.size(7))
+		// Health bar empty
 		this.ctx.fillStyle = "#2b2929"
-		this.ctx.fillRect(this.canvas.size(2), y + this.canvas.size(1), this.canvas.size(16 * 3), this.canvas.size(5))
+		this.ctx.fillRect(x + this.canvas.size(1), y + this.canvas.size(1), this.canvas.size(16 * 3), this.canvas.size(5))
+		// Health bar filled
 		this.ctx.fillStyle = "#ea3636"
-		const health_width = this.canvas.size(16 * 3) * (you.hp / you.hpm)
-		this.ctx.fillRect(this.canvas.size(2), y + this.canvas.size(1), health_width, this.canvas.size(5))
+		const health_width = Math.floor(this.canvas.size(16 * 3) * (you.hp / you.hpm))
+		this.ctx.fillRect(x + this.canvas.size(1), y + this.canvas.size(1), health_width, this.canvas.size(5))
 
 		y += this.canvas.size(8)
 
@@ -243,7 +247,7 @@ export default class Hud {
 			0,
 			nameTag.width,
 			nameTag.height,
-			this.canvas.size(1),
+			x,
 			y,
 			this.canvas.size(nameTag.width),
 			this.canvas.size(nameTag.height),
