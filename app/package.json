@@ -1,6 +1,6 @@
 {
   "name": "to-bits",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "private": true,
   "author": {
     "name": "Robin van Uden",
@@ -11,37 +11,38 @@
     "clean": "rm -r dist && rm -r .parcel-cache || echo 'nope'",
     "dev:server": "nodemon --watch src -e ts,json src/index.ts",
     "dev:client": "parcel public/main.html --port=3001",
-    "dev": "npm run clean && npm run dev:client & npm run dev:server",
+    "dev": "npm run dev:server & npm run dev:client",
     "build": "parcel build public/main.html",
     "start": "ts-node src/index.ts",
     "test": "eslint src/*/**.ts public/*/**.ts"
   },
   "dependencies": {
-    "express": "^5.0.0",
-    "sharp": "^0.33",
-    "socket.io": "^4.7",
-    "socket.io-client": "^4.7",
+    "cookie": "^1.0.2",
+    "express": "^5.1.0",
+    "sharp": "^0.34",
+    "socket.io": "^4.8",
+    "socket.io-client": "^4.8",
     "unique-names-generator": "^4.7",
-    "uuid": "^10.0"
+    "uuid": "^11.1"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.1.0",
-    "@eslint/js": "^9.10.0",
-    "@parcel/transformer-sass": "^2.12",
-    "@types/color": "^3.0",
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.27.0",
+    "@parcel/transformer-sass": "^2.15",
+    "@types/color": "^4.2",
     "@types/cookie-parser": "^1.4",
-    "@types/express": "^4.17",
+    "@types/express": "^5.0",
     "@types/uuid": "^10.0",
-    "@typescript-eslint/eslint-plugin": "^8.5.0",
-    "@typescript-eslint/parser": "^8.5.0",
+    "@typescript-eslint/eslint-plugin": "^8.32.1",
+    "@typescript-eslint/parser": "^8.32.1",
     "buffer": "^6.0",
     "cookie-parser": "^1.4",
-    "eslint": "^9.10",
-    "globals": "^15.9.0",
+    "eslint": "^9.27",
+    "globals": "^16.2.0",
     "nodemon": "^3.1",
-    "parcel": "^2.12",
-    "sass": "^1.78",
+    "parcel": "^2.15",
+    "sass": "^1.89",
     "ts-node": "^10.9",
-    "typescript": "^5.6"
+    "typescript": "^5.8"
   }
 }
