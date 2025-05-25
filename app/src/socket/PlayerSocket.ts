@@ -26,21 +26,22 @@ export const startSocketServer = (server: ModServer<unknown, unknown>, codeNum: 
 		client.emit("build", code)
 		client.emit("version", VERSION)
 
-		const cookieRaw = client?.handshake?.headers?.cookie?.split(";")?.find(c => c.startsWith(COOKIE_PLAYER_ID))
+		const cookieRaw = client?.handshake?.headers?.cookie
+		console.log(cookieRaw)
 		if (!cookieRaw) {
 			console.log("Error: Can't add player without cookie")
 			client.emit("nope", true)
 			client.disconnect()
 			return
 		}
-		console.log(cookieRaw)
-		const uuid = cookieRaw.replace(COOKIE_PLAYER_ID + "=", "")
+		const uuid = cookieRaw?.split(";")?.find(c => c.trim().startsWith(COOKIE_PLAYER_ID))?.trim()?.replace(COOKIE_PLAYER_ID + "=", "")
 		if (!uuid || uuid.length === 0) {
 			console.log("Error: Can't add player without UUID")
 			client.emit("nope", true)
 			client.disconnect()
 			return
 		}
+		console.log(uuid)
 		const player = addPlayer(uuid, client.id)
 		if (!player) {
 			console.log("Error: Can't add player")
@@ -146,7 +147,7 @@ const toModel = (projectile: Projectile) => projectile instanceof Bomb ? project
 
 const emitProjectiles = () => {
 	// Emit players
-	const players = getPlayerRepository().listActive().map(p => p.toUpdateModel()) ?? []
+	const players = getPlayerRepository().list().map(p => p.toUpdateModel()) ?? []
 	if (players.length > 0) {
 		io.emit("players_update", players)
 	}

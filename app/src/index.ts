@@ -18,16 +18,27 @@ app.use(cookieParser())
 app.use("/", express.static("dist"))
 app.use("/img", express.static("public/img"))
 
+function setUuidCookie(res: Response, uuid: string) {
+	return res.cookie(COOKIE_PLAYER_ID, uuid, {
+		httpOnly: true,
+		sameSite: "strict",
+		maxAge: 60_000 * 12
+	})
+}
+
 app.get("/", (req: Request, res: Response) => {
 	let uuid: string = req.cookies[COOKIE_PLAYER_ID] || ""
 	if (uuid.length === 0) {
 		// No cookie yet
 		uuid = generate_uuid()
-		// console.log("Generated uuid for new player_id", uuid)
+		console.log("Generated uuid for new player_id", uuid)
+		setUuidCookie(res, uuid).redirect("/")
+		return
 	}
 	if (uuid.length !== 36) {
 		// Invalid cookie format
-		res.sendStatus(401)
+		// res.sendStatus(401)
+		res.status(401).sendFile(path.resolve(__dirname, "../dist/nope.html"))
 		return
 	}
 	const player = getPlayerRepository().getById(uuid)
@@ -38,17 +49,10 @@ app.get("/", (req: Request, res: Response) => {
 	}
 	if (player && player.isConnected()) {
 		// console.log("Invalid session", uuid)
-		res.sendStatus(409)
+		res.status(409).sendFile(path.resolve(__dirname, "../dist/nope.html"))
 		return
 	}
-
-	res.cookie(COOKIE_PLAYER_ID, uuid, {
-		httpOnly: true,
-		path: "/",
-		sameSite: "strict",
-		maxAge: 60_000 * 12,
-		secure: req.secure || (req.headers.origin || "").startsWith("https")
-	})
+	setUuidCookie(res, uuid)
 	res.sendFile(path.resolve(__dirname, "../dist/main.html"))
 })
 
