@@ -235,7 +235,7 @@ export default class Hud {
 		this.ctx.fillRect(x + this.canvas.size(1), y + this.canvas.size(1), this.canvas.size(16 * 3), this.canvas.size(5))
 		// Health bar filled
 		this.ctx.fillStyle = "#ea3636"
-		const health_width = Math.floor(this.canvas.size(16 * 3) * (you.hp / you.hpm))
+		const health_width = (this.canvas.size(16 * 3) * (you.hp / you.hpm))
 		this.ctx.fillRect(x + this.canvas.size(1), y + this.canvas.size(1), health_width, this.canvas.size(5))
 
 		y += this.canvas.size(8)
