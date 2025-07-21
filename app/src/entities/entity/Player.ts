@@ -221,12 +221,6 @@ export default class Player extends Entity {
 				player.damage(this.hitPoints, DamageCause.PLAYER, {player: this})
 				return
 			}
-			switch (power.type) {
-			case PowerType.SWORD:
-				this.usePowerUp(power)
-				player.damage(this.hitPoints * 1.5, DamageCause.PLAYER, {player: this})
-				break
-			}
 		}
 	}
 

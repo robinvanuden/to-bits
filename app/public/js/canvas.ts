@@ -22,8 +22,8 @@ export default class Canvas {
 	height = () => this.__height
 
 	private setDimensions = () => {
-		this.__width = this.__canvas.width = 240
-		this.__height = this.__canvas.height = 180
+		this.__width = this.__canvas.width = 240 * 1.5
+		this.__height = this.__canvas.height = 180 * 1.5
 		this.ctx.textRendering = "optimizeSpeed"
 		this.ctx.fontKerning = "normal"
 		this.ctx.imageSmoothingEnabled = false

@@ -1,4 +1,4 @@
-export enum PowerType {ARROW, BOOMERANG, BOMB, FIREBALL, SWORD, HEALTH}
+export enum PowerType {BOMB, FIREBALL, HEALTH}
 
 export default interface PowerUpModel {
   id: string
