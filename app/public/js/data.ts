@@ -14,7 +14,6 @@ export default class Data {
 	private _map: TileLayerModel[] = []
 	private _players: PlayerModel[] = []
 	private _projectiles: EntityModel[] = []
-	private _messages: Message[] = []
 
 	setID = (id: string) => this.ID = id
 
@@ -71,11 +70,4 @@ export default class Data {
 	setProjectiles = (projectiles: EntityModel[]) => this._projectiles = projectiles
 
 	entities = () => this._projectiles
-
-	messages = () => this._messages
-
-	addMessage(message: string) {
-		this._messages = this._messages.filter(m => m.timestamp + 10_0000 > Date.now())
-		this._messages.push({value: message, timestamp: Date.now()})
-	}
 }

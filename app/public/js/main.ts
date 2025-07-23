@@ -75,10 +75,6 @@ import {TileLayerModel} from "./model/TileModel"
 		data.setMapLayer(map_data)
 	})
 
-	socket.on("message", (message: string) => {
-		data.addMessage(message)
-	})
-
 	socket.on("textures", async (textures: string[]) => {
 		for (const texture of textures) {
 			await images.addImage(texture)
@@ -163,6 +159,8 @@ import {TileLayerModel} from "./model/TileModel"
 
 	const loop = () => {
 		canvas.clear()
+		canvas.ctx.fillStyle = "#2DA3D2"
+		canvas.ctx.fillRect(0, 0, canvas.width(), canvas.height())
 		if (!hud.loading()) map.tick()
 		hud.tick()
 		requestAnimationFrame(loop)

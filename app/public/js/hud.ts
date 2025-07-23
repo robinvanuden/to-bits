@@ -33,25 +33,6 @@ export default class Hud {
 
 	you = () => this.data.players().find(p => p.i === this.data.id()) || undefined
 
-	drawMessages = () => {
-		let message_y = 1
-		for (const message of this.data.messages().filter(m => m.timestamp + 5000 > Date.now())) {
-			const message_text = this.images.loadImage(`/word/${message.value}.png`)
-			const message_width = message_text.width
-			const message_height = message_text.height
-			const message_x = this.canvas.width() - message_width - 1
-
-			this.ctx.drawImage(
-				message_text,
-				message_x,
-				message_y,
-				message_width,
-				message_height
-			)
-			message_y += 8
-		}
-	}
-
 	drawYouDied = () => {
 		const you = this.you()
 		if (!you) {
@@ -256,7 +237,6 @@ export default class Hud {
 
 	tick = () => {
 		this.drawInventory()
-		this.drawMessages()
 		this.drawYouDied()
 		if (this.loading()) this.drawLoading()
 		if (this.nope()) this.drawNope()

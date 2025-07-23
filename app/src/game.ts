@@ -10,7 +10,7 @@ import Arrow from "./entities/projectile/Arrow"
 import Boomerang from "./entities/projectile/Boomerang"
 import Fireball from "./entities/projectile/Fireball"
 import Player from "./entities/entity/Player"
-import {broadcastPlayerAdd, broadcastPlayerRemove, sendMessage} from "./socket/PlayerSocket"
+import {broadcastPlayerAdd, broadcastPlayerRemove} from "./socket/PlayerSocket"
 
 export const getNow = () => Date.now()
 
@@ -199,33 +199,16 @@ const updateTerrain = (delta: number) => {
 		}
 		if (!player.isAlive()) {
 			switch (player.damaged()?.cause || DamageCause.NONE) {
-			case DamageCause.FALL:
-				sendMessage(`${player.name} fell of the world.`)
-				break
-			case DamageCause.PLAYER:
-				sendMessage(`${player.name} was killed by ${player.damaged()?.player?.name || ""}.`)
-				break
 			case DamageCause.ITEM:
 				if (player.damaged()?.projectile instanceof Bomb) {
-					sendMessage(`${player.name} blew up.`)
-				} else if (player.damaged()?.projectile instanceof Arrow) {
-					sendMessage(`${player.name} is now a hedgehog.`)
-				} else if (player.damaged()?.projectile instanceof Boomerang) {
-					sendMessage(`${player.name} was killed by a boomerang.`)
 				} else if (player.damaged()?.projectile instanceof Fireball) {
-					sendMessage(`${player.name} went up in flames.`)
 				}
 				break
 			case DamageCause.BLOCK:
 				const tile = player.damaged()?.tile
 				if (tile?.name === "spikes") {
-					sendMessage(`${player.name} had a prickly end.`)
 				} else {
-					sendMessage(`${player.name} was crushed ${tile?.name || ""}.`)
 				}
-				break
-			default:
-				sendMessage(`${player.name} died.`)
 				break
 			}
 			broadcastPlayerAdd(player)

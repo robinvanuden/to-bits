@@ -26,6 +26,8 @@ export default class Images {
 		await this.addPlayer(uid, false)
 	}
 
+	// TODO: Generate text on the client side
+
 	loadImage = (file_path: string): HTMLImageElement => {
 		if (this.images[file_path]) {
 			return this.images[file_path]

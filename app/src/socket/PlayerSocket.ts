@@ -50,8 +50,6 @@ export const startSocketServer = (server: ModServer<unknown, unknown>, codeNum: 
 			return
 		}
 
-		sendMessage(`${player.name} joined the game.`)
-
 		broadcastPlayerAdd(player)
 
 		const players = getPlayerRepository().list().map(p => p.toModel()) ?? []
@@ -85,7 +83,6 @@ export const startSocketServer = (server: ModServer<unknown, unknown>, codeNum: 
 			const player = getPlayerRepository().getById(uuid)
 			if (player) {
 				player.disconnect()
-				sendMessage(`${player.name} left the game.`)
 			}
 		})
 
@@ -100,9 +97,6 @@ export const broadcastPlayerAdd = (player: Player) => {
 export const broadcastPlayerRemove = (player: Player) => {
 	io?.emit("playerRemove", player.uid)
 }
-
-
-export const sendMessage = (message: string) => io?.emit("message", message)
 
 const onAction = (uuid: string) => throwItem(uuid)
 
