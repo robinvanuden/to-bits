@@ -6,6 +6,8 @@ import {PowerType} from "./entities/PowerUp"
 import {TICK_SPEED} from "./constants"
 import {DamageCause} from "./entities/entity/Damage"
 import Bomb from "./entities/entity/Bomb"
+import Arrow from "./entities/projectile/Arrow"
+import Boomerang from "./entities/projectile/Boomerang"
 import Fireball from "./entities/projectile/Fireball"
 import Player from "./entities/entity/Player"
 import {broadcastPlayerAdd, broadcastPlayerRemove, sendMessage} from "./socket/PlayerSocket"
@@ -96,6 +98,14 @@ const updateTerrain = (delta: number) => {
 					entity.y = semi.y - entity.height
 					entity.vx = 0
 					entity.vy = 0
+				}
+			} else if (entity instanceof Arrow || entity instanceof Fireball) {
+				if (solid && entity.collidesWith(solid)) {
+					entity.remove()
+				}
+			} else if (entity instanceof Boomerang) {
+				if (solid && entity.collidesWith(solid)) {
+					entity.retrieve()
 				}
 			}
 		}
@@ -198,6 +208,10 @@ const updateTerrain = (delta: number) => {
 			case DamageCause.ITEM:
 				if (player.damaged()?.projectile instanceof Bomb) {
 					sendMessage(`${player.name} blew up.`)
+				} else if (player.damaged()?.projectile instanceof Arrow) {
+					sendMessage(`${player.name} is now a hedgehog.`)
+				} else if (player.damaged()?.projectile instanceof Boomerang) {
+					sendMessage(`${player.name} was killed by a boomerang.`)
 				} else if (player.damaged()?.projectile instanceof Fireball) {
 					sendMessage(`${player.name} went up in flames.`)
 				}
@@ -280,13 +294,24 @@ export const throwItem = (uuid: string) => {
 		return
 	}
 	switch (powerUp.type) {
+	case PowerType.ARROW:
+		player.usePowerUp(powerUp)
+		getEntityRepository().shootArrow(player)
+		break
 	case PowerType.BOMB:
 		player.usePowerUp(powerUp)
 		getEntityRepository().placeBomb(player)
 		break
+	case PowerType.BOOMERANG:
+		player.usePowerUp(powerUp)
+		getEntityRepository().throwBoomerang(player)
+		break
 	case PowerType.FIREBALL:
 		player.usePowerUp(powerUp)
 		getEntityRepository().throwFireball(player)
+		break
+	case PowerType.SWORD:
+		player.doSwing()
 		break
 	}
 }

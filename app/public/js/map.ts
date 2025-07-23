@@ -32,6 +32,19 @@ export default class Map {
 		this.ctx.lineWidth = this.canvas.size(8)
 		for (const entity of this.data.entities()) {
 			switch (entity.t) {
+			case "ARROW":
+				this.ctx.drawImage(
+					this.images.loadImage("/img/arrow.png"),
+					entity.vx <= 0 ? entity.w + 2 : 1,
+					6,
+					entity.w,
+					entity.h,
+					this.canvas.size(entity.x) - this.cx,
+					this.canvas.size(entity.y) - this.cy,
+					this.canvas.size(entity.w),
+					this.canvas.size(entity.h)
+				)
+				break
 			case "BOMB":
 				if (entity.e) {
 					this.ctx.fillStyle = "#FFF"
@@ -61,6 +74,19 @@ export default class Map {
 					)
 
 				}
+				break
+			case "BOOMERANG":
+				this.ctx.drawImage(
+					this.images.loadImage("/img/boomerang.png"),
+					4 + (Math.round(Math.round(Date.now() - entity.s) / 100) % 4 * 16),
+					4,
+					entity.w,
+					entity.h,
+					this.canvas.size(entity.x) - this.cx,
+					this.canvas.size(entity.y) - this.cy,
+					this.canvas.size(entity.w),
+					this.canvas.size(entity.h)
+				)
 				break
 			case "FIREBALL":
 				this.ctx.drawImage(
@@ -172,6 +198,15 @@ export default class Map {
 				switch (power.t) {
 				case PowerType.BOMB:
 					iy = 0
+					break
+				case PowerType.SWORD:
+					iy = 16
+					break
+				case PowerType.ARROW:
+					iy = 32
+					break
+				case PowerType.BOOMERANG:
+					iy = 48
 					break
 				case PowerType.FIREBALL:
 					iy = 64

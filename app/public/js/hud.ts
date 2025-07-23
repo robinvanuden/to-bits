@@ -173,16 +173,26 @@ export default class Hud {
 			if (power) {
 				let imageItem: CanvasImageSource
 				switch (power.t) {
+				case PowerType.ARROW:
+					imageItem = this.images.loadImage("/img/bow.png")
+					break
+				case PowerType.BOOMERANG:
+					imageItem = this.images.loadImage("/img/boomerang.png")
+					break
 				case PowerType.BOMB:
 					imageItem = this.images.loadImage("/img/bomb.png")
 					break
 				case PowerType.FIREBALL:
 					imageItem = this.images.loadImage("/img/fireball.png")
 					break
+				case PowerType.SWORD:
+					imageItem = this.images.loadImage("/img/sword.png")
+					break
 				case PowerType.HEALTH:
 					imageItem = this.images.loadImage("/img/health.png")
 					break
 				}
+
 				this.ctx.drawImage(
 					imageItem,
 					0,

@@ -1,7 +1,7 @@
 import {v4} from "uuid"
 import {PowerUpModel} from "../types/model/PowerUpModel"
 
-export enum PowerType {BOMB, FIREBALL, HEALTH}
+export enum PowerType {ARROW, BOOMERANG, BOMB, FIREBALL, SWORD, HEALTH}
 
 export default class PowerUp {
 
@@ -40,6 +40,13 @@ export default class PowerUp {
 		const type = PowerUp.randomType()
 		let uses = 1
 		switch (type) {
+		case PowerType.ARROW:
+		case PowerType.FIREBALL:
+			uses = 2
+			break
+		case PowerType.BOOMERANG:
+			uses = 3
+			break
 		case PowerType.BOMB:
 			if (Math.random() * 1_000_000 === 1_000_000)
 				uses = 9
