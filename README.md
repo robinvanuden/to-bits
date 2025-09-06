@@ -46,9 +46,12 @@ ready to embark on a quest for supremacy where only the most skilled and strateg
 emerge victorious. Sharpen your skills, embrace the chaos, and may the best warrior triumph in the
 ToBits!
 
+## Disclaimer
+
+The features of this game are still in development. Some assets may not be fully optimized (yet).
+
 ## Special thanks to
 
-### Fonts
+### Map Editor
 
-[Goodbye Despair](https://www.dafont.com/goodbye-despair.font)
-by [UkiyoMoji Fonts](https://www.dafont.com/japanyoshi.d5804)
+[Tiled](https://www.mapeditor.org/)
