@@ -22,26 +22,26 @@
     "socket.io": "^4.8",
     "socket.io-client": "^4.8",
     "unique-names-generator": "^4.7",
-    "uuid": "^11.1"
+    "uuid": "^13.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
-    "@eslint/js": "^9.27.0",
-    "@parcel/transformer-sass": "^2.15",
+    "@eslint/js": "^9.36.0",
+    "@parcel/transformer-sass": "^2.16",
     "@types/color": "^4.2",
     "@types/cookie-parser": "^1.4",
     "@types/express": "^5.0",
-    "@types/uuid": "^10.0",
-    "@typescript-eslint/eslint-plugin": "^8.32.1",
-    "@typescript-eslint/parser": "^8.32.1",
+    "@types/uuid": "^11.0",
+    "@typescript-eslint/eslint-plugin": "^8.45.0",
+    "@typescript-eslint/parser": "^8.45.0",
     "buffer": "^6.0",
     "cookie-parser": "^1.4",
-    "eslint": "^9.27",
-    "globals": "^16.2.0",
+    "eslint": "^9.36",
+    "globals": "^16.4.0",
     "nodemon": "^3.1",
-    "parcel": "^2.15",
-    "sass": "^1.89",
+    "parcel": "^2.16",
+    "sass": "^1.93",
     "ts-node": "^10.9",
-    "typescript": "^5.8"
+    "typescript": "^5.9"
   }
 }
