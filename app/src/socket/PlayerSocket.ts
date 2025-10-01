@@ -58,11 +58,16 @@ export const startSocketServer = (server: ModServer<unknown, unknown>, codeNum: 
 		}
 
 		client.emit("textures", getWorld().tileSources())
-		client.emit("map_layer", getWorld().solids().toModel())
-		client.emit("map_layer", getWorld().semiSolids().toModel())
-		client.emit("map_layer", getWorld().teleports().toModel())
-		client.emit("map_layer", getWorld().decor().toModel())
-		client.emit("map_layer", getWorld().danger().toModel())
+		const solids = getWorld()?.solids()
+		if (solids) client.emit("map_layer", solids.toModel())
+		const semiSolids = getWorld()?.semiSolids()
+		if (semiSolids) client.emit("map_layer", semiSolids.toModel())
+		const teleports = getWorld()?.teleports()
+		if (teleports) client.emit("map_layer", teleports.toModel())
+		const decor = getWorld()?.decor()
+		if (decor) client.emit("map_layer", decor.toModel())
+		const danger = getWorld()?.danger()
+		if (danger) client.emit("map_layer", danger.toModel())
 
 		client.on("move.left", (bool: boolean) => onMovement(uuid, "move.left", bool))
 		client.on("move.right", (bool: boolean) => onMovement(uuid, "move.right", bool))
@@ -149,5 +154,5 @@ const emitProjectiles = () => {
 	const projectiles = getEntityRepository().list().map(toModel) ?? []
 	io.emit("projectiles", projectiles)
 
-	io.emit("map_layer", getWorld().items().toModel())
+	io.emit("map_layer", getWorld()?.items()?.toModel())
 }

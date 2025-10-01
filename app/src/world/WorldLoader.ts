@@ -13,13 +13,13 @@ export default class WorldLoader {
 	private readonly world: TiledWorld
 	private sets: TileSetLoader[] = []
 
-	private readonly _spawns!: LayerLoader
-	private readonly _items!: LayerLoader
-	private readonly _teleports!: LayerLoader
-	private readonly _solids!: LayerLoader
-	private readonly _danger!: LayerLoader
-	private readonly _semiSolids!: LayerLoader
-	private readonly _decor!: LayerLoader
+	private readonly _spawns?: LayerLoader
+	private readonly _items?: LayerLoader
+	private readonly _teleports?: LayerLoader
+	private readonly _solids?: LayerLoader
+	private readonly _danger?: LayerLoader
+	private readonly _semiSolids?: LayerLoader
+	private readonly _decor?: LayerLoader
 
 	public spawns = () => this._spawns
 	public items = () => this._items
@@ -67,13 +67,19 @@ export default class WorldLoader {
 	loadJsonMap = (name: string): TiledWorld => JSON.parse(fs.readFileSync(path.resolve(__dirname, "../map/", name)).toString("utf-8"))
 
 	pickRandomSpawnPoint = (): MapTile | undefined => {
-		const spawns = this.spawns().tiles().filter(t => t !== undefined)
+		const spawns = this.spawns()?.tiles()?.filter(t => t !== undefined)
+		if (!spawns) {
+			return undefined
+		}
 		const picked = Math.ceil(Math.random() * spawns.length) - 1
 		return spawns[picked] || spawns[0] || undefined
 	}
 
 	pickRandomTeleport = (): MapTile | undefined => {
-		const spawns = this.teleports().tiles().filter(t => t !== undefined)
+		const spawns = this.teleports()?.tiles()?.filter(t => t !== undefined)
+		if (!spawns) {
+			return undefined
+		}
 		const picked = Math.ceil(Math.random() * spawns.length) - 1
 		return spawns[picked] || spawns[0] || undefined
 	}
@@ -82,7 +88,10 @@ export default class WorldLoader {
 		if (!this.isDev && Math.round(Math.random() * 500) !== 1) {
 			return
 		}
-		const item_spawns = this.items().tiles()
+		const item_spawns = this.items()?.tiles()
+		if (!item_spawns) {
+			return
+		}
 		const index = Math.round(Math.random() * (item_spawns.length - 1))
 		const tile: MapTile | undefined = item_spawns[index] || undefined
 		if (!tile) {
@@ -92,7 +101,7 @@ export default class WorldLoader {
 	}
 
 	clearPowerUps = () => {
-		for (const tile of this.items().tiles()) {
+		for (const tile of this.items()?.tiles() || []) {
 			tile.power_up = undefined
 		}
 		console.log("Cleared power-ups")
@@ -105,4 +114,4 @@ export default class WorldLoader {
 
 let world1: WorldLoader | undefined = undefined
 
-export const useWorld1 = () => world1 ? world1 : (world1 = new WorldLoader("world1"))
+export const useWorld1 = () => world1 ? world1 : (world1 = new WorldLoader("world_test"))

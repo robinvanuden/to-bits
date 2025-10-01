@@ -51,11 +51,11 @@ export const addPlayer = (uuid: string, socket_id: string): Player | null => {
 }
 
 const updateTerrain = (delta: number) => {
-	const dangers = getWorld().danger().tiles()
-	const solids = getWorld().solids().tiles()
-	const semi_solids = getWorld().semiSolids().tiles()
-	const power_up_spawns = getWorld().items().tiles()
-	const teleports = getWorld().teleports().tiles()
+	const dangers = getWorld().danger()?.tiles() || []
+	const solids = getWorld().solids()?.tiles() || []
+	const semi_solids = getWorld().semiSolids()?.tiles() || []
+	const power_up_spawns = getWorld().items()?.tiles() || []
+	const teleports = getWorld().teleports()?.tiles() || []
 	getWorld().spawnPowerUp()
 
 	for (const entity of getEntityRepository().list()) {
