@@ -1,6 +1,6 @@
 # To Bits
 
-Welcome to the adrenaline-fueled world of "To Bits", a dynamic 2D-platform game built
+Welcome to the adrenaline-fuelled world of "To Bits", a dynamic 2D-platform game built
 with the powerful Express.js framework! Prepare yourself for an intense multiplayer experience where
 players collide in a pixelated battleground, armed with an array of randomly spawned weapons. In
 this fast-paced competition, only the swift and strategic will emerge victorious.
