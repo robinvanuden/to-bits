@@ -198,19 +198,6 @@ const updateTerrain = (delta: number) => {
 			}
 		}
 		if (!player.isAlive()) {
-			switch (player.damaged()?.cause || DamageCause.NONE) {
-			case DamageCause.ITEM:
-				if (player.damaged()?.projectile instanceof Bomb) {
-				} else if (player.damaged()?.projectile instanceof Fireball) {
-				}
-				break
-			case DamageCause.BLOCK:
-				const tile = player.damaged()?.tile
-				if (tile?.name === "spikes") {
-				} else {
-				}
-				break
-			}
 			broadcastPlayerAdd(player)
 		}
 	}
@@ -242,7 +229,7 @@ const tick = (delta: number) => {
 }
 
 const loop = (run: () => void) => {
-	let now = getNow()
+	const now = getNow()
 	tick(now - updated)
 	run()
 	updated = now
