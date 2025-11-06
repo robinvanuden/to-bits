@@ -2,14 +2,12 @@ import {Router} from "express"
 import sharp from "sharp"
 import path from "path"
 import {getPlayerRepository} from "../repository/PlayerRepository"
-import Color from "color"
 import {COOKIE_PLAYER_ID} from "../constants"
 
 const loadImage = (name: string) => sharp(path.resolve(__dirname, "../assets/character", name))
 
 const loadCharacterFeatherTint = async (hsl: string) => loadImage("feather.tint.png")
 	.modulate({lightness: -45})
-	.tint(Color(hsl, "hsl").object())
 
 const loadCharacterFeather = async () => loadImage("feather.png")
 
