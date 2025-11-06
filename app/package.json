@@ -14,34 +14,35 @@
     "dev": "npm run dev:server & npm run dev:client",
     "build": "parcel build public/*.html",
     "start": "ts-node src/index.ts",
-    "test": "eslint src/*/**.ts public/*/**.ts"
+    "lint": "eslint ./*/**.ts",
+    "lint:fix": "eslint ./*/**.ts --fix"
   },
   "dependencies": {
     "express": "^5.1.0",
-    "sharp": "^0.34",
-    "socket.io": "^4.8",
-    "socket.io-client": "^4.8",
-    "unique-names-generator": "^4.7",
-    "uuid": "^13.0"
+    "sharp": "^0.34.5",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "unique-names-generator": "^4.7.1",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
-    "@eslint/js": "^9.36.0",
+    "@eslint/js": "^9.39.1",
     "@parcel/transformer-sass": "^2.16",
-    "@types/color": "^4.2",
-    "@types/cookie-parser": "^1.4",
-    "@types/express": "^5.0",
-    "@types/uuid": "^11.0",
-    "@typescript-eslint/eslint-plugin": "^8.45.0",
-    "@typescript-eslint/parser": "^8.45.0",
-    "buffer": "^6.0",
-    "cookie-parser": "^1.4",
-    "eslint": "^9.36",
-    "globals": "^16.4.0",
-    "nodemon": "^3.1",
-    "parcel": "^2.16",
-    "sass": "^1.93",
-    "ts-node": "^10.9",
-    "typescript": "^5.9"
+    "@types/color": "^4.2.0",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/express": "^5.0.5",
+    "@types/uuid": "^11.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.3",
+    "@typescript-eslint/parser": "^8.46.3",
+    "buffer": "^6.0.3",
+    "cookie-parser": "^1.4.7",
+    "eslint": "^9.39.1",
+    "globals": "^16.5.0",
+    "nodemon": "^3.1.10",
+    "parcel": "^2.16.1",
+    "sass": "^1.93.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   }
 }
