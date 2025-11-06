@@ -1,10 +1,10 @@
-import Data from "./data"
-import Canvas from "./canvas"
-import Images from "./images"
-import {PowerType} from "./model/PowerUpModel"
+import Data from "../data"
+import Canvas from "../canvas"
+import Images from "../images"
+import Letters from "./letters"
+import {PowerType} from "../model/PowerUpModel"
 
 export default class Hud {
-
 	canvas: Canvas
 	data: Data
 	images: Images
@@ -12,9 +12,7 @@ export default class Hud {
 	LOADING = true
 	NOPE = false
 
-	// COLOR_BLACK = "#151414"
 	COLOR_BLACK = "#000000"
-	COLOR_WHITE = "#F3F3F3"
 
 	constructor(canvas: Canvas, data: Data, images: Images) {
 		this.canvas = canvas
@@ -46,84 +44,37 @@ export default class Hud {
 		this.ctx.fillStyle = "rgba(255,0,0,0.7)"
 		this.ctx.fillRect(0, 0, this.canvas.width(), this.canvas.height())
 
-		const died = this.images.loadImage("/word/you died!.png")
-		const died_width = died.width * 4
-		const died_height = died.height * 4
-		const died_x = Math.round(this.canvas.width() * .5) - Math.round(died_width * .5)
-		const died_y = Math.round(this.canvas.height() * .5) - Math.round(died_height * .5)
-		this.ctx.drawImage(
-			died,
-			died_x,
-			died_y,
-			died_width,
-			died_height
-		)
+		const died_text = new Letters("you died!")
+		const died_x = Math.round(this.canvas.width() * .5) - Math.round(died_text.width * 2 * .5)
+		const died_y = Math.round(this.canvas.height() * .5) - Math.round(died_text.height * 2 * .5)
+		died_text.render(this.ctx, died_x, died_y, 2)
 
 		const seconds_left = Math.round(((you.tod + 5000) - now) / 1000)
-
-		const respawn_5 = this.images.loadImage("/word/respawn in: 6.png")
-		const respawn_4 = this.images.loadImage("/word/respawn in: 5.png")
-		const respawn_3 = this.images.loadImage("/word/respawn in: 4.png")
-		const respawn_2 = this.images.loadImage("/word/respawn in: 3.png")
-		const respawn_1 = this.images.loadImage("/word/respawn in: 2.png")
-		const respawn_0 = this.images.loadImage("/word/respawn in: 1.png")
-		let respawn: HTMLImageElement
-		if (seconds_left >= 5) {
-			respawn = respawn_5
-		} else if (seconds_left >= 4) {
-			respawn = respawn_4
-		} else if (seconds_left >= 3) {
-			respawn = respawn_3
-		} else if (seconds_left >= 2) {
-			respawn = respawn_2
-		} else if (seconds_left >= 1) {
-			respawn = respawn_1
-		} else {
-			respawn = respawn_0
-		}
-		const respawn_width = respawn.width
-		const respawn_height = respawn.height
+		const respawn_text = new Letters("respawn in: " + seconds_left)
+		const respawn_width = respawn_text.width
+		const respawn_height = respawn_text.height
 		const respawn_x = Math.round(this.canvas.width() * .5) - Math.round(respawn_width * .5)
-		const respawn_y = Math.round(this.canvas.height() * .5) - Math.round(respawn_height * .5) + this.canvas.size(30)
-		this.ctx.drawImage(
-			respawn,
-			respawn_x,
-			respawn_y,
-			respawn_width,
-			respawn_height
-		)
+		const respawn_y = Math.round(this.canvas.height() * .5) - Math.round(respawn_height * .5) + this.canvas.size(15)
+		respawn_text.render(this.ctx, respawn_x, respawn_y)
 	}
 	drawLoading = () => {
 		this.ctx.fillStyle = this.COLOR_BLACK
 		this.ctx.fillRect(0, 0, this.canvas.width(), this.canvas.height())
-		const loading = this.images.loadImage("/word/loading....jpg")
-		const loading_width = loading.width * 4
-		const loading_height = loading.height * 4
-		const x = (this.canvas.width() * .5) - (loading_width * .5)
-		const y = (this.canvas.height() * .5) - (loading_height * .5)
-		this.ctx.drawImage(
-			loading,
-			x,
-			y,
-			loading_width,
-			loading_height
-		)
+		const loading = new Letters("loading...")
+		const x = (this.canvas.width() * .5) - (loading.width * .5)
+		const y = (this.canvas.height() * .5) - (loading.height * .5)
+
+		loading.render(this.ctx, x, y)
 	}
 	drawNope = () => {
 		this.ctx.fillStyle = this.COLOR_BLACK
 		this.ctx.fillRect(0, 0, this.canvas.width(), this.canvas.height())
-		const nope = this.images.loadImage("/word/nope.jpg")
-		const nope_width = nope.width * 8
-		const nope_height = nope.height * 8
-		const x = (this.canvas.width() * .5) - (nope_width * .5)
-		const y = (this.canvas.height() * .5) - (nope_height * .5)
-		this.ctx.drawImage(
-			nope,
-			x,
-			y,
-			nope_width,
-			nope_height
-		)
+		const nope_text = new Letters("nope")
+		const nope_width = nope_text.width
+		const nope_height = nope_text.height
+		const nope_x = Math.round(this.canvas.width() * .5) - Math.round(nope_width * .5)
+		const nope_y = Math.round(this.canvas.height() * .5) - Math.round(nope_height * .5)
+		nope_text.render(this.ctx, nope_x, nope_y)
 	}
 
 	drawInventory = () => {
@@ -131,7 +82,7 @@ export default class Hud {
 		if (!you || you.tod > 0) {
 			return
 		}
-		const itemBar = this.images.loadImage("/img/hud/hud.items.png")
+		const itemBar = this.images.loadImage("/img/hud/item_bar.png")
 
 		let x = this.canvas.size(1)
 		let y = this.canvas.size(1)
@@ -188,18 +139,8 @@ export default class Hud {
 
 
 				if (power.u > 1) {
-					const uses = this.images.loadImage(`/word/${power.u}.png`)
-					this.ctx.drawImage(
-						uses,
-						0,
-						0,
-						7,
-						7,
-						x + 9,
-						y + 9,
-						this.canvas.size(7),
-						this.canvas.size(7)
-					)
+					const power_uses = new Letters(power.u + "")
+					power_uses.render(this.ctx, x + 9, y + 9)
 				}
 			}
 			x += this.canvas.size(17)
@@ -221,18 +162,8 @@ export default class Hud {
 
 		y += this.canvas.size(8)
 
-		const nameTag = this.images.loadImage(`/word/${you.n}.png`)
-		this.ctx.drawImage(
-			nameTag,
-			0,
-			0,
-			nameTag.width,
-			nameTag.height,
-			x,
-			y,
-			this.canvas.size(nameTag.width),
-			this.canvas.size(nameTag.height),
-		)
+		const your_name = new Letters(you.n)
+		your_name.render(this.ctx, x, y)
 	}
 
 	tick = () => {

@@ -2,7 +2,7 @@ import {io} from "socket.io-client"
 import Map from "./map"
 import Images from "./images"
 import Data from "./data"
-import Hud from "./hud"
+import Hud from "./hud/hud"
 import Canvas from "./canvas"
 import {TileLayerModel} from "./model/TileModel"
 

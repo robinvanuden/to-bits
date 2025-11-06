@@ -24,6 +24,7 @@ export default class Data {
 	version = () => this.VERSION
 
 	setMapLayer = (layer: TileLayerModel) => {
+		if (!layer) return
 		this._map = this._map.filter(l => l.n !== layer.n)
 		this._map.push(layer)
 	}
