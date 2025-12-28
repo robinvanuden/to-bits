@@ -29,5 +29,8 @@ canvas {
     display: block;
     image-rendering: pixelated;
     object-fit: contain;
-    scale: 4;
+    height: 100%;
+    width: 100%;
+    max-height: 100vh;
+    max-width: 100%;
 }
