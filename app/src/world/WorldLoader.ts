@@ -114,4 +114,4 @@ export default class WorldLoader {
 
 let world1: WorldLoader | undefined = undefined
 
-export const useWorld1 = () => world1 ? world1 : (world1 = new WorldLoader("world_test"))
+export const useWorld1 = () => world1 ? world1 : (world1 = new WorldLoader("world1"))
