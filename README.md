@@ -10,7 +10,7 @@ this fast-paced competition, only the swift and strategic will emerge victorious
 **Gameplay Overview:**
 ToBits sets the stage for an exhilarating battle where players engage in a relentless
 fight for supremacy. As you navigate through the vibrant and ever-changing platform environment, be
-on the lookout for weapons that materialize at unpredictable locations. From laser guns to energy
+on the lookout for weapons that materialise at unpredictable locations. From laser guns to energy
 swords, each weapon offers a unique advantage, transforming the battlefield into a chaotic arena of
 skill and strategy.
 
@@ -21,7 +21,7 @@ incoming attacks. With real-time interactions and seamless communication, every 
 opportunity to showcase your prowess in combat.
 
 **Random Weapon Spawns:**
-Adaptability is key in ToBits. Weapons materialize randomly across the map, adding an
+Adaptability is key in ToBits. Weapons materialise randomly across the map, adding an
 element of unpredictability to each skirmish. Will you secure that powerful rocket launcher, or will
 you rely on your agility and close-quarter combat skills? The choice is yours, and the battlefield
 is your canvas.
@@ -29,7 +29,7 @@ is your canvas.
 **Race Against Time:**
 The clock is ticking, and victory goes to the player_id with the highest kill count when time
 expires.
-Keep an eye on the countdown timer as you engage in intense firefights, strategize with your chosen
+Keep an eye on the countdown timer as you engage in intense firefights, strategise with your chosen
 weapons, and outsmart your opponents. It's not just about surviving; it's about dominating the arena
 within the allotted time frame.
 
@@ -48,10 +48,10 @@ ToBits!
 
 ## Disclaimer
 
-The features of this game are still in development. Some assets may not be fully optimized (yet).
+The features of this game are still in development. Some assets may not be fully optimised (yet).
 
 ## Special thanks to
 
-### Map Editor
+The textures are inspired by [Kevin's Mom's House](https://kevins-moms-house.itch.io/)
 
-[Tiled](https://www.mapeditor.org/)
+The tilemaps and map structure are created with [Tiled](https://www.mapeditor.org/)
